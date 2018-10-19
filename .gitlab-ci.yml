@@ -5,8 +5,9 @@ test:
     - postgres:latest
 
   variables:
-    POSTGRES_HOST: postgres
-    POSTGRES_USER: postgres
+    POSTGRES_DB: "webapp_test"
+    POSTGRES_HOST: "postgres"
+    POSTGRES_USER: "postgres"
     POSTGRES_PASSWORD: "postgres"
     MIX_ENV: "test"
 

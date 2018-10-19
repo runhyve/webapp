@@ -11,8 +11,8 @@ config :logger, level: :warn
 
 # Configure your database
 config :webapp, Webapp.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "webapp_test",
-  hostname: "localhost",
+  database: System.get_env("POSTGRES_DB") || "webapp_test",
+  username: System.get_env("POSTGRES_USER") || "postgres",
+  password: System.get_env("POSTGRES_PASSWORD") || "postgres",
+  hostname: System.get_env("POSTGRES_HOST") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
