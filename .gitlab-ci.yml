@@ -1,0 +1,21 @@
+test:
+  image: elixir:latest
+
+  services:
+    - postgres:latest
+
+  variables:
+    POSTGRES_HOST: postgres
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: "postgres"
+    MIX_ENV: "test"
+
+  before_script:
+    - apt-get update && apt-get -y install postgresql-client
+    - mix deps.get
+    - mix ecto.create
+    - mix ecto.migrate
+
+  script:
+    - mix test
+    - mix coveralls
