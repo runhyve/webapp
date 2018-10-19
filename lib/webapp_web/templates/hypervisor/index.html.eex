@@ -1,0 +1,28 @@
+<h1>Listing Hypervisor</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Ip address</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for hypervisor <- @hypervisor do %>
+    <tr>
+      <td><%= hypervisor.name %></td>
+      <td><%= hypervisor.ip_address %></td>
+
+      <td>
+        <%= link "Show", to: Routes.hypervisor_path(@conn, :show, hypervisor) %>
+        <%= link "Edit", to: Routes.hypervisor_path(@conn, :edit, hypervisor) %>
+        <%= link "Delete", to: Routes.hypervisor_path(@conn, :delete, hypervisor), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Hypervisor", to: Routes.hypervisor_path(@conn, :new) %></span>

@@ -1,0 +1,18 @@
+<h1>Show Machine</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @machine.name %>
+  </li>
+
+  <li>
+    <strong>Template:</strong>
+    <%= @machine.template %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.machine_path(@conn, :edit, @machine) %></span>
+<span><%= link "Back", to: Routes.machine_path(@conn, :index) %></span>

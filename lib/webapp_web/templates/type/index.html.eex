@@ -1,0 +1,22 @@
+<h1>Listing Hypervisor types</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for type <- @hypervisor_types do %>
+    <tr>
+      <td><%= type.name %></td>
+
+      <td>
+        <%= link "Show", to: Routes.type_path(@conn, :show, type) %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

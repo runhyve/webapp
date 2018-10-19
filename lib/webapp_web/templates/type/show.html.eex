@@ -1,0 +1,13 @@
+<h1>Show Type</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @type.name %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.type_path(@conn, :edit, @type) %></span>
+<span><%= link "Back", to: Routes.type_path(@conn, :index) %></span>

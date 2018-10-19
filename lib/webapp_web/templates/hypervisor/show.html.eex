@@ -1,0 +1,22 @@
+<h1>Show Hypervisor</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @hypervisor.name %>
+  </li>
+
+  <li>
+    <strong>Ip address:</strong>
+    <%= @hypervisor.ip_address %>
+  </li>
+
+  <li>
+    <strong>Type:</strong>
+    <%= @hypervisor.hypervisor_type.name %>
+  </li>
+</ul>
+
+<span><%= link "Edit", to: Routes.hypervisor_path(@conn, :edit, @hypervisor) %></span>
+<span><%= link "Back", to: Routes.hypervisor_path(@conn, :index) %></span>

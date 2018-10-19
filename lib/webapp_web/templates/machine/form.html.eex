@@ -1,0 +1,24 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <%= label f, :name %>
+  <%= text_input f, :name %>
+  <%= error_tag f, :name %>
+
+  <%= label f, :template %>
+  <%= text_input f, :template %>
+  <%= error_tag f, :template %>
+
+  <%= label f, :hypervisor_id %>
+  <%= select f, :hypervisor_id, hypervisors_select_options(@hypervisors), prompt: "Hypervisor" %>
+  <%= error_tag f, :hypervisor_id %>
+
+
+  <div>
+    <%= submit "Save" %>
+  </div>
+<% end %>

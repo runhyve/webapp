@@ -1,0 +1,28 @@
+<h1>Listing Machines</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Template</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for machine <- @machines do %>
+    <tr>
+      <td><%= machine.name %></td>
+      <td><%= machine.template %></td>
+
+      <td>
+        <%= link "Show", to: Routes.machine_path(@conn, :show, machine) %>
+        <%= link "Edit", to: Routes.machine_path(@conn, :edit, machine) %>
+        <%= link "Delete", to: Routes.machine_path(@conn, :delete, machine), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Machine", to: Routes.machine_path(@conn, :new) %></span>
