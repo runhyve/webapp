@@ -214,6 +214,8 @@ defmodule Webapp.Hypervisors do
   """
   def list_machines do
     Repo.all(Machine)
+    |> Repo.preload(:hypervisor)
+    |> Repo.preload(:plan)
   end
 
   @doc """

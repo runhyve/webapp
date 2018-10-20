@@ -20,7 +20,8 @@
     <tr>
       <th>Name</th>
       <th>Template</th>
-
+      <th>Hypervisor</th>
+      <th>Plan</th>
       <th></th>
     </tr>
   </thead>
@@ -29,6 +30,8 @@
     <tr>
       <td><%= link machine.name, to: Routes.machine_path(@conn, :show, machine) %></td>
       <td><%= machine.template %></td>
+      <td><%= link machine.hypervisor.name, to: Routes.hypervisor_path(@conn, :show, machine.hypervisor) %></td>
+      <td><%= link machine.plan.name, to: Routes.plan_path(@conn, :show, machine.plan) %></td>
 
       <td class="has-text-right">
         <%= link "Show", to: Routes.machine_path(@conn, :show, machine), class: "button is-rounded"  %>
