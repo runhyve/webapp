@@ -1,0 +1,23 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><%= link "Plans", to: Routes.plan_path(@conn, :index) %></li>
+    <li class="is-active"><a>New Plan</a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1>New Plan</h1>
+  </div>
+
+  <div class="level-right">
+    <span>
+      <%= link "Back",
+            to: Routes.plan_path(@conn, :index),
+            class: "button is-rounded" %>
+    </span>
+  </div>
+</div>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.plan_path(@conn, :create)) %>

@@ -1,0 +1,49 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li class="is-active"><a>Plans</a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1>Listing Plans</h1>
+  </div>
+
+  <div class="level-right">
+    <span><%= link "New Plan", to: Routes.plan_path(@conn, :new), class: "button is-rounded is-primary" %></span>
+  </div>
+</div>
+
+<table class="table container">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Storage</th>
+      <th>Ram</th>
+      <th>Cpu</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for plan <- @plans do %>
+    <tr>
+      <td><%= link plan.name, to: Routes.plan_path(@conn, :show, plan) %></td>
+      <td><%= plan.storage %></td>
+      <td><%= plan.ram %></td>
+      <td><%= plan.cpu %></td>
+
+      <td class="has-text-right">
+        <%= link "Show", to: Routes.plan_path(@conn, :show, plan), class: "button is-rounded"  %>
+        <%= link "Edit", to: Routes.plan_path(@conn, :edit, plan), class: "button is-rounded is-info"  %>
+        <%= link "Delete", to: Routes.plan_path(@conn, :delete, plan), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger"  %>
+      </td>
+    </tr>
+<% end %>
+<%= if Enum.empty?(@plans) do %>
+    <tr><td colspan="3">Empty here, add a plan...</td></tr>
+<% end %>
+  </tbody>
+</table>
+
