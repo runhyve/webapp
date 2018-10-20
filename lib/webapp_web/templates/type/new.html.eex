@@ -1,5 +1,0 @@
-<h1>New Type</h1>
-
-<%= render "form.html", Map.put(assigns, :action, Routes.type_path(@conn, :create)) %>
-
-<span><%= link "Back", to: Routes.type_path(@conn, :index) %></span>
