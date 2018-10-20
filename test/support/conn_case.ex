@@ -21,6 +21,8 @@ defmodule WebappWeb.ConnCase do
       use Phoenix.ConnTest
       alias WebappWeb.Router.Helpers, as: Routes
 
+      import Webapp.TestHelpers
+
       # The default endpoint for testing
       @endpoint WebappWeb.Endpoint
     end

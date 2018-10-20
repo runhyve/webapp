@@ -7,10 +7,6 @@ defmodule WebappWeb.PlanControllerTest do
   @update_attrs %{cpu: 43, name: "some updated name", ram: 43, storage: 43}
   @invalid_attrs %{cpu: nil, name: nil, ram: nil, storage: nil}
 
-  def fixture(:plan) do
-    {:ok, plan} = Plans.create_plan(@create_attrs)
-    plan
-  end
 
   describe "index" do
     test "lists all plans", %{conn: conn} do
@@ -34,7 +30,7 @@ defmodule WebappWeb.PlanControllerTest do
       assert redirected_to(conn) == Routes.plan_path(conn, :show, id)
 
       conn = get(conn, Routes.plan_path(conn, :show, id))
-      assert html_response(conn, 200) =~ "Show Plan"
+      assert html_response(conn, 200) =~ @create_attrs.name
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -48,7 +44,7 @@ defmodule WebappWeb.PlanControllerTest do
 
     test "renders form for editing chosen plan", %{conn: conn, plan: plan} do
       conn = get(conn, Routes.plan_path(conn, :edit, plan))
-      assert html_response(conn, 200) =~ "Edit Plan"
+      assert html_response(conn, 200) =~ plan.name
     end
   end
 
@@ -65,7 +61,7 @@ defmodule WebappWeb.PlanControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, plan: plan} do
       conn = put(conn, Routes.plan_path(conn, :update, plan), plan: @invalid_attrs)
-      assert html_response(conn, 200) =~ "Edit Plan"
+      assert html_response(conn, 200) =~ "Edit"
     end
   end
 
@@ -82,7 +78,7 @@ defmodule WebappWeb.PlanControllerTest do
   end
 
   defp create_plan(_) do
-    plan = fixture(:plan)
+    plan = fixture_plan(@create_attrs)
     {:ok, plan: plan}
   end
 end
