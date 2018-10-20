@@ -1,5 +1,27 @@
-<h1>Show Machine</h1>
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><%= link "Machines", to: Routes.machine_path(@conn, :index) %></li>
+    <li class="is-active"><a><%= @machine.name %></a></li>
+  </ul>
+</nav>
 
+<div class="level">
+  <div class="level-left">
+    <h1><%= @machine.name %></h1>
+  </div>
+
+  <div class="level-right">
+    <span>
+      <%= link "Edit",
+            to: Routes.machine_path(@conn, :edit, @machine),
+            class: "button is-rounded is-info" %>
+    </span>
+  </div>
+</div>
+
+
+<div class="box">
 <ul>
 
   <li>
@@ -12,7 +34,13 @@
     <%= @machine.template %>
   </li>
 
-</ul>
+  <li>
+    <strong>Hypervisor:</strong>
+    <%= link @machine.hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @machine.hypervisor) %>
+  </li>
 
-<span><%= link "Edit", to: Routes.machine_path(@conn, :edit, @machine) %></span>
-<span><%= link "Back", to: Routes.machine_path(@conn, :index) %></span>
+  <li>
+    <strong>Plan:</strong>
+    <%= link @machine.plan.name, to: Routes.plan_path(@conn, :show, @machine.plan) %>
+  </li>
+</ul>

@@ -3,8 +3,9 @@ defmodule WebappWeb.MachineController do
 
   alias Webapp.Hypervisors
   alias Webapp.Hypervisors.Machine
+  alias Webapp.Plans
 
-  plug :load_hypervisors when action in [:new, :create, :edit, :update]
+  plug :load_references when action in [:new, :create, :edit, :update]
 
   def index(conn, _params) do
     machines = Hypervisors.list_machines()
@@ -62,8 +63,9 @@ defmodule WebappWeb.MachineController do
     |> redirect(to: Routes.machine_path(conn, :index))
   end
 
-  defp load_hypervisors(conn, _) do
+  defp load_references(conn, _) do
     conn
     |> assign(:hypervisors, Hypervisors.list_hypervisor())
+    |> assign(:plans, Plans.list_plans())
   end
 end

@@ -19,6 +19,7 @@ defmodule WebappWeb.Router do
     get "/", PageController, :index
     resources "/hypervisors", HypervisorController
     resources "/machines", MachineController
+    resources "/plans", PlanController
   end
 
   # Other scopes may use custom stacks.

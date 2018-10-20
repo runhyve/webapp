@@ -1,24 +1,47 @@
-<%= form_for @changeset, @action, fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+<div class="box">
+  <%= form_for @changeset, @action, fn f -> %>
+    <%= if @changeset.action do %>
+      <div class="notification is-danger">
+        <p>Oops, something went wrong! Please check the errors below.</p>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <%= label f, :name, class: "label" %>
+      <div class="control">
+        <%= text_input f, :name, class: "input" %>
+      </div>
+      <%= error_tag f, :name %>
+    </div>
+
+    <div class="field">
+      <%= label f, :template, class: "label" %>
+      <div class="control">
+        <%= text_input f, :template, class: "input" %>
+      </div>
+      <%= error_tag f, :template %>
+    </div>
+
+    <div class="field">
+    <%= label f, :hypervisor_id, class: "label" %>
+    <div class="select">
+      <%= select f, :hypervisor_id, hypervisors_select_options(@hypervisors), prompt: "Hypervisor" %>
+    </div>
+    <%= error_tag f, :hypervisor_id %>
+    </div>
+
+    <div class="field">
+    <%= label f, :plan_id, class: "label" %>
+    <div class="select">
+      <%= select f, :plan_id, plans_select_options(@plans), prompt: "Plan" %>
+    </div>
+    <%= error_tag f, :plan_id %>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <%= submit "Save", class: "button is-rounded is-primary" %>
+      </div>
     </div>
   <% end %>
-
-  <%= label f, :name %>
-  <%= text_input f, :name %>
-  <%= error_tag f, :name %>
-
-  <%= label f, :template %>
-  <%= text_input f, :template %>
-  <%= error_tag f, :template %>
-
-  <%= label f, :hypervisor_id %>
-  <%= select f, :hypervisor_id, hypervisors_select_options(@hypervisors), prompt: "Hypervisor" %>
-  <%= error_tag f, :hypervisor_id %>
-
-
-  <div>
-    <%= submit "Save" %>
-  </div>
-<% end %>
+</div>

@@ -230,7 +230,11 @@ defmodule Webapp.Hypervisors do
       ** (Ecto.NoResultsError)
 
   """
-  def get_machine!(id), do: Repo.get!(Machine, id)
+  def get_machine!(id) do
+    Repo.get!(Machine, id)
+    |> Repo.preload(:hypervisor)
+    |> Repo.preload(:plan)
+  end
 
   @doc """
   Creates a machine.

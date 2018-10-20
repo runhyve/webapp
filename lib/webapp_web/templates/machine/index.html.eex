@@ -1,6 +1,21 @@
-<h1>Listing Machines</h1>
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li class="is-active"><a>Machines</a></li>
+  </ul>
+</nav>
 
-<table>
+<div class="level">
+  <div class="level-left">
+    <h1>Listing Machines</h1>
+  </div>
+
+  <div class="level-right">
+    <span><%= link "New Machine", to: Routes.machine_path(@conn, :new), class: "button is-rounded is-primary" %></span>
+  </div>
+</div>
+
+<table class="table container">
   <thead>
     <tr>
       <th>Name</th>
@@ -12,17 +27,18 @@
   <tbody>
 <%= for machine <- @machines do %>
     <tr>
-      <td><%= machine.name %></td>
+      <td><%= link machine.name, to: Routes.machine_path(@conn, :show, machine) %></td>
       <td><%= machine.template %></td>
 
-      <td>
-        <%= link "Show", to: Routes.machine_path(@conn, :show, machine) %>
-        <%= link "Edit", to: Routes.machine_path(@conn, :edit, machine) %>
-        <%= link "Delete", to: Routes.machine_path(@conn, :delete, machine), method: :delete, data: [confirm: "Are you sure?"] %>
+      <td class="has-text-right">
+        <%= link "Show", to: Routes.machine_path(@conn, :show, machine), class: "button is-rounded"  %>
+        <%= link "Edit", to: Routes.machine_path(@conn, :edit, machine), class: "button is-rounded is-info"  %>
+        <%= link "Delete", to: Routes.machine_path(@conn, :delete, machine), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger"  %>
       </td>
     </tr>
 <% end %>
+<%= if Enum.empty?(@machines) do %>
+    <tr><td colspan="3">Empty here, add a machine...</td></tr>
+<% end %>
   </tbody>
 </table>
-
-<span><%= link "New Machine", to: Routes.machine_path(@conn, :new) %></span>

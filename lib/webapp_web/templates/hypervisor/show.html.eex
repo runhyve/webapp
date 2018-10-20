@@ -1,22 +1,42 @@
-<h1>Show Hypervisor</h1>
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index) %></li>
+    <li class="is-active"><a><%= @hypervisor.name %></a></li>
+  </ul>
+</nav>
 
-<ul>
+<div class="level">
+  <div class="level-left">
+    <h1><%= @hypervisor.name %></h1>
+  </div>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @hypervisor.name %>
-  </li>
+  <div class="level-right">
+    <span>
+      <%= link "Edit",
+            to: Routes.hypervisor_path(@conn, :edit, @hypervisor),
+            class: "button is-rounded is-info" %>
+    </span>
+  </div>
+</div>
 
-  <li>
-    <strong>Ip address:</strong>
-    <%= @hypervisor.ip_address %>
-  </li>
 
-  <li>
-    <strong>Type:</strong>
-    <%= @hypervisor.hypervisor_type.name %>
-  </li>
-</ul>
+<div class="box">
+  <ul>
 
-<span><%= link "Edit", to: Routes.hypervisor_path(@conn, :edit, @hypervisor) %></span>
-<span><%= link "Back", to: Routes.hypervisor_path(@conn, :index) %></span>
+    <li>
+      <strong>Name:</strong>
+      <%= @hypervisor.name %>
+    </li>
+
+    <li>
+      <strong>Ip address:</strong>
+      <%= @hypervisor.ip_address %>
+    </li>
+
+    <li>
+      <strong>Type:</strong>
+      <%= @hypervisor.hypervisor_type.name %>
+    </li>
+  </ul>
+</div>

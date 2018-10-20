@@ -12,3 +12,4 @@
 
 
 Webapp.Repo.insert!(%Webapp.Hypervisors.Type{name: "bhyve"})
+#Webapp.Repo.insert!(%Webapp.Plans.Plan{name: "FreeBSD"})

@@ -1,4 +1,9 @@
-.navbar-brand {
-  .navbar-logo {
-  }
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+#main {
+  flex: 1;
 }

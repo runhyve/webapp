@@ -24,44 +24,19 @@
 
           <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-              <a class="navbar-item">
-                Home
-              </a>
-
-              <a class="navbar-item">
-                Hypervisors
-              </a>
-
-              <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">
-                  More
-                </a>
-
-                <div class="navbar-dropdown">
-                  <a class="navbar-item">
-                    About
-                  </a>
-                  <a class="navbar-item">
-                    Jobs
-                  </a>
-                  <a class="navbar-item">
-                    Contact
-                  </a>
-                  <hr class="navbar-divider">
-                  <a class="navbar-item">
-                    Report an issue
-                  </a>
-                </div>
-              </div>
+              <%= link "Home", to: Routes.page_path(@conn, :index), class: "navbar-item" %>
+              <%= link "Plans", to: Routes.plan_path(@conn, :index), class: "navbar-item" %>
+              <%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index), class: "navbar-item" %>
+              <%= link "Machines", to: Routes.machine_path(@conn, :index), class: "navbar-item" %>
             </div>
 
             <div class="navbar-end">
               <div class="navbar-item">
                 <div class="buttons">
-                  <a class="button is-primary">
+                  <a class="button is-rounded is-primary is-disabled">
                     <strong>Sign up</strong>
                   </a>
-                  <a class="button is-light">
+                  <a class="button is-rounded is-light is-disabled">
                     Log in
                   </a>
                 </div>
@@ -71,17 +46,25 @@
       </div>
     </nav>
 
-    <section class="section">
+    <section id="main" class="section">
       <div class="container">
         <%= if info = get_flash(@conn, :info) do %>
-          <p class="notification is-info" role="alert"><%= info %></p>
-        <%= end %>
+          <div class="notification is-info" role="alert"> <button class="delete"></button><%= info %></div>
+        <% end %>
         <%= if error = get_flash(@conn, :error) do %>
-          <p class="notification is-danger" role="alert"><%= error %></p>
-        <%= end %>
+          <div class="notification is-danger" role="alert"> <button class="delete"></button><%= error %></div>
+        <% end %>
         <%= render @view_module, @view_template, assigns %>
       </div>
     </section>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Runhyve</strong> made with <i class="has-text-danger fa fa-heart"></i> in Poland. <br /> Powered by <a href="https://runateam.com">Runateam.com</a>.
+        </p>
+      </div>
+    </footer>
 
     <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </body>
