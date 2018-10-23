@@ -68,8 +68,8 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Configure your database
 config :webapp, Webapp.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "webapp_dev",
-  hostname: "localhost",
+       database: System.get_env("POSTGRES_DB") || "webapp_dev",
+       username: System.get_env("POSTGRES_USER") || "postgres",
+       password: System.get_env("POSTGRES_PASSWORD") || "postgres",
+       hostname: System.get_env("POSTGRES_HOST") || "localhost",
   pool_size: 10
