@@ -49,7 +49,9 @@ defmodule Webapp.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:cowboy, "~> 1.0"},
-      {:excoveralls, "~> 0.10", only: [:dev, :test]}
+      {:excoveralls, "~> 0.10", only: [:dev, :test]},
+      {:poison, "~> 3.0"},
+      {:httpoison, "~> 1.0"}
     ]
   end
 

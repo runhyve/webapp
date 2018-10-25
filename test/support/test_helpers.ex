@@ -1,5 +1,4 @@
 defmodule Webapp.TestHelpers do
-
   alias Webapp.{Hypervisors, Plans}
 
   def fixture_hypervisor(hypervisor) do
@@ -18,7 +17,7 @@ defmodule Webapp.TestHelpers do
   end
 
   def fixture_machine(machine) do
-    {:ok, machine} = Hypervisors.create_machine(machine)
+    {:ok, %{machine: machine}} = Hypervisors.create_machine(machine)
     machine
   end
 end

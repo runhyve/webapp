@@ -18,7 +18,12 @@ defmodule WebappWeb.Router do
 
     get "/", PageController, :index
     resources "/hypervisors", HypervisorController
+
     resources "/machines", MachineController
+    get "/machines/:id/console", MachineController, :console
+    post "/machines/:id/start", MachineController, :start
+    post "/machines/:id/stop", MachineController, :stop
+
     resources "/plans", PlanController
   end
 

@@ -2,14 +2,13 @@ defmodule Webapp.Plans.Plan do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "plans" do
-    field :cpu, :integer
-    field :name, :string
-    field :ram, :integer
-    field :storage, :integer
+    field(:cpu, :integer)
+    field(:name, :string)
+    field(:ram, :integer)
+    field(:storage, :integer)
 
-    has_many :machines, Webapp.Hypervisors.Machine
+    has_many(:machines, Webapp.Hypervisors.Machine)
 
     timestamps()
   end

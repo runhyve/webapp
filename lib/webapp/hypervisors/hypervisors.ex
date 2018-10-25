@@ -6,7 +6,16 @@ defmodule Webapp.Hypervisors do
   import Ecto.Query, warn: false
   alias Webapp.Repo
 
-  alias Webapp.Hypervisors.Type
+  alias Ecto.{
+    Multi,
+    Changeset
+  }
+
+  alias Webapp.Hypervisors.{
+    Type,
+    Hypervisor,
+    Machine
+  }
 
   @doc """
   Returns the list of hypervisor_types.
@@ -201,8 +210,6 @@ defmodule Webapp.Hypervisors do
     Hypervisor.changeset(hypervisor, %{})
   end
 
-  alias Webapp.Hypervisors.Machine
-
   @doc """
   Returns the list of machines.
 
@@ -240,6 +247,8 @@ defmodule Webapp.Hypervisors do
 
   @doc """
   Creates a machine.
+  Executes the create_machine function in the Hypervisor module,
+  and adds machine to the database if machine was initialised on Hypervisor.
 
   ## Examples
 
@@ -250,10 +259,32 @@ defmodule Webapp.Hypervisors do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_machine(attrs \\ %{}) do
-    %Machine{}
-    |> Machine.changeset(attrs)
-    |> Repo.insert()
+  def create_machine(attrs) do
+    # Validate machine changeset
+    changeset =
+      %Machine{}
+      |> Machine.changeset(attrs)
+
+    if changeset.valid? do
+      hypervisor =
+        Ecto.Changeset.get_change(changeset, :hypervisor_id)
+        |> get_hypervisor!
+
+      module =
+        ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
+        |> String.to_atom()
+
+      try do
+        Multi.new()
+        |> Multi.insert(:machine, changeset)
+        |> Multi.run(:hypervisor, module, :create_machine, [])
+        |> Repo.transaction()
+      rescue
+        UndefinedFunctionError -> {:error, :hypervisor_not_found, changeset}
+      end
+    else
+      Repo.insert(changeset)
+    end
   end
 
   @doc """
@@ -287,7 +318,76 @@ defmodule Webapp.Hypervisors do
 
   """
   def delete_machine(%Machine{} = machine) do
-    Repo.delete(machine)
+    module = get_hypervisor_module(machine)
+
+    try do
+      Multi.new()
+      |> Multi.delete(:machine, machine)
+      |> Multi.run(:hypervisor, module, :delete_machine, [])
+      |> Repo.transaction()
+    rescue
+      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+    end
+  end
+
+  @doc """
+  Updates a Machine status.
+  """
+  def update_machine_status(%Machine{} = machine) do
+    module = get_hypervisor_module(machine)
+    changeset = change_machine(machine)
+
+    try do
+      Multi.new()
+      |> Multi.update(:machine, changeset)
+      |> Multi.run(:hypervisor, module, :update_machine_status, [])
+      |> Multi.run(:status, fn %{hypervisor: status} ->
+        Changeset.put_change(changeset, :last_status, status)
+        |> Repo.update()
+      end)
+      |> Repo.transaction()
+    rescue
+      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+    end
+  end
+
+  @doc """
+  Starts a Machine.
+  """
+  def start_machine(%Machine{} = machine) do
+    module = get_hypervisor_module(machine)
+
+    try do
+      apply(module, :start_machine, [%{machine: machine}])
+    rescue
+      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+    end
+  end
+
+  @doc """
+  Stops a Machine.
+  """
+  def stop_machine(%Machine{} = machine) do
+    module = get_hypervisor_module(machine)
+
+    try do
+      apply(module, :stop_machine, [%{machine: machine}])
+    rescue
+      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+    end
+  end
+
+  @doc """
+  Opens a remote console for Machine.
+  """
+  def console_machine(%Machine{} = machine) do
+    module = get_hypervisor_module(machine)
+
+    try do
+      apply(module, :console_machine, [%{machine: machine}])
+    rescue
+      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+    end
   end
 
   @doc """
@@ -301,5 +401,17 @@ defmodule Webapp.Hypervisors do
   """
   def change_machine(%Machine{} = machine) do
     Machine.changeset(machine, %{})
+  end
+
+  """
+  Returns the module name of hypervisor type for given machine.
+  """
+
+  defp get_hypervisor_module(%Machine{} = machine) do
+    hypervisor = Repo.preload(machine.hypervisor, :hypervisor_type)
+
+    module =
+      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
+      |> String.to_atom()
   end
 end

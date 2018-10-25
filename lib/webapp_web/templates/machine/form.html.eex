@@ -16,8 +16,8 @@
 
     <div class="field">
       <%= label f, :template, class: "label" %>
-      <div class="control">
-        <%= text_input f, :template, class: "input" %>
+      <div class="select">
+        <%= select f, :template, ["freebsd": "freebsd", "ubuntu": "ubuntu"], prompt: "Template" %>
       </div>
       <%= error_tag f, :template %>
     </div>

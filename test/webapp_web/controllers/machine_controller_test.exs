@@ -7,7 +7,6 @@ defmodule WebappWeb.MachineControllerTest do
   @update_attrs %{name: "some updated name", template: "some updated template"}
   @invalid_attrs %{name: nil, template: nil}
 
-
   describe "index" do
     test "lists all machines", %{conn: conn} do
       conn = get(conn, Routes.machine_path(conn, :index))
@@ -66,28 +65,36 @@ defmodule WebappWeb.MachineControllerTest do
     end
   end
 
-#  describe "delete machine" do
-#    setup [:create_machine]
-#
-#    test "deletes chosen machine", %{conn: conn, machine: machine} do
-#      conn = delete(conn, Routes.machine_path(conn, :delete, machine))
-#      assert redirected_to(conn) == Routes.machine_path(conn, :index)
-#      assert_error_sent 404, fn ->
-#        get(conn, Routes.machine_path(conn, :show, machine))
-#      end
-#    end
-#  end
-#
+  #  describe "delete machine" do
+  #    setup [:create_machine]
+  #
+  #    test "deletes chosen machine", %{conn: conn, machine: machine} do
+  #      conn = delete(conn, Routes.machine_path(conn, :delete, machine))
+  #      assert redirected_to(conn) == Routes.machine_path(conn, :index)
+  #      assert_error_sent 404, fn ->
+  #        get(conn, Routes.machine_path(conn, :show, machine))
+  #      end
+  #    end
+  #  end
+  #
 
   defp prepare_struct(struct \\ @create_attrs) do
     plan = fixture_plan(%{cpu: 2, name: "standard", ram: 1024, storage: 10})
     hypervisor_type = fixture_hypervisor_type(%{name: "bhyve"})
-    hypervisor = fixture_hypervisor(%{name: "standard", ip_address: "192.168.199.254", hypervisor_type_id: hypervisor_type.id})
+
+    hypervisor =
+      fixture_hypervisor(%{
+        name: "standard",
+        ip_address: "192.168.199.254",
+        hypervisor_type_id: hypervisor_type.id,
+        webhook_endpoint: "http://127.0.0.1:9090"
+      })
 
     # Update hypervisor_type id with correct one.
-    machine = struct
-              |> Map.put(:hypervisor_id, hypervisor.id)
-              |> Map.put(:plan_id, plan.id)
+    machine =
+      struct
+      |> Map.put(:hypervisor_id, hypervisor.id)
+      |> Map.put(:plan_id, plan.id)
   end
 
   defp create_machine(_) do

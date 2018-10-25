@@ -4,5 +4,4 @@ defmodule WebappWeb.HypervisorView do
   def hypervisor_types_select_options(hypervisor_types) do
     for type <- hypervisor_types, do: {type.name, type.id}
   end
-
 end

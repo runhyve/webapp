@@ -3,10 +3,9 @@ defmodule Webapp.Repo.Migrations.CreateHypervisorTypes do
 
   def change do
     create table(:hypervisor_types) do
-      add :name, :string
+      add(:name, :string)
 
       timestamps()
     end
-
   end
 end

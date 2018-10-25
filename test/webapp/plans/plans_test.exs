@@ -45,7 +45,6 @@ defmodule Webapp.PlansTest do
       plan = plan_fixture()
       assert {:ok, %Plan{} = plan} = Plans.update_plan(plan, @update_attrs)
 
-      
       assert plan.cpu == 43
       assert plan.name == "some updated name"
       assert plan.ram == 43

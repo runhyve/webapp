@@ -19,18 +19,39 @@ defmodule WebappWeb.MachineController do
 
   def create(conn, %{"machine" => machine_params}) do
     case Hypervisors.create_machine(machine_params) do
-      {:ok, machine} ->
+      {:ok, %{machine: machine}} ->
         conn
         |> put_flash(:info, "Machine created successfully.")
         |> redirect(to: Routes.machine_path(conn, :show, machine))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
+
+      {:error, :hypervisor, error, _} ->
+        changeset =
+          %Machine{}
+          |> Machine.changeset(machine_params)
+
+        conn
+        |> put_flash(:error, error)
+        |> render("new.html", changeset: changeset)
+
+      {:error, :hypervisor_not_found, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_flash(:error, "Machine was not created successfully.")
+        |> render("new.html", changeset: changeset)
     end
   end
 
   def show(conn, %{"id" => id}) do
     machine = Hypervisors.get_machine!(id)
+
+    case Hypervisors.update_machine_status(machine) do
+      {:ok, machine} -> machine
+      {:error, :hypervisor, error, _} ->
+        put_flash(conn, :error, "Failed to fetch machine status")
+    end
+
     render(conn, "show.html", machine: machine)
   end
 
@@ -56,11 +77,69 @@ defmodule WebappWeb.MachineController do
 
   def delete(conn, %{"id" => id}) do
     machine = Hypervisors.get_machine!(id)
-    {:ok, _machine} = Hypervisors.delete_machine(machine)
 
-    conn
-    |> put_flash(:info, "Machine deleted successfully.")
-    |> redirect(to: Routes.machine_path(conn, :index))
+    case Hypervisors.delete_machine(machine) do
+      {:ok, _machine} ->
+        conn
+        |> put_flash(:info, "Machine deleted successfully.")
+        |> redirect(to: Routes.machine_path(conn, :index))
+
+      {:error, :hypervisor, error, changes} ->
+        conn
+        |> put_flash(:error, error)
+        |> redirect(to: Routes.machine_path(conn, :index))
+
+      {:error, :hypervisor_not_found, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_flash(:error, "Machine was not deleted successfully.")
+        |> redirect(to: Routes.machine_path(conn, :index))
+    end
+  end
+
+  def start(conn, %{"id" => id}) do
+    machine = Hypervisors.get_machine!(id)
+
+    case Hypervisors.start_machine(machine) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Machine is starting")
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+
+      {:error, error} ->
+        conn
+        |> put_flash(:error, error)
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+    end
+  end
+
+  def stop(conn, %{"id" => id}) do
+    machine = Hypervisors.get_machine!(id)
+
+    case Hypervisors.stop_machine(machine) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Machine is stopping")
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+
+      {:error, error} ->
+        conn
+        |> put_flash(:error, error)
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+    end
+  end
+
+  def console(conn, %{"id" => id}) do
+    machine = Hypervisors.get_machine!(id)
+
+    with {:ok, console} <- Hypervisors.console_machine(machine) do
+      token = Base.encode64(console["user"] <>":"<> console["password"])
+      render(conn, "console.html", machine: machine, console: console, token: token)
+    else
+      {:error, error} ->
+        conn
+        |> put_flash(:error, error)
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+    end
   end
 
   defp load_references(conn, _) do

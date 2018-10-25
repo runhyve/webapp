@@ -27,14 +27,10 @@
   </div>
 
   <div class="level-right">
-    <span>
-      <%= link "Console", to: Routes.machine_path(@conn, :console, @machine), class: "button is-rounded"  %>
-    </span>
 
     <span>
       <%= link "Start", to: Routes.machine_path(@conn, :start, @machine), method: :post, class: "button is-rounded"  %>
     </span>
-
     <span>
       <%= link "Stop", to: Routes.machine_path(@conn, :stop, @machine), method: :post, class: "button is-rounded is-danger"  %>
     </span>
@@ -43,25 +39,32 @@
 
 
 <div class="box">
-<ul>
+http://<%= @console["user"] %>:<%= @console["password"] %>@<%= @machine.hypervisor.ip_address %>:<%= @console["port"] %>
+Basic <%= @token %>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @machine.name %>
-  </li>
+<hr>
+http://port<%= @console["port"] %>.<%= @machine.hypervisor.ip_address %>.xip.io
+<iframe id="aaconsole" type="text/html" src="http://port<%= @console["port"] %>.<%= @machine.hypervisor.ip_address %>.xip.io/<%= @token %>/" width="100%" height="600px"></iframe>
 
-  <li>
-    <strong>Template:</strong>
-    <%= @machine.template %>
-  </li>
+<!--
+<script>
+var xhr = new XMLHttpRequest();
 
-  <li>
-    <strong>Hypervisor:</strong>
-    <%= link @machine.hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @machine.hypervisor) %>
-  </li>
+xhr.open('GET', 'http://port<%= @console["port"] %>.<%= @machine.hypervisor.ip_address %>.xip.io', true);
+xhr.withCredentials = true;
+xhr.setRequestHeader("Authorization", "Basic <%= @token %>");
+xhr.onreadystatechange = handler;
+xhr.send();
 
-  <li>
-    <strong>Plan:</strong>
-    <%= link @machine.plan.name, to: Routes.plan_path(@conn, :show, @machine.plan) %>
-  </li>
-</ul>
+function handler() {
+  if (this.readyState === this.DONE) {
+    if (this.status === 200) {
+      var iframe = document.createElement('iframe');
+      iframe.style.display = "none";
+      iframe.src = "http://port<%= @console["port"] %>.<%= @machine.hypervisor.ip_address %>.xip.io";
+      document.body.appendChild(iframe);
+    }
+  }
+}
+</script> -->
+</div>

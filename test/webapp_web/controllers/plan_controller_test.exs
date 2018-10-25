@@ -7,7 +7,6 @@ defmodule WebappWeb.PlanControllerTest do
   @update_attrs %{cpu: 43, name: "some updated name", ram: 43, storage: 43}
   @invalid_attrs %{cpu: nil, name: nil, ram: nil, storage: nil}
 
-
   describe "index" do
     test "lists all plans", %{conn: conn} do
       conn = get(conn, Routes.plan_path(conn, :index))
@@ -71,6 +70,7 @@ defmodule WebappWeb.PlanControllerTest do
     test "deletes chosen plan", %{conn: conn, plan: plan} do
       conn = delete(conn, Routes.plan_path(conn, :delete, plan))
       assert redirected_to(conn) == Routes.plan_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.plan_path(conn, :show, plan))
       end

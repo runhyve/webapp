@@ -2,11 +2,8 @@ defmodule Webapp.Hypervisors.Type do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "hypervisor_types" do
-    field :name, :string
-
-    has_many :hypervisors, Webapp.Hypervisors.Hypervisor
+    field(:name, :string)
 
     timestamps()
   end

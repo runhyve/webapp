@@ -35,6 +35,11 @@
     </li>
 
     <li>
+      <strong>Webhook endpoint:</strong>
+      <%= @hypervisor.webhook_endpoint %>
+    </li>
+
+    <li>
       <strong>Type:</strong>
       <%= @hypervisor.hypervisor_type.name %>
     </li>
