@@ -39,32 +39,5 @@
 
 
 <div class="box">
-http://<%= @console["user"] %>:<%= @console["password"] %>@<%= @machine.hypervisor.ip_address %>:<%= @console["port"] %>
-Basic <%= @token %>
-
-<hr>
-http://port<%= @console["port"] %>.<%= @machine.hypervisor.ip_address %>.xip.io
-<iframe id="aaconsole" type="text/html" src="http://port<%= @console["port"] %>.<%= @machine.hypervisor.ip_address %>.xip.io/<%= @token %>/" width="100%" height="600px"></iframe>
-
-<!--
-<script>
-var xhr = new XMLHttpRequest();
-
-xhr.open('GET', 'http://port<%= @console["port"] %>.<%= @machine.hypervisor.ip_address %>.xip.io', true);
-xhr.withCredentials = true;
-xhr.setRequestHeader("Authorization", "Basic <%= @token %>");
-xhr.onreadystatechange = handler;
-xhr.send();
-
-function handler() {
-  if (this.readyState === this.DONE) {
-    if (this.status === 200) {
-      var iframe = document.createElement('iframe');
-      iframe.style.display = "none";
-      iframe.src = "http://port<%= @console["port"] %>.<%= @machine.hypervisor.ip_address %>.xip.io";
-      document.body.appendChild(iframe);
-    }
-  }
-}
-</script> -->
+  <iframe id="console" type="text/html" src="http://port<%= @console["port"] %>.<%= @machine.hypervisor.ip_address %>.xip.io/<%= @token %>/tty/" width="100%" height="600px"></iframe>
 </div>
