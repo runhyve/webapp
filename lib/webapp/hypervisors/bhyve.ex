@@ -26,7 +26,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     image =
       case machine.template do
         "freebsd" ->
-          "FreeBSD-11.2-RELEASE-amd64.raaaw"
+          "FreeBSD-11.2-RELEASE-amd64.raw"
 
         "ubuntu" ->
           "xenial-server-cloudimg-amd64-uefi1.img"
@@ -84,7 +84,7 @@ defmodule Webapp.Hypervisors.Bhyve do
       # TODO: Map statuses to unified format.
       case webbook_trigger(endpoint, payload) do
         {:ok, %{"status" => "success", "message" => %{"state" => status}}} -> {:ok, status}
-        {:ok, %{"status" => "error", "message" => error}} -> {:ok, error}
+        {:ok, %{"status" => "error", "message" => error}} -> {:error, error}
         {:error, error} -> {:error, error}
       end
     rescue

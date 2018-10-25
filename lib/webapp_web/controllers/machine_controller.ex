@@ -46,10 +46,11 @@ defmodule WebappWeb.MachineController do
   def show(conn, %{"id" => id}) do
     machine = Hypervisors.get_machine!(id)
 
-    case Hypervisors.update_machine_status(machine) do
-      {:ok, machine} -> machine
-      {:error, :hypervisor, error, _} ->
+    conn = with {:error, :hypervisor, error, _} <- Hypervisors.update_machine_status(machine) do
         put_flash(conn, :error, "Failed to fetch machine status")
+    else
+      {:ok, _} ->
+      conn
     end
 
     render(conn, "show.html", machine: machine)
