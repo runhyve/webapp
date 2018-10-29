@@ -24,7 +24,7 @@ defmodule WebappWeb.MachineController do
         |> put_flash(:info, "Machine created successfully.")
         |> redirect(to: Routes.machine_path(conn, :show, machine))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, :machine, %Ecto.Changeset{} = changeset, _} ->
         render(conn, "new.html", changeset: changeset)
 
       {:error, :hypervisor, error, _} ->
