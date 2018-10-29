@@ -23,6 +23,7 @@ defmodule WebappWeb.Router do
     get "/machines/:id/console", MachineController, :console
     post "/machines/:id/start", MachineController, :start
     post "/machines/:id/stop", MachineController, :stop
+    post "/machines/:id/poweroff", MachineController, :poweroff
 
     resources "/plans", PlanController
   end

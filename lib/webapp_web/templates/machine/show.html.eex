@@ -38,6 +38,9 @@
     <span>
       <%= link "Stop", to: Routes.machine_path(@conn, :stop, @machine), method: :post, class: "button is-rounded is-danger"  %>
     </span>
+    <span>
+      <%= link "Poweroff", to: Routes.machine_path(@conn, :poweroff, @machine), method: :post, class: "button is-rounded is-danger"  %>
+    </span>
   </div>
 </div>
 

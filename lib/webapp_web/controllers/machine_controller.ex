@@ -129,6 +129,22 @@ defmodule WebappWeb.MachineController do
     end
   end
 
+  def poweroff(conn, %{"id" => id}) do
+    machine = Hypervisors.get_machine!(id)
+
+    case Hypervisors.poweroff_machine(machine) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Machine is being powered off")
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+
+      {:error, error} ->
+        conn
+        |> put_flash(:error, error)
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+    end
+  end
+
   def console(conn, %{"id" => id}) do
     machine = Hypervisors.get_machine!(id)
 

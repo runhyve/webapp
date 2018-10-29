@@ -129,6 +129,24 @@ defmodule Webapp.Hypervisors.Bhyve do
   end
 
   @doc """
+  Performs hard stop of virtual Machine.
+  """
+  def poweroff_machine(%{machine: machine}) do
+    endpoint = machine.hypervisor.webhook_endpoint <> "/vm/poweroff"
+    payload = %{name: machine.name}
+
+    try do
+      case webbook_trigger(endpoint, payload) do
+        {:ok, %{"status" => "success", "message" => message}} -> {:ok, message}
+        {:ok, %{"status" => "error", "message" => error}} -> {:ok, error}
+        {:error, error} -> {:error, error}
+      end
+    rescue
+      e -> {:error, e.message}
+    end
+  end
+
+  @doc """
   Opens a remote console for machine.
   """
   def console_machine(%{machine: machine}) do

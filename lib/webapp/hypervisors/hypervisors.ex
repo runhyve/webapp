@@ -378,6 +378,19 @@ defmodule Webapp.Hypervisors do
   end
 
   @doc """
+  Performs hard stop of virtual machine.
+  """
+  def poweroff_machine(%Machine{} = machine) do
+    module = get_hypervisor_module(machine)
+
+    try do
+      apply(module, :poweroff_machine, [%{machine: machine}])
+    rescue
+      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+    end
+  end
+
+  @doc """
   Opens a remote console for Machine.
   """
   def console_machine(%Machine{} = machine) do
