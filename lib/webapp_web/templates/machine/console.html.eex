@@ -29,10 +29,19 @@
   <div class="level-right">
 
     <span>
-      <%= link "Start", to: Routes.machine_path(@conn, :start, @machine), method: :post, class: "button is-rounded"  %>
+      <%= if machine_can_do?(@machine, :start) do %>
+        <%= link "Start", to: Routes.machine_path(@conn, :start, @machine), method: :post, class: "button is-rounded"  %>
+      <% else %>
+        <a class="button is-rounded" disabled>Start</a>
+      <% end %>
     </span>
+
     <span>
-      <%= link "Stop", to: Routes.machine_path(@conn, :stop, @machine), method: :post, class: "button is-rounded is-danger"  %>
+      <%= if machine_can_do?(@machine, :stop) do %>
+        <%= link "Stop", to: Routes.machine_path(@conn, :stop, @machine), method: :post, class: "button is-rounded is-danger"  %>
+      <% else %>
+        <a class="button is-danger is-rounded" disabled>Stop</a>
+      <% end %>
     </span>
   </div>
 </div>

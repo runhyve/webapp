@@ -20,9 +20,12 @@
   </div>
 </div>
 
-
 <div class="box">
   <ul>
+     <li>
+        <strong>Status:</strong>
+        <span class="tag <%= map_status_to_css(@status) %>"><%= @status %></span>
+      </li>
 
     <li>
       <strong>Name:</strong>
@@ -43,6 +46,15 @@
       <strong>Type:</strong>
       <%= @hypervisor.hypervisor_type.name %>
     </li>
+  </ul>
+</div>
+
+<div class="tabs">
+  <ul>
+    <li class="is-active"><a>Dashboard</a></li>
+    <li><a>Machines</a></li>
+    <li><a>Settings</a></li>
+    <li><a>Console</a></li>
   </ul>
 </div>
 

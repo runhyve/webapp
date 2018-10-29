@@ -8,6 +8,7 @@ defmodule Webapp.Repo.Migrations.CreateMachines do
       add(:hypervisor_id, references(:hypervisors, on_delete: :nothing))
       add(:plan_id, references(:plans, on_delete: :nothing))
       add(:last_status, :string, default: "")
+      add(:created, :boolean)
 
       timestamps()
     end

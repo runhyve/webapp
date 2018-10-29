@@ -6,6 +6,10 @@ defmodule WebappWeb.MachineController do
   alias Webapp.Plans
 
   plug :load_references when action in [:new, :create, :edit, :update]
+  plug :load_machine when action not in [:index, :create, :new]
+
+  # Number of seconds after the create action is considered as failed.
+  @create_timeout 180
 
   def index(conn, _params) do
     machines = Hypervisors.list_machines()
@@ -23,6 +27,9 @@ defmodule WebappWeb.MachineController do
         conn
         |> put_flash(:info, "Machine created successfully.")
         |> redirect(to: Routes.machine_path(conn, :show, machine))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "new.html", changeset: changeset)
 
       {:error, :machine, %Ecto.Changeset{} = changeset, _} ->
         render(conn, "new.html", changeset: changeset)
@@ -44,16 +51,17 @@ defmodule WebappWeb.MachineController do
   end
 
   def show(conn, %{"id" => id}) do
-    machine = Hypervisors.get_machine!(id)
+    machine = conn.assigns[:machine]
 
-    conn = with {:error, :hypervisor, error, _} <- Hypervisors.update_machine_status(machine) do
-        put_flash(conn, :error, "Failed to fetch machine status")
-    else
-      {:ok, _} ->
-      conn
+    case check_machine_status(machine) do
+      {:ok, %Machine{} = machine} ->
+        conn
+        |> render("show.html", machine: machine)
+      {:error, message} ->
+        conn
+        |> put_flash(:error, message)
+        |> render("show.html", machine: machine)
     end
-
-    render(conn, "show.html", machine: machine)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -133,13 +141,47 @@ defmodule WebappWeb.MachineController do
     machine = Hypervisors.get_machine!(id)
 
     with {:ok, console} <- Hypervisors.console_machine(machine) do
-      token = Base.encode64(console["user"] <>":"<> console["password"])
+      token = Base.encode64(console["user"] <> ":" <> console["password"])
       render(conn, "console.html", machine: machine, console: console, token: token)
     else
       {:error, error} ->
         conn
         |> put_flash(:error, error)
         |> redirect(to: Routes.machine_path(conn, :show, machine))
+    end
+  end
+
+  """
+  Checks machine status.
+  """
+  defp check_machine_status(machine) do
+    case Hypervisors.update_machine_status(machine) do
+      {:ok, %{status: machine}} ->
+        {:ok, machine}
+      {:error, :hypervisor, error, _} ->
+        cond do
+          machine.created ->
+            {:error, error}
+          NaiveDateTime.diff(NaiveDateTime.utc_now(), machine.inserted_at) >= @create_timeout ->
+            {:error, "Something went wrong, your machine has been created for too long."}
+          true ->
+            {:ok, machine}
+        end
+    end
+  end
+
+  defp load_machine(conn, _) do
+    try do
+      %{"id" => id} = conn.params
+      machine = Hypervisors.get_machine!(id)
+
+      conn
+      |> assign(:machine, machine)
+    rescue
+      e ->
+        conn
+        |> put_flash(:error, "Machine was not found.")
+        |> redirect(to: Routes.machine_path(conn, :index))
     end
   end
 
