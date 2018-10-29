@@ -46,79 +46,17 @@
   </ul>
 </div>
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<div class="box" id="charts">
+  <div class="columns is-multiline">
 
-       <div id="chart1_div" class="chart full"></div>
-       <div id="chart2_div" class="chart half"></div>
-       <div id="chart3_div" class="chart half"></div>
+  </div>
+</div>
 
-       <script>
+<script type="text/javascript">
+var hypervisor = {
+  webhook_endpoint: "<%= @hypervisor.webhook_endpoint %>",
+  metrics_endpoint: "http://netdata.<%= @hypervisor.ip_address %>.xip.io"
+}
 
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-        var netdata = 'http://netdata.<%= @hypervisor.ip_address %>.xip.io/api/v1/data?after=-60&format=datasource&options=nonzero&chart=';
-
-        // define all the charts you need
-      	var mycharts = [
-        	{
-          	div: 'chart1_div',
-            chart: 'system.cpu',
-            type: 'stacked',
-            options: { // these are google chart options
-              title: 'System CPU',
-              vAxis: {minValue: 100}
-            }
-          },
-        	{
-          	div: 'chart2_div',
-            chart: 'system.io',
-            type: 'area',
-            options: { // these are google chart options
-              title: 'System I/O',
-            }
-          },
-        	{
-          	div: 'chart3_div',
-            chart: 'ipv4.tcpsock',
-            type: 'line',
-            options: { // these are google chart options
-              title: 'TCP sockets',
-            }
-          }
-        ];
-
-				// initialize the google charts
-        var len = mycharts.length;
-        while(len--) {
-        console.log(netdata + mycharts[len].chart);
-        	mycharts[len].query = new google.visualization.Query(netdata + mycharts[len].chart, {sendMethod: 'auto'});
-
-          switch(mycharts[len].type) {
-          	case 'stacked':
-              mycharts[len].options.isStacked = 'absolute';
-              // no break here - render it as area chart
-          	case 'area':
-		          mycharts[len].gchart = new google.visualization.AreaChart(document.getElementById(mycharts[len].div));
-              break;
-
-            default:
-		          mycharts[len].gchart = new google.visualization.LineChart(document.getElementById(mycharts[len].div));
-            	break;
-          }
-        }
-
-        function refreshChart(c) {
-        	c.query.send(function(data) {
-            c.gchart.draw(data.getDataTable(), c.options);
-          });
-        }
-
-				setInterval(function() {
-          var len = mycharts.length;
-          while(len--) refreshChart(mycharts[len]);
-        }, 1000);
-      }
-
-      </script>
+</script>
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/hypervisor.js") %>"></script>
