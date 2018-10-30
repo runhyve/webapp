@@ -35,11 +35,11 @@ defmodule WebappWeb.HypervisorController do
     status =
       case Hypervisors.update_hypervisor_status(hypervisor) do
         {:ok, status} -> status
-        {:error, _} -> "invalid"
+        {:error, _} -> "unreachable"
       end
 
     conn =
-      if status == "invalid" do
+      if status == "unreachable" do
         put_flash(conn, :error, "Failed to fetch hypervisor status")
       else
         conn
