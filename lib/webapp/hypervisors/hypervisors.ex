@@ -434,16 +434,21 @@ defmodule Webapp.Hypervisors do
   """
   Returns bool for given machine and operation if it's allowed.
   """
+
   def machine_can_do?(%Machine{} = machine, action) do
     case action do
       :console ->
         machine.last_status == "Running"
+
       :start ->
         machine.created && machine.last_status != "Running"
+
       :stop ->
         machine.last_status == "Running"
+
       :poweroff ->
         machine.last_status != "Stopped"
+
       _ ->
         false
     end
@@ -452,6 +457,7 @@ defmodule Webapp.Hypervisors do
   """
   Returns the module name of hypervisor type for given hypervisor.
   """
+
   defp get_hypervisor_module(%Hypervisor{} = hypervisor) do
     module =
       ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))

@@ -142,8 +142,24 @@ channel.join()
 
 window.setInterval(() => {
   channel.push("status")
-}, 1000)
+}, 10000)
 
 channel.on("status", payload => {
-  console.log("Shout response", payload)
+  document.querySelectorAll('span.status-icon').forEach((item) => {
+    if (item.dataset.status !== payload.status_css) {
+      item.childNodes.item(0).className = payload.icon
+      item.classList.remove(item.dataset.status)
+      item.dataset.status = payload.status_css
+      item.classList.add(payload.status_css)
+    }
+  });
+
+  document.querySelectorAll('span.status').forEach((item) => {
+    if (item.dataset.status !== payload.status_css) {
+      item.textContent = payload.status
+      item.classList.remove(item.dataset.status)
+      item.dataset.status = payload.status_css
+      item.classList.add(payload.status_css)
+    }
+  });
 })

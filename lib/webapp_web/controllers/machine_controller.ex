@@ -57,6 +57,7 @@ defmodule WebappWeb.MachineController do
       {:ok, %Machine{} = machine} ->
         conn
         |> render("show.html", machine: machine)
+
       {:error, message} ->
         conn
         |> put_flash(:error, message)
@@ -170,16 +171,20 @@ defmodule WebappWeb.MachineController do
   """
   Checks machine status.
   """
+
   defp check_machine_status(machine) do
     case Hypervisors.update_machine_status(machine) do
       {:ok, %{status: machine}} ->
         {:ok, machine}
+
       {:error, :hypervisor, error, _} ->
         cond do
           machine.created ->
             {:error, error}
+
           NaiveDateTime.diff(NaiveDateTime.utc_now(), machine.inserted_at) >= @create_timeout ->
             {:error, "Something went wrong, your machine has been created for too long."}
+
           true ->
             {:ok, machine}
         end

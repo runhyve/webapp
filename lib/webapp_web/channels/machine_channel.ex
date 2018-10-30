@@ -1,7 +1,7 @@
 defmodule WebappWeb.MachineChannel do
   use WebappWeb, :channel
 
-  def join("machine:"  <> machine_id, payload, socket) do
+  def join("machine:" <> machine_id, payload, socket) do
     if authorized?(payload) do
       {:ok, socket}
     else
@@ -18,7 +18,7 @@ defmodule WebappWeb.MachineChannel do
   # It is also common to receive messages from the client and
   # broadcast to everyone in the current topic (machine:lobby).
   def handle_in("shout", payload, socket) do
-    broadcast socket, "shout", payload
+    broadcast(socket, "shout", payload)
     {:noreply, socket}
   end
 

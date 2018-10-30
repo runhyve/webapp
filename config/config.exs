@@ -27,9 +27,9 @@ config :phoenix, :json_library, Jason
 config :ecto, :json_library, Jason
 
 config :phoenix_active_link, :defaults,
-       wrap_tag: :li,
-       class_active: "is-active",
-       class_inactive: ""
+  wrap_tag: :li,
+  class_active: "is-active",
+  class_inactive: ""
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

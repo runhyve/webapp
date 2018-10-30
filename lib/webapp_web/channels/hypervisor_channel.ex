@@ -5,6 +5,8 @@ defmodule WebappWeb.HypervisorChannel do
     Hypervisors
   }
 
+  import WebappWeb.HypervisorView, only: [map_status_to_css: 1, status_icon: 1]
+
   def join("hypervisor:" <> hypervisor_id, payload, socket) do
     if authorized?(payload) do
       socket = assign(socket, :hypervisor_id, hypervisor_id)
@@ -20,10 +22,11 @@ defmodule WebappWeb.HypervisorChannel do
     {:reply, {:ok, payload}, socket}
   end
 
-
   def handle_in("status", payload, socket) do
-    hypervisor = socket.assigns[:hypervisor_id]
+    hypervisor =
+      socket.assigns[:hypervisor_id]
       |> Hypervisors.get_hypervisor!()
+
     Hypervisors.update_hypervisor_status(hypervisor)
 
     status =
@@ -32,7 +35,9 @@ defmodule WebappWeb.HypervisorChannel do
         {:error, _} -> "unreachable"
       end
 
-    broadcast socket, "status", %{status: status}
+    payload = %{status_css: map_status_to_css(status), icon: status_icon(status), status: status}
+
+    broadcast(socket, "status", payload)
     {:noreply, socket}
   end
 

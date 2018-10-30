@@ -6,27 +6,10 @@
   </ul>
 </nav>
 
-<div class="level">
-  <div class="level-left">
-    <h1><%= @hypervisor.name %></h1>
-  </div>
-
-  <div class="level-right">
-    <span>
-      <%= link "Edit",
-            to: Routes.hypervisor_path(@conn, :edit, @hypervisor),
-            class: "button is-rounded is-info" %>
-    </span>
-  </div>
-</div>
+<%= render "_menu.html",  Map.put(assigns, :hide_status, false) %>
 
 <div class="box">
   <ul>
-     <li>
-        <strong>Status:</strong>
-        <span class="tag <%= map_status_to_css(@status) %>"><%= @status %></span>
-      </li>
-
     <li>
       <strong>Name:</strong>
       <%= @hypervisor.name %>
@@ -46,15 +29,6 @@
       <strong>Type:</strong>
       <%= @hypervisor.hypervisor_type.name %>
     </li>
-  </ul>
-</div>
-
-<div class="tabs">
-  <ul>
-    <li class="is-active"><a>Dashboard</a></li>
-    <li><a>Machines</a></li>
-    <li><a>Settings</a></li>
-    <li><a>Console</a></li>
   </ul>
 </div>
 

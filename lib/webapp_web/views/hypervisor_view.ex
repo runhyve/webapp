@@ -12,4 +12,12 @@ defmodule WebappWeb.HypervisorView do
       _ -> "is-light"
     end
   end
+
+  def status_icon(status) do
+    case status do
+      "healthy" -> "fas fa-check"
+      "unreachable" -> "fas fa-exclamation-triangle"
+      _ -> ""
+    end
+  end
 end
