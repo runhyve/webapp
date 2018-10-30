@@ -7,7 +7,7 @@ defmodule WebappWeb.HypervisorView do
 
   def map_status_to_css(status) do
     case status do
-      "invalid" -> "is-danger"
+      "unreachable" -> "is-danger"
       "healthy" -> "is-success"
       _ -> "is-light"
     end
