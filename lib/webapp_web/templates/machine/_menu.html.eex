@@ -6,35 +6,35 @@
 
      <div class="level-item">
        <div class="tags has-addons">
-         <span class="tag <%= map_status_to_css(@machine.last_status) %>"> <i class="<%= status_icon(@machine.last_status) %>"></i> </span>
-         <span class="tag <%= map_status_to_css(@machine.last_status) %>"><%= @machine.last_status %></span>
+         <span class="tag status status-icon <%= map_status_to_css(@machine.last_status) %>" data-status="<%= map_status_to_css(@machine.last_status) %>"><i class="<%= status_icon(@machine.last_status) %>"></i></span>
+         <span class="tag status <%= map_status_to_css(@machine.last_status) %>" data-status="<%= map_status_to_css(@machine.last_status) %>"><%= @machine.last_status %></span>
        </div>
      </div>
   </div>
 
   <div class="level-right">
-    <div class="level-item">
-      <%= if machine_can_do?(@machine, :start) do %>
-        <%= link "Start", to: Routes.machine_path(@conn, :start, @machine), method: :post, class: "button is-rounded"  %>
-      <% else %>
-        <a class="button is-rounded" disabled>Start</a>
-      <% end %>
+    <%= if machine_can_do?(@machine, :start) do %>
+      <div class="level-item">
+    <% else %>
+      <div class="level-item is-hidden">
+    <% end %>
+      <%= link "Start", to: Routes.machine_path(@conn, :start, @machine), method: :post, class: "button is-rounded action-start" %>
     </div>
 
-    <div class="level-item">
-      <%= if machine_can_do?(@machine, :stop) do %>
-        <%= link "Stop", to: Routes.machine_path(@conn, :stop, @machine), method: :post, class: "button is-rounded is-danger"  %>
-      <% else %>
-        <a class="button is-danger is-rounded" disabled>Stop</a>
-      <% end %>
+    <%= if machine_can_do?(@machine, :stop) do %>
+      <div class="level-item">
+    <% else %>
+      <div class="level-item is-hidden">
+    <% end %>
+      <%= link "Stop", to: Routes.machine_path(@conn, :stop, @machine), method: :post, class: "button is-rounded is-danger action-stop" %>
     </div>
 
-    <div class="level-item">
-      <%= if machine_can_do?(@machine, :poweroff) do %>
-        <%= link "Poweroff", to: Routes.machine_path(@conn, :poweroff, @machine), method: :post, class: "button is-rounded is-dark"  %>
-      <% else %>
-        <a class="button is-dark is-rounded" disabled>Poweroff</a>
-      <% end %>
+    <%= if machine_can_do?(@machine, :poweroff) do %>
+      <div class="level-item">
+    <% else %>
+      <div class="level-item is-hidden">
+    <% end %>
+     <%= link "Poweroff", to: Routes.machine_path(@conn, :poweroff, @machine), method: :post, class: "button is-rounded is-dark action-poweroff"%>
     </div>
   </div>
 </div>

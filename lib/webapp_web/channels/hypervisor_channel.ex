@@ -35,9 +35,9 @@ defmodule WebappWeb.HypervisorChannel do
         {:error, _} -> "unreachable"
       end
 
-    payload = %{status_css: map_status_to_css(status), icon: status_icon(status), status: status}
+    response = %{status_css: map_status_to_css(status), icon: status_icon(status), status: status}
 
-    broadcast(socket, "status", payload)
+    broadcast(socket, "status", response)
     {:noreply, socket}
   end
 

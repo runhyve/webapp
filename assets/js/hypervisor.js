@@ -134,7 +134,6 @@ function drawCharts() {
   }, 1000);
 }
 
-// Now that you are connected, you can join channels with a topic:
 let channel = socket.channel("hypervisor:" + hypervisor.id, {})
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
@@ -145,21 +144,22 @@ window.setInterval(() => {
 }, 10000)
 
 channel.on("status", payload => {
-  document.querySelectorAll('span.status-icon').forEach((item) => {
-    if (item.dataset.status !== payload.status_css) {
-      item.childNodes.item(0).className = payload.icon
-      item.classList.remove(item.dataset.status)
-      item.dataset.status = payload.status_css
-      item.classList.add(payload.status_css)
-    }
-  });
-
   document.querySelectorAll('span.status').forEach((item) => {
-    if (item.dataset.status !== payload.status_css) {
-      item.textContent = payload.status
-      item.classList.remove(item.dataset.status)
-      item.dataset.status = payload.status_css
-      item.classList.add(payload.status_css)
-    }
+    update_status(payload)
   });
 })
+
+function update_status(payload) {
+  document.querySelectorAll('span.status').forEach((item) => {
+    if (item.classList.contains('status-icon')) {
+      item.childNodes.item(0).className = payload.icon
+    }
+    else {
+      item.textContent = payload.status
+    }
+
+    item.classList.remove(item.dataset.status)
+    item.classList.add(payload.status_css)
+    item.dataset.status = payload.status_css
+  });
+}

@@ -17,6 +17,9 @@ defmodule Webapp.Hypervisors do
     Machine
   }
 
+  # Number of seconds after the create action is considered as failed.
+  @create_timeout 180
+
   @doc """
   Returns the list of hypervisor_types.
 
@@ -367,6 +370,29 @@ defmodule Webapp.Hypervisors do
   end
 
   @doc """
+  Checks machine status.
+  Returns machine struct or error message.
+  """
+  def check_machine_status(%Machine{} = machine) do
+    case update_machine_status(machine) do
+      {:ok, %{status: machine}} ->
+        {:ok, machine}
+
+      {:error, :hypervisor, error, _} ->
+        cond do
+          machine.created ->
+            {:error, error}
+
+          NaiveDateTime.diff(NaiveDateTime.utc_now(), machine.inserted_at) >= @create_timeout ->
+            {:error, "Something went wrong, your machine has been created for too long."}
+
+          true ->
+            {:ok, machine}
+        end
+    end
+  end
+
+  @doc """
   Starts a Machine.
   """
   def start_machine(%Machine{} = machine) do
@@ -441,7 +467,9 @@ defmodule Webapp.Hypervisors do
         machine.last_status == "Running"
 
       :start ->
-        machine.created && machine.last_status != "Running"
+        machine.created &&
+          (machine.last_status != "Running" && machine.last_status != "Locked" &&
+             machine.last_status != "Bootloader")
 
       :stop ->
         machine.last_status == "Running"

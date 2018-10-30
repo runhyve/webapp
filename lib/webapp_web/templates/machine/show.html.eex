@@ -9,25 +9,35 @@
 <%= render "_menu.html", assigns %>
 
 <div class="box">
-<ul>
-  <li>
-    <strong>Name:</strong>
-    <%= @machine.name %>
-  </li>
+  <ul>
+    <li>
+      <strong>Name:</strong>
+      <%= @machine.name %>
+    </li>
 
-  <li>
-    <strong>Template:</strong>
-    <%= @machine.template %>
-  </li>
+    <li>
+      <strong>Template:</strong>
+      <%= @machine.template %>
+    </li>
 
-  <li>
-    <strong>Hypervisor:</strong>
-    <%= link @machine.hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @machine.hypervisor) %>
-  </li>
+    <li>
+      <strong>Hypervisor:</strong>
+      <%= link @machine.hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @machine.hypervisor) %>
+    </li>
 
-  <li>
-    <strong>Plan:</strong>
-    <%= link @machine.plan.name, to: Routes.plan_path(@conn, :show, @machine.plan) %>
-  </li>
-</ul>
+    <li>
+      <strong>Plan:</strong>
+      <%= link @machine.plan.name, to: Routes.plan_path(@conn, :show, @machine.plan) %>
+    </li>
+  </ul>
 </div>
+
+
+<script type="text/javascript">
+var machine = {
+  id: <%= @machine.id %>,
+}
+
+</script>
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/machine.js") %>"></script>
+

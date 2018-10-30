@@ -8,9 +8,6 @@ defmodule WebappWeb.MachineController do
   plug :load_references when action in [:new, :create, :edit, :update]
   plug :load_machine when action not in [:index, :create, :new]
 
-  # Number of seconds after the create action is considered as failed.
-  @create_timeout 180
-
   def index(conn, _params) do
     machines = Hypervisors.list_machines()
     render(conn, "index.html", machines: machines)
@@ -53,7 +50,7 @@ defmodule WebappWeb.MachineController do
   def show(conn, %{"id" => id}) do
     machine = conn.assigns[:machine]
 
-    case check_machine_status(machine) do
+    case Hypervisors.check_machine_status(machine) do
       {:ok, %Machine{} = machine} ->
         conn
         |> render("show.html", machine: machine)
@@ -165,29 +162,6 @@ defmodule WebappWeb.MachineController do
         conn
         |> put_flash(:error, error)
         |> redirect(to: Routes.machine_path(conn, :show, machine))
-    end
-  end
-
-  """
-  Checks machine status.
-  """
-
-  defp check_machine_status(machine) do
-    case Hypervisors.update_machine_status(machine) do
-      {:ok, %{status: machine}} ->
-        {:ok, machine}
-
-      {:error, :hypervisor, error, _} ->
-        cond do
-          machine.created ->
-            {:error, error}
-
-          NaiveDateTime.diff(NaiveDateTime.utc_now(), machine.inserted_at) >= @create_timeout ->
-            {:error, "Something went wrong, your machine has been created for too long."}
-
-          true ->
-            {:ok, machine}
-        end
     end
   end
 

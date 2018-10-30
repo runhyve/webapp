@@ -7,7 +7,7 @@
     <div class="level-left">
       <%= unless @hide_status do %>
        <div class="tags has-addons">
-         <span class="tag status-icon <%= map_status_to_css(@status) %>" data-status="<%= map_status_to_css(@status) %>"><i class="<%= status_icon(@status) %>"></i></span>
+         <span class="tag status status-icon <%= map_status_to_css(@status) %>" data-status="<%= map_status_to_css(@status) %>"><i class="<%= status_icon(@status) %>"></i></span>
          <span class="tag status <%= map_status_to_css(@status) %>" data-status="<%= map_status_to_css(@status) %>"><%= @status %></span>
        </div>
        <% end %>
