@@ -442,6 +442,8 @@ defmodule Webapp.Hypervisors do
         machine.created && machine.last_status != "Running"
       :stop ->
         machine.last_status == "Running"
+      :poweroff ->
+        machine.last_status != "Stopped"
       _ ->
         false
     end

@@ -141,11 +141,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{name: machine.name}
 
     try do
-      case webbook_trigger(endpoint, payload) do
-        {:ok, %{"status" => "success", "message" => message}} -> {:ok, message}
-        {:ok, %{"status" => "error", "message" => error}} -> {:ok, error}
-        {:error, error} -> {:error, error}
-      end
+      webbook_trigger(endpoint, payload)
     rescue
       e -> {:error, e.message}
     end

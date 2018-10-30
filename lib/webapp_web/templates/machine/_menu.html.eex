@@ -26,6 +26,14 @@
         <a class="button is-danger is-rounded" disabled>Stop</a>
       <% end %>
     </div>
+
+    <div class="level-item">
+      <%= if machine_can_do?(@machine, :poweroff) do %>
+        <%= link "Poweroff", to: Routes.machine_path(@conn, :poweroff, @machine), method: :post, class: "button is-rounded is-dark"  %>
+      <% else %>
+        <a class="button is-dark is-rounded" disabled>Poweroff</a>
+      <% end %>
+    </div>
   </div>
 </div>
 
