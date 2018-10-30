@@ -6,48 +6,10 @@
   </ul>
 </nav>
 
-<div class="level">
-  <div class="level-left">
-    <h1><%= @machine.name %></h1>
-  </div>
-
-  <div class="level-right">
-    <span>
-      <%= link "Edit",
-            to: Routes.machine_path(@conn, :edit, @machine),
-            class: "button is-rounded is-info" %>
-    </span>
-  </div>
-</div>
-
-<div class="level">
-  <div class="level-left">
-    <h1>    <strong>Status:</strong>
-            <%= @machine.last_status %></h1>
-  </div>
-
-  <div class="level-right">
-    <span>
-      <%= link "Console", to: Routes.machine_path(@conn, :console, @machine), class: "button is-rounded"  %>
-    </span>
-
-    <span>
-      <%= link "Start", to: Routes.machine_path(@conn, :start, @machine), method: :post, class: "button is-rounded"  %>
-    </span>
-
-    <span>
-      <%= link "Stop", to: Routes.machine_path(@conn, :stop, @machine), method: :post, class: "button is-rounded is-danger"  %>
-    </span>
-    <span>
-      <%= link "Poweroff", to: Routes.machine_path(@conn, :poweroff, @machine), method: :post, class: "button is-rounded is-danger"  %>
-    </span>
-  </div>
-</div>
-
+<%= render "_menu.html", assigns %>
 
 <div class="box">
 <ul>
-
   <li>
     <strong>Name:</strong>
     <%= @machine.name %>
@@ -68,3 +30,4 @@
     <%= link @machine.plan.name, to: Routes.plan_path(@conn, :show, @machine.plan) %>
   </li>
 </ul>
+</div>

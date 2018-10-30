@@ -8,6 +8,22 @@ defmodule Webapp.Hypervisors.Bhyve do
   @headers [{"Content-Type", "application/json"}]
 
   @doc """
+  Checks hypervisor status.
+  """
+  def hypervisor_status(hypervisor) do
+    endpoint = hypervisor.webhook_endpoint <> "/vm/health"
+
+    try do
+      case webbook_trigger(endpoint) do
+        {:ok, status} -> {:ok, status}
+        {:error, error} -> {:error, error}
+      end
+    rescue
+      e -> {:error, e.message}
+    end
+  end
+
+  @doc """
   Creates a machine on bhyve hypervisor.
   """
   def create_machine(%{machine: machine}) do
@@ -46,8 +62,7 @@ defmodule Webapp.Hypervisors.Bhyve do
 
     try do
       case webbook_trigger(endpoint, payload) do
-        {:ok, %{"status" => "success", "message" => message}} -> {:ok, message}
-        {:ok, %{"status" => "error", "message" => error}} -> {:ok, error}
+        {:ok, message} -> {:ok, message}
         {:error, error} -> {:error, error}
       end
     rescue
@@ -64,8 +79,7 @@ defmodule Webapp.Hypervisors.Bhyve do
 
     try do
       case webbook_trigger(endpoint, payload) do
-        {:ok, %{"status" => "success", "message" => message}} -> {:ok, message}
-        {:ok, %{"status" => "error", "message" => error}} -> {:ok, error}
+        {:ok, message} -> {:ok, message}
         {:error, error} -> {:error, error}
       end
     rescue
@@ -83,8 +97,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     try do
       # TODO: Map statuses to unified format.
       case webbook_trigger(endpoint, payload) do
-        {:ok, %{"status" => "success", "message" => %{"state" => status}}} -> {:ok, status}
-        {:ok, %{"status" => "error", "message" => error}} -> {:error, error}
+        {:ok, %{"state" => status}} -> {:ok, status}
         {:error, error} -> {:error, error}
       end
     rescue
@@ -100,11 +113,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{name: machine.name}
 
     try do
-      case webbook_trigger(endpoint, payload) do
-        {:ok, %{"status" => "success", "message" => message}} -> {:ok, message}
-        {:ok, %{"status" => "error", "message" => error}} -> {:ok, error}
-        {:error, error} -> {:error, error}
-      end
+      webbook_trigger(endpoint, payload)
     rescue
       e -> {:error, e.message}
     end
@@ -118,11 +127,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{name: machine.name}
 
     try do
-      case webbook_trigger(endpoint, payload) do
-        {:ok, %{"status" => "success", "message" => message}} -> {:ok, message}
-        {:ok, %{"status" => "error", "message" => error}} -> {:ok, error}
-        {:error, error} -> {:error, error}
-      end
+      webbook_trigger(endpoint, payload)
     rescue
       e -> {:error, e.message}
     end
@@ -160,25 +165,48 @@ defmodule Webapp.Hypervisors.Bhyve do
     end
   end
 
-  defp webbook_trigger(endpoint, payload) do
-    json = Poison.encode!(payload)
-    Logger.debug "Bhyve webhook call: #{endpoint} with #{json}"
+  defp webbook_trigger(endpoint) do
+    Logger.debug("Bhyve webhook GET call: #{endpoint} without parameters")
 
-    case HTTPoison.post(endpoint, json, @headers) do
+    case HTTPoison.get(endpoint, @headers) do
       {:ok, %{body: body, status_code: 200}} ->
-        case Poison.decode(body) do
-          {:ok, body} -> {:ok, body}
-          {:error, error} -> {:error, error}
-        end
+        Logger.debug("Bhyve webhook response: #{body}")
+        webhook_process_response(body)
 
       {:ok, %{body: body, status_code: _}} ->
-        case Poison.decode(body) do
-          {:ok, body} -> {:ok, body}
-          {:error, _error} -> {:error, body}
-        end
+        Logger.debug("Bhyve webhook response: #{body}")
+        webhook_process_response(body)
 
       {:error, error} ->
         {:error, "HTTPoison Error: " <> HTTPoison.Error.message(error)}
+    end
+  end
+
+  defp webbook_trigger(endpoint, payload) do
+    json = Jason.encode!(payload)
+    Logger.debug("Bhyve webhook POST call: #{endpoint} with #{json}")
+
+    case HTTPoison.post(endpoint, json, @headers) do
+      {:ok, %{body: body, status_code: 200}} ->
+        Logger.debug("Bhyve webhook response: #{body}")
+        webhook_process_response(body)
+
+      {:ok, %{body: body, status_code: _}} ->
+        Logger.debug("Bhyve webhook response: #{body}")
+        webhook_process_response(body)
+
+      {:error, error} ->
+        {:error, "HTTPoison Error: " <> HTTPoison.Error.message(error)}
+    end
+  end
+
+  defp webhook_process_response(json) do
+    case Jason.decode(json) do
+      {:ok, %{"status" => "success", "message" => message}} -> {:ok, message}
+      {:ok, %{"status" => "error", "message" => message}} -> {:error, message}
+      {:ok, %{"status" => "success"} = response} -> {:ok, response}
+      {:ok, _} -> {:error, "Invalid response"}
+      {:error, error} -> {:error, error}
     end
   end
 end

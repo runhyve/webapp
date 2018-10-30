@@ -20,9 +20,12 @@
   </div>
 </div>
 
-
 <div class="box">
   <ul>
+     <li>
+        <strong>Status:</strong>
+        <span class="tag <%= map_status_to_css(@status) %>"><%= @status %></span>
+      </li>
 
     <li>
       <strong>Name:</strong>
@@ -45,3 +48,27 @@
     </li>
   </ul>
 </div>
+
+<div class="tabs">
+  <ul>
+    <li class="is-active"><a>Dashboard</a></li>
+    <li><a>Machines</a></li>
+    <li><a>Settings</a></li>
+    <li><a>Console</a></li>
+  </ul>
+</div>
+
+<div class="box" id="charts">
+  <div class="columns is-multiline">
+
+  </div>
+</div>
+
+<script type="text/javascript">
+var hypervisor = {
+  webhook_endpoint: "<%= @hypervisor.webhook_endpoint %>",
+  metrics_endpoint: "http://netdata.<%= @hypervisor.ip_address %>.xip.io"
+}
+
+</script>
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/hypervisor.js") %>"></script>

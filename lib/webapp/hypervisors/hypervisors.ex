@@ -146,6 +146,19 @@ defmodule Webapp.Hypervisors do
   end
 
   @doc """
+  Check a hypervisor webhook health status.
+  """
+  def update_hypervisor_status(%Hypervisor{} = hypervisor) do
+    module = get_hypervisor_module(hypervisor)
+
+    try do
+      apply(module, :hypervisor_status, [hypervisor])
+    rescue
+      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+    end
+  end
+
+  @doc """
   Creates a hypervisor.
 
   ## Examples
@@ -262,7 +275,7 @@ defmodule Webapp.Hypervisors do
   def create_machine(attrs) do
     # Validate machine changeset
     changeset =
-      %Machine{}
+      %Machine{last_status: "Creating"}
       |> Machine.changeset(attrs)
 
     if changeset.valid? do
@@ -342,7 +355,9 @@ defmodule Webapp.Hypervisors do
       |> Multi.update(:machine, changeset)
       |> Multi.run(:hypervisor, module, :update_machine_status, [])
       |> Multi.run(:status, fn %{hypervisor: status} ->
-        Changeset.put_change(changeset, :last_status, status)
+        changeset
+        |> Changeset.put_change(:last_status, status)
+        |> Changeset.put_change(:created, true)
         |> Repo.update()
       end)
       |> Repo.transaction()
@@ -414,6 +429,31 @@ defmodule Webapp.Hypervisors do
   """
   def change_machine(%Machine{} = machine) do
     Machine.changeset(machine, %{})
+  end
+
+  """
+  Returns bool for given machine and operation if it's allowed.
+  """
+  def machine_can_do?(%Machine{} = machine, action) do
+    case action do
+      :console ->
+        machine.last_status == "Running"
+      :start ->
+        machine.created && machine.last_status != "Running"
+      :stop ->
+        machine.last_status == "Running"
+      _ ->
+        false
+    end
+  end
+
+  """
+  Returns the module name of hypervisor type for given hypervisor.
+  """
+  defp get_hypervisor_module(%Hypervisor{} = hypervisor) do
+    module =
+      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
+      |> String.to_atom()
   end
 
   """

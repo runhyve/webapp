@@ -5,6 +5,7 @@ defmodule WebappWeb.HypervisorController do
   alias Webapp.Hypervisors.Hypervisor
 
   plug :load_hypervisor_types when action in [:new, :create, :edit, :update]
+  plug :load_hypervisor when action not in [:index, :create, :new]
 
   def index(conn, _params) do
     hypervisor = Hypervisors.list_hypervisor()
@@ -29,8 +30,22 @@ defmodule WebappWeb.HypervisorController do
   end
 
   def show(conn, %{"id" => id}) do
-    hypervisor = Hypervisors.get_hypervisor!(id)
-    render(conn, "show.html", hypervisor: hypervisor)
+    hypervisor = conn.assigns[:hypervisor]
+
+    status =
+      case Hypervisors.update_hypervisor_status(hypervisor) do
+        {:ok, status} -> status
+        {:error, _} -> "unreachable"
+      end
+
+    conn =
+      if status == "unreachable" do
+        put_flash(conn, :error, "Failed to fetch hypervisor status")
+      else
+        conn
+      end
+
+    render(conn, "show.html", hypervisor: hypervisor, status: status)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -60,6 +75,21 @@ defmodule WebappWeb.HypervisorController do
     conn
     |> put_flash(:info, "Hypervisor deleted successfully.")
     |> redirect(to: Routes.hypervisor_path(conn, :index))
+  end
+
+  defp load_hypervisor(conn, _) do
+    try do
+      %{"id" => id} = conn.params
+      hypervisor = Hypervisors.get_hypervisor!(id)
+
+      conn
+      |> assign(:hypervisor, hypervisor)
+    rescue
+      e ->
+        conn
+        |> put_flash(:error, "Hypervisor was not found.")
+        |> redirect(to: Routes.hypervisor_path(conn, :index))
+    end
   end
 
   defp load_hypervisor_types(conn, _) do
