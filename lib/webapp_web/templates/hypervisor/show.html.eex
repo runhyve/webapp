@@ -66,6 +66,7 @@
 
 <script type="text/javascript">
 var hypervisor = {
+  id: <%= @hypervisor.id %>,
   webhook_endpoint: "<%= @hypervisor.webhook_endpoint %>",
   metrics_endpoint: "http://netdata.<%= @hypervisor.ip_address %>.xip.io"
 }

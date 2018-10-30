@@ -1,4 +1,5 @@
 import {GoogleCharts} from 'google-charts'
+import socket from "./socket"
 
 GoogleCharts.load(drawCharts);
 
@@ -132,3 +133,17 @@ function drawCharts() {
     });
   }, 1000);
 }
+
+// Now that you are connected, you can join channels with a topic:
+let channel = socket.channel("hypervisor:" + hypervisor.id, {})
+channel.join()
+  .receive("ok", resp => { console.log("Joined successfully", resp) })
+  .receive("error", resp => { console.log("Unable to join", resp) })
+
+window.setInterval(() => {
+  channel.push("status")
+}, 1000)
+
+channel.on("status", payload => {
+  console.log("Shout response", payload)
+})

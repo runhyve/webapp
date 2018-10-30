@@ -3,6 +3,7 @@ defmodule WebappWeb.UserSocket do
 
   ## Channels
   channel "machine:*", WebappWeb.MachineChannel
+  channel "hypervisor:*", WebappWeb.HypervisorChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
