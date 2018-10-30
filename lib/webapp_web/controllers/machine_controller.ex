@@ -85,7 +85,7 @@ defmodule WebappWeb.MachineController do
   end
 
   def delete(conn, %{"id" => id}) do
-    machine = Hypervisors.get_machine!(id)
+    machine = conn.assigns[:machine]
 
     case Hypervisors.delete_machine(machine) do
       {:ok, _machine} ->
@@ -106,7 +106,7 @@ defmodule WebappWeb.MachineController do
   end
 
   def start(conn, %{"id" => id}) do
-    machine = Hypervisors.get_machine!(id)
+    machine = conn.assigns[:machine]
 
     case Hypervisors.start_machine(machine) do
       {:ok, _} ->
@@ -122,7 +122,7 @@ defmodule WebappWeb.MachineController do
   end
 
   def stop(conn, %{"id" => id}) do
-    machine = Hypervisors.get_machine!(id)
+    machine = conn.assigns[:machine]
 
     case Hypervisors.stop_machine(machine) do
       {:ok, _} ->
@@ -138,7 +138,7 @@ defmodule WebappWeb.MachineController do
   end
 
   def console(conn, %{"id" => id}) do
-    machine = Hypervisors.get_machine!(id)
+    machine = conn.assigns[:machine]
 
     with {:ok, console} <- Hypervisors.console_machine(machine) do
       token = Base.encode64(console["user"] <> ":" <> console["password"])

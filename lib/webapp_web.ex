@@ -42,6 +42,8 @@ defmodule WebappWeb do
       import WebappWeb.ErrorHelpers
       import WebappWeb.Gettext
       alias WebappWeb.Router.Helpers, as: Routes
+
+      import PhoenixActiveLink
     end
   end
 

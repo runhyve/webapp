@@ -42,4 +42,8 @@ defmodule WebappWeb.MachineView do
       _ -> ""
     end
   end
+
+  def machine_menu(active \\ :dashboard) do
+
+  end
 end
