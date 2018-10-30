@@ -165,7 +165,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   end
 
   defp webbook_trigger(endpoint, payload) do
-    json = Poison.encode!(payload)
+    json = Jason.encode!(payload)
     Logger.debug("Bhyve webhook POST call: #{endpoint} with #{json}")
 
     case HTTPoison.post(endpoint, json, @headers) do
@@ -183,7 +183,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   end
 
   defp webhook_process_response(json) do
-    case Poison.decode(json) do
+    case Jason.decode(json) do
       {:ok, %{"status" => "success", "message" => message}} -> {:ok, message}
       {:ok, %{"status" => "error", "message" => message}} -> {:error, message}
       {:ok, %{"status" => "success"} = response} -> {:ok, response}

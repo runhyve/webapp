@@ -50,8 +50,8 @@ defmodule Webapp.MixProject do
       {:jason, "~> 1.0"},
       {:cowboy, "~> 1.0"},
       {:excoveralls, "~> 0.10", only: [:dev, :test]},
-      {:poison, "~> 3.0"},
-      {:httpoison, "~> 1.0"}
+      {:httpoison, "~> 1.0"},
+      {:phoenix_active_link, "~> 0.1.1"}
     ]
   end
 
