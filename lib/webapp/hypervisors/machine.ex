@@ -7,6 +7,7 @@ defmodule Webapp.Hypervisors.Machine do
     field(:template, :string)
     field(:last_status, :string)
     field(:created, :boolean, default: false)
+    field(:job_id, :integer)
 
     belongs_to(:hypervisor, Webapp.Hypervisors.Hypervisor)
     belongs_to(:plan, Webapp.Plans.Plan)

@@ -291,12 +291,19 @@ defmodule Webapp.Hypervisors do
         |> String.to_atom()
 
       try do
+        machine = Changeset.apply_changes(changeset)
+
         Multi.new()
-        |> Multi.insert(:machine, changeset)
-        |> Multi.run(:hypervisor, module, :create_machine, [])
+        |> Multi.run(:hypervisor, module, :create_machine, [machine])
+        |> Multi.run(:machine, fn %{hypervisor: job_id} ->
+          changeset
+          |> Changeset.put_change(:job_id, job_id)
+          |> Repo.insert()
+        end)
         |> Repo.transaction()
       rescue
-        UndefinedFunctionError -> {:error, :hypervisor_not_found, changeset}
+        UndefinedFunctionError ->
+          {:error, :hypervisor_not_found, changeset}
       end
     else
       Repo.insert(changeset)
@@ -373,7 +380,44 @@ defmodule Webapp.Hypervisors do
   Checks machine status.
   Returns machine struct or error message.
   """
-  def check_machine_status(%Machine{} = machine) do
+  def check_status(%Machine{} = machine) do
+    # Machine is not created, we need to check job status before fetching machine status.
+    if !machine.created do
+      case check_job_status(machine) do
+        # Job is finished, check machine status this will update created flag.
+        {:ok, %{"state" => "finished"}} ->
+          check_machine_status(machine)
+
+        {:ok, %{"state" => "blocked"}} ->
+          {:error, "Machine was not created successfully"}
+
+        {:ok, %{"state" => state}} ->
+          cond do
+            NaiveDateTime.diff(NaiveDateTime.utc_now(), machine.inserted_at) >= @create_timeout ->
+              {:error, "Something went wrong, your machine has been created for too long."}
+
+            true ->
+              {:ok, machine}
+          end
+
+        {:error, :hypervisor_not_found} ->
+          {:error, "Unable to check machine status"}
+
+        {:error, error} ->
+          {:error, error}
+      end
+
+      # Machine is already created, simply check and update status.
+    else
+      check_machine_status(machine)
+    end
+  end
+
+  @doc """
+  Checks and updates machine status.
+  Returns machine struct or error message.
+  """
+  defp check_machine_status(%Machine{} = machine) do
     case update_machine_status(machine) do
       {:ok, %{status: machine}} ->
         {:ok, machine}
@@ -389,6 +433,19 @@ defmodule Webapp.Hypervisors do
           true ->
             {:ok, machine}
         end
+    end
+  end
+
+  @doc """
+  Checks status of job related with given machine.
+  """
+  defp check_job_status(%Machine{} = machine) do
+    module = get_hypervisor_module(machine)
+
+    try do
+      apply(module, :job_status, [machine.hypervisor, machine.job_id])
+    rescue
+      UndefinedFunctionError -> {:error, :hypervisor_not_found}
     end
   end
 
@@ -457,10 +514,9 @@ defmodule Webapp.Hypervisors do
     Machine.changeset(machine, %{})
   end
 
-  """
+  @doc """
   Returns bool for given machine and operation if it's allowed.
   """
-
   def machine_can_do?(%Machine{} = machine, action) do
     case action do
       :console ->
@@ -475,27 +531,25 @@ defmodule Webapp.Hypervisors do
         machine.last_status == "Running"
 
       :poweroff ->
-        machine.last_status != "Stopped"
+        machine.last_status != "Stopped" && machine.last_status != "Creating"
 
       _ ->
         false
     end
   end
 
-  """
+  @doc """
   Returns the module name of hypervisor type for given hypervisor.
   """
-
   defp get_hypervisor_module(%Hypervisor{} = hypervisor) do
     module =
       ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
       |> String.to_atom()
   end
 
-  """
+  @doc """
   Returns the module name of hypervisor type for given machine.
   """
-
   defp get_hypervisor_module(%Machine{} = machine) do
     hypervisor = Repo.preload(machine.hypervisor, :hypervisor_type)
 

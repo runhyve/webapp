@@ -50,7 +50,7 @@ defmodule WebappWeb.MachineController do
   def show(conn, %{"id" => id}) do
     machine = conn.assigns[:machine]
 
-    case Hypervisors.check_machine_status(machine) do
+    case Hypervisors.check_status(machine) do
       {:ok, %Machine{} = machine} ->
         conn
         |> render("show.html", machine: machine)

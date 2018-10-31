@@ -5,6 +5,10 @@ defmodule Webapp.Hypervisors.Bhyve do
   require Logger
   alias Webapp.Repo
 
+  alias Webapp.Hypervisors.{
+    Machine
+  }
+
   @headers [{"Content-Type", "application/json"}]
 
   @doc """
@@ -26,7 +30,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   @doc """
   Creates a machine on bhyve hypervisor.
   """
-  def create_machine(%{machine: machine}) do
+  def create_machine(_, %Machine{} = machine) do
     machine = Repo.preload(machine, [:plan, :hypervisor])
 
     """
@@ -62,7 +66,7 @@ defmodule Webapp.Hypervisors.Bhyve do
 
     try do
       case webbook_trigger(endpoint, payload) do
-        {:ok, message} -> {:ok, message}
+        {:ok, %{"taskid" => task_id}} -> {:ok, task_id}
         {:error, error} -> {:error, error}
       end
     rescue
@@ -153,6 +157,20 @@ defmodule Webapp.Hypervisors.Bhyve do
   def console_machine(%{machine: machine}) do
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/console"
     payload = %{name: machine.name}
+
+    try do
+      webbook_trigger(endpoint, payload)
+    rescue
+      e -> {:error, e.message}
+    end
+  end
+
+  @doc """
+  Checks a job status.
+  """
+  def job_status(hypervisor, task_id) do
+    endpoint = hypervisor.webhook_endpoint <> "/vm/ts-get-task"
+    payload = %{taskid: task_id}
 
     try do
       webbook_trigger(endpoint, payload)
