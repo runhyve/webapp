@@ -29,31 +29,35 @@ defmodule WebappWeb.MachineChannel do
       |> Hypervisors.get_machine!()
 
     response =
-      case Hypervisors.check_machine_status(machine) do
+      case Hypervisors.check_status(machine) do
         {:ok, %Machine{} = machine} ->
           %{
+            success: true,
             status_css: map_status_to_css(machine.last_status),
             icon: status_icon(machine.last_status),
-            status: machine.last_status
+            status: machine.last_status,
+            actions: machine_actions(machine)
           }
 
         {:error, message} ->
-          %{success: false, error: message}
+          %{success: false, error: message, actions: machine_actions(machine)}
       end
 
-    actions = %{
-      start: Hypervisors.machine_can_do?(machine, :start),
-      stop: Hypervisors.machine_can_do?(machine, :stop),
-      console: Hypervisors.machine_can_do?(machine, :console),
-      poweroff: Hypervisors.machine_can_do?(machine, :poweroff)
-    }
-
-    broadcast(socket, "status", Map.put(response, :actions, actions))
+    broadcast(socket, "status", response)
     {:noreply, socket}
   end
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
+  end
+
+  defp machine_actions(%Machine{} = machine) do
+    %{
+      start: Hypervisors.machine_can_do?(machine, :start),
+      stop: Hypervisors.machine_can_do?(machine, :stop),
+      console: Hypervisors.machine_can_do?(machine, :console),
+      poweroff: Hypervisors.machine_can_do?(machine, :poweroff)
+    }
   end
 end

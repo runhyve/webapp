@@ -1,5 +1,6 @@
 import {GoogleCharts} from 'google-charts'
 import socket from "./socket"
+import {put_flash,clear_flash,update_status} from './utils'
 
 GoogleCharts.load(drawCharts);
 
@@ -136,30 +137,12 @@ function drawCharts() {
 
 let channel = socket.channel("hypervisor:" + hypervisor.id, {})
 channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+  .receive("error", resp => { put_flash('error', 'Failed to connect to server: ' + resp.reason) })
 
 window.setInterval(() => {
   channel.push("status")
 }, 10000)
 
 channel.on("status", payload => {
-  document.querySelectorAll('span.status').forEach((item) => {
-    update_status(payload)
-  });
+  update_status(payload)
 })
-
-function update_status(payload) {
-  document.querySelectorAll('span.status').forEach((item) => {
-    if (item.classList.contains('status-icon')) {
-      item.childNodes.item(0).className = payload.icon
-    }
-    else {
-      item.textContent = payload.status
-    }
-
-    item.classList.remove(item.dataset.status)
-    item.classList.add(payload.status_css)
-    item.dataset.status = payload.status_css
-  });
-}

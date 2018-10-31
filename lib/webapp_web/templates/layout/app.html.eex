@@ -48,12 +48,14 @@
 
     <section id="main" class="section">
       <div class="container">
-        <%= if info = get_flash(@conn, :info) do %>
-          <div class="notification is-info" role="alert"> <button class="delete"></button><%= info %></div>
-        <% end %>
-        <%= if error = get_flash(@conn, :error) do %>
-          <div class="notification is-danger" role="alert"> <button class="delete"></button><%= error %></div>
-        <% end %>
+        <div id="notifications">
+          <%= if info = get_flash(@conn, :info) do %>
+            <div class="notification is-info" role="alert"> <button class="delete"></button><%= info %></div>
+          <% end %>
+          <%= if error = get_flash(@conn, :error) do %>
+            <div class="notification is-danger" role="alert"> <button class="delete"></button><%= error %></div>
+          <% end %>
+        </div>
         <%= render @view_module, @view_template, assigns %>
       </div>
     </section>

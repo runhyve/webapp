@@ -31,13 +31,3 @@
     </li>
   </ul>
 </div>
-
-
-<script type="text/javascript">
-var machine = {
-  id: <%= @machine.id %>,
-}
-
-</script>
-<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/machine.js") %>"></script>
-
