@@ -36,7 +36,7 @@ defmodule WebappWeb.HypervisorChannel do
       end
 
     response = %{
-      sstatus_css: map_status_to_css(status),
+      status_css: map_status_to_css(status),
       icon: status_icon(status),
       status: status
     }
