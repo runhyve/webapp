@@ -47,3 +47,37 @@
   </tbody>
 </table>
 
+
+<table class="table container">
+  <thead>
+    <tr>
+    <th colspan="5" class="">Chargebee plans</th>
+    </tr>
+    <tr>
+      <th>Name</th>
+      <th>Storage</th>
+      <th>Ram</th>
+      <th>Cpu</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for plan <- @chargebee_plans do %>
+    <tr>
+      <td><%= plan["id"] %></td>
+      <%= if plan["meta_data"] do %>
+        <td><%= plan["meta_data"]["storage"] %></td>
+        <td><%= plan["meta_data"]["memory"] %></td>
+        <td><%= plan["meta_data"]["cpu"] %></td>
+      <% else %>
+        <td colspan="3">No meta_data!</td>
+      <% end %>
+    </tr>
+<% end %>
+<%= if Enum.empty?(@plans) do %>
+    <tr><td colspan="3">Empty here, add a plan...</td></tr>
+<% end %>
+  </tbody>
+</table>
+

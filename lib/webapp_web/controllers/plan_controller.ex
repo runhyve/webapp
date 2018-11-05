@@ -6,7 +6,17 @@ defmodule WebappWeb.PlanController do
 
   def index(conn, _params) do
     plans = Plans.list_plans()
-    render(conn, "index.html", plans: plans)
+
+    chargebee_api_endpoint = "https://serveraptor-test.chargebee.com/api/v2"
+    chargebee_api_key = "test_2mbCHBYhb1Mk7DK8VD8VPMre7PrfpNVI"
+
+    %{status_code: status_code, body: response} = HTTPoison.get!(chargebee_api_endpoint <> "/plans/", [], [hackney: [basic_auth: {chargebee_api_key, ""}]])
+    %{"list" => chargebee_plans} = Jason.decode!(response)
+
+    chargebee_plans = Enum.map(chargebee_plans, fn %{"plan" => plan} -> plan end)
+    IO.inspect(chargebee_plans)
+
+    render(conn, "index.html", plans: plans, chargebee_plans: chargebee_plans)
   end
 
   def new(conn, _params) do
