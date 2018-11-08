@@ -24,7 +24,7 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix and Ecto
 config :phoenix, :json_library, Jason
-config :ecto, :json_library, Jason
+config :postgrex, :json_library, Jason
 
 config :phoenix_active_link, :defaults,
   wrap_tag: :li,

@@ -295,7 +295,7 @@ defmodule Webapp.Hypervisors do
 
         Multi.new()
         |> Multi.run(:hypervisor, module, :create_machine, [machine])
-        |> Multi.run(:machine, fn %{hypervisor: job_id} ->
+        |> Multi.run(:machine, fn _repo, %{hypervisor: job_id} ->
           changeset
           |> Changeset.put_change(:job_id, job_id)
           |> Repo.insert()
@@ -364,7 +364,7 @@ defmodule Webapp.Hypervisors do
       Multi.new()
       |> Multi.update(:machine, changeset)
       |> Multi.run(:hypervisor, module, :update_machine_status, [])
-      |> Multi.run(:status, fn %{hypervisor: status} ->
+      |> Multi.run(:status, fn _repo, %{hypervisor: status} ->
         changeset
         |> Changeset.put_change(:last_status, status)
         |> Changeset.put_change(:created, true)
@@ -383,10 +383,14 @@ defmodule Webapp.Hypervisors do
   def check_status(%Machine{} = machine) do
     # Machine is not created, we need to check job status before fetching machine status.
     if !machine.created do
+      # TODO: Add failure notifications
       case check_job_status(machine) do
         # Job is finished, check machine status this will update created flag.
-        {:ok, %{"state" => "finished"}} ->
+        {:ok, %{"state" => "finished", "elevel" => 0}} ->
           check_machine_status(machine)
+
+        {:ok, %{"state" => "finished", "elevel" => _elevel}} ->
+          {:error, "Machine was not created successfully"}
 
         {:ok, %{"state" => "blocked"}} ->
           {:error, "Machine was not created successfully"}
@@ -433,6 +437,9 @@ defmodule Webapp.Hypervisors do
           true ->
             {:ok, machine}
         end
+
+        {:error, :hypervisor_not_found} ->
+          {:error, :hypervisor_not_found}
     end
   end
 

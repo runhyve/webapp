@@ -30,7 +30,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   @doc """
   Creates a machine on bhyve hypervisor.
   """
-  def create_machine(_, %Machine{} = machine) do
+  def create_machine(_repo, _multi_changes, %Machine{} = machine) do
     machine = Repo.preload(machine, [:plan, :hypervisor])
 
     """
@@ -77,7 +77,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   @doc """
   Deletes a machine on bhyve hypervisor.
   """
-  def delete_machine(%{machine: machine}) do
+  def delete_machine(_repo, %{machine: machine}) do
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/destroy"
     payload = %{name: machine.name}
 
@@ -94,7 +94,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   @doc """
   Updates a machine status.
   """
-  def update_machine_status(%{machine: machine}) do
+  def update_machine_status(_repo, %{machine: machine}) do
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/status"
     payload = %{name: machine.name}
 
