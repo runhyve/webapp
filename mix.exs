@@ -53,7 +53,8 @@ defmodule Webapp.MixProject do
       {:plug, "~> 1.7"},
       {:excoveralls, "~> 0.10", only: [:dev, :test]},
       {:httpoison, "~> 1.0"},
-      {:phoenix_active_link, "~> 0.1.1"}
+      {:phoenix_active_link, "~> 0.1.1"},
+      {:table_rex, "~> 2.0.0"}
 #      {:ecto_network, "~> 1.0.0"}
     ]
   end
