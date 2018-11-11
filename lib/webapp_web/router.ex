@@ -26,6 +26,8 @@ defmodule WebappWeb.Router do
     post "/machines/:id/poweroff", MachineController, :poweroff
 
     resources "/plans", PlanController
+
+    resources "/networks", NetworkController
   end
 
   # Other scopes may use custom stacks.

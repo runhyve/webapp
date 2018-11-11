@@ -1,0 +1,37 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><%= link "Networks", to: Routes.network_path(@conn, :index) %></li>
+    <li class="is-active"><a><%= @network.name %></a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1><%= @network.name %></h1>
+  </div>
+
+  <div class="level-right">
+    <span>
+      <%= link "Edit",
+            to: Routes.network_path(@conn, :edit, @network),
+            class: "button is-rounded is-info" %>
+    </span>
+  </div>
+</div>
+
+<div class="box">
+  <ul>
+
+    <li>
+      <strong>Name:</strong>
+      <%= @network.name %>
+    </li>
+
+    <li>
+      <strong>Network:</strong>
+      <%= @network.network %>
+    </li>
+
+  </ul>
+</div>
