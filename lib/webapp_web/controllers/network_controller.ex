@@ -20,13 +20,30 @@ defmodule WebappWeb.NetworkController do
 
   def create(conn, %{"network" => network_params}) do
     case Hypervisors.create_network(network_params) do
-      {:ok, network} ->
+      {:ok, %{network: network}} ->
         conn
         |> put_flash(:info, "Network created successfully.")
         |> redirect(to: Routes.network_path(conn, :show, network))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
+
+      {:error, :machine, %Ecto.Changeset{} = changeset, _} ->
+        render(conn, "new.html", changeset: changeset)
+
+      {:error, :hypervisor, error, _} ->
+        changeset =
+          %Network{}
+          |> Network.changeset(network_params)
+
+        conn
+        |> put_flash(:error, error)
+        |> render("new.html", changeset: changeset)
+
+      {:error, :hypervisor_not_found, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_flash(:error, "Network was not created successfully.")
+        |> render("new.html", changeset: changeset)
     end
   end
 

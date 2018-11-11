@@ -6,7 +6,8 @@ defmodule Webapp.Hypervisors.Bhyve do
   alias Webapp.Repo
 
   alias Webapp.Hypervisors.{
-    Machine
+    Machine,
+    Network
   }
 
   @headers [{"Content-Type", "application/json"}]
@@ -179,6 +180,25 @@ defmodule Webapp.Hypervisors.Bhyve do
     end
   end
 
+  @doc """
+  Creates a network.
+  """
+  def create_network(_repo, _multi_changes, %Network{} = network) do
+    network = Repo.preload(network, [:hypervisor])
+
+    endpoint = network.hypervisor.webhook_endpoint <> "/vm/net-create"
+    payload = %{
+      name: network.name,
+      cidr: "#{network.network}"
+    }
+
+    try do
+      webbook_trigger(endpoint, payload)
+    rescue
+      e -> {:error, e.message}
+    end
+  end
+
   defp webbook_trigger(endpoint) do
     Logger.debug("Bhyve webhook GET call: #{endpoint} without parameters")
 
@@ -220,6 +240,7 @@ defmodule Webapp.Hypervisors.Bhyve do
       {:ok, %{"status" => "error", "message" => message}} -> {:error, message}
       {:ok, %{"status" => "success"} = response} -> {:ok, response}
       {:ok, _} -> {:error, "Invalid response"}
+      {:error, %Jason.DecodeError{data: error}} ->  {:error, error}
       {:error, error} -> {:error, error}
     end
   end

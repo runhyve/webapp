@@ -14,7 +14,8 @@ defmodule Webapp.Hypervisors do
   alias Webapp.Hypervisors.{
     Type,
     Hypervisor,
-    Machine
+    Machine,
+    Network
   }
 
   # Number of seconds after the create action is considered as failed.
@@ -545,27 +546,6 @@ defmodule Webapp.Hypervisors do
     end
   end
 
-  @doc """
-  Returns the module name of hypervisor type for given hypervisor.
-  """
-  defp get_hypervisor_module(%Hypervisor{} = hypervisor) do
-    module =
-      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
-      |> String.to_atom()
-  end
-
-  @doc """
-  Returns the module name of hypervisor type for given machine.
-  """
-  defp get_hypervisor_module(%Machine{} = machine) do
-    hypervisor = Repo.preload(machine.hypervisor, :hypervisor_type)
-
-    module =
-      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
-      |> String.to_atom()
-  end
-
-  alias Webapp.Hypervisors.Network
 
   @doc """
   Returns the list of networks.
@@ -613,9 +593,34 @@ defmodule Webapp.Hypervisors do
 
   """
   def create_network(attrs \\ %{}) do
-    %Network{}
-    |> Network.changeset(attrs)
-    |> Repo.insert()
+    changeset = %Network{}
+                |> Network.changeset(attrs)
+
+    if changeset.valid? do
+      hypervisor =
+        Ecto.Changeset.get_change(changeset, :hypervisor_id)
+        |> get_hypervisor!
+
+      module =
+        ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
+        |> String.to_atom()
+
+      try do
+        network = Changeset.apply_changes(changeset)
+
+        Multi.new()
+        |> Multi.run(:hypervisor, module, :create_network, [network])
+        |> Multi.run(:network, fn _repo, _multi_changes ->
+          changeset
+          |> Repo.insert()
+        end)
+        |> Repo.transaction()
+      rescue
+        UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      end
+    else
+      Repo.insert(changeset)
+    end
   end
 
   @doc """
@@ -663,5 +668,36 @@ defmodule Webapp.Hypervisors do
   """
   def change_network(%Network{} = network) do
     Network.changeset(network, %{})
+  end
+
+  @doc """
+  Returns the module name of hypervisor type for given hypervisor.
+  """
+  defp get_hypervisor_module(%Hypervisor{} = hypervisor) do
+    module =
+      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
+      |> String.to_atom()
+  end
+
+  @doc """
+  Returns the module name of hypervisor type for given machine.
+  """
+  defp get_hypervisor_module(%Machine{} = machine) do
+    hypervisor = Repo.preload(machine.hypervisor, :hypervisor_type)
+
+    module =
+      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
+      |> String.to_atom()
+  end
+
+  @doc """
+  Returns the module name of hypervisor type for given machine.
+  """
+  defp get_hypervisor_module(%Network{} = network) do
+    hypervisor = Repo.preload(network.hypervisor, :hypervisor_type)
+
+    module =
+      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
+      |> String.to_atom()
   end
 end
