@@ -18,6 +18,8 @@ defmodule Webapp.Hypervisors.Network do
     |> cast(attrs, [:name, :network, :hypervisor_id])
     |> validate_required([:name, :network, :hypervisor_id])
     |> unique_constraint(:name)
+    |> validate_format(:name, ~r/^[a-zA-Z0-9_-]+$/, message: "Name must only contain letters and numbers and _ -")
     |> assoc_constraint(:hypervisor)
   end
+
 end
