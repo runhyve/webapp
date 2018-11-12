@@ -21,5 +21,6 @@ defmodule Webapp.Hypervisors.Hypervisor do
     |> validate_required([:name, :ip_address, :hypervisor_type_id, :webhook_endpoint])
     |> validate_format(:ip_address, ~r/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/)
     |> assoc_constraint(:hypervisor_type)
+    |> unique_constraint(:name)
   end
 end

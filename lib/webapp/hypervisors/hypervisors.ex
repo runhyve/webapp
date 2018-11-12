@@ -175,9 +175,18 @@ defmodule Webapp.Hypervisors do
 
   """
   def create_hypervisor(attrs \\ %{}) do
-    %Hypervisor{}
-    |> Hypervisor.changeset(attrs)
-    |> Repo.insert()
+    hyperviosr = %Hypervisor{}
+                 |> Hypervisor.changeset(attrs)
+
+
+    Multi.new()
+    |> Multi.insert(:hypervisor, hyperviosr)
+    |> Multi.run(:network, fn _repo, %{hypervisor: hypervisor} ->
+      %Network{}
+      |> Network.changeset(%{name: "#{hypervisor.name}-public", network: "0.0.0.0/32", hypervisor_id: hypervisor.id})
+      |> Repo.insert()
+    end)
+    |> Repo.transaction()
   end
 
   @doc """

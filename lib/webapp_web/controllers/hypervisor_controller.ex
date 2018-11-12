@@ -19,12 +19,18 @@ defmodule WebappWeb.HypervisorController do
 
   def create(conn, %{"hypervisor" => hypervisor_params}) do
     case Hypervisors.create_hypervisor(hypervisor_params) do
-      {:ok, hypervisor} ->
+      {:ok, %{hypervisor: hypervisor}} ->
         conn
         |> put_flash(:info, "Hypervisor created successfully.")
         |> redirect(to: Routes.hypervisor_path(conn, :show, hypervisor))
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "new.html", changeset: changeset)
+
+      {:error, :hypervisor, %Ecto.Changeset{} = changeset, _} ->
+        render(conn, "new.html", changeset: changeset)
+
+      {:error, :network, %Ecto.Changeset{} = changeset, _} ->
         render(conn, "new.html", changeset: changeset)
     end
   end
