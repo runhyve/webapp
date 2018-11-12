@@ -187,6 +187,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     network = Repo.preload(network, [:hypervisor])
 
     endpoint = network.hypervisor.webhook_endpoint <> "/vm/net-create"
+
     payload = %{
       name: network.name,
       cidr: "#{network.network}"
@@ -240,7 +241,7 @@ defmodule Webapp.Hypervisors.Bhyve do
       {:ok, %{"status" => "error", "message" => message}} -> {:error, message}
       {:ok, %{"status" => "success"} = response} -> {:ok, response}
       {:ok, _} -> {:error, "Invalid response"}
-      {:error, %Jason.DecodeError{data: error}} ->  {:error, error}
+      {:error, %Jason.DecodeError{data: error}} -> {:error, error}
       {:error, error} -> {:error, error}
     end
   end

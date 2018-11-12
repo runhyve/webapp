@@ -75,6 +75,7 @@ defmodule WebappWeb.NetworkControllerTest do
     test "deletes chosen network", %{conn: conn, network: network} do
       conn = delete(conn, Routes.network_path(conn, :delete, network))
       assert redirected_to(conn) == Routes.network_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.network_path(conn, :show, network))
       end

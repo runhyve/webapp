@@ -175,15 +175,19 @@ defmodule Webapp.Hypervisors do
 
   """
   def create_hypervisor(attrs \\ %{}) do
-    hyperviosr = %Hypervisor{}
-                 |> Hypervisor.changeset(attrs)
-
+    hyperviosr =
+      %Hypervisor{}
+      |> Hypervisor.changeset(attrs)
 
     Multi.new()
     |> Multi.insert(:hypervisor, hyperviosr)
     |> Multi.run(:network, fn _repo, %{hypervisor: hypervisor} ->
       %Network{}
-      |> Network.changeset(%{name: "#{hypervisor.name}-public", network: "0.0.0.0/32", hypervisor_id: hypervisor.id})
+      |> Network.changeset(%{
+        name: "#{hypervisor.name}-public",
+        network: "0.0.0.0/32",
+        hypervisor_id: hypervisor.id
+      })
       |> Repo.insert()
     end)
     |> Repo.transaction()
@@ -448,8 +452,8 @@ defmodule Webapp.Hypervisors do
             {:ok, machine}
         end
 
-        {:error, :hypervisor_not_found} ->
-          {:error, :hypervisor_not_found}
+      {:error, :hypervisor_not_found} ->
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -555,7 +559,6 @@ defmodule Webapp.Hypervisors do
     end
   end
 
-
   @doc """
   Returns the list of networks.
 
@@ -568,6 +571,21 @@ defmodule Webapp.Hypervisors do
   def list_networks do
     Repo.all(Network)
     |> Repo.preload(:hypervisor)
+  end
+
+  @doc """
+  Returns the list of networks.
+
+  ## Examples
+
+      iex> list_networks()
+      [%Network{}, ...]
+
+  """
+  def list_hypervisor_networks(hypervisor) do
+    hypervisor
+    |> Ecto.assoc(:networks)
+    |> Repo.all()
   end
 
   @doc """
@@ -602,8 +620,9 @@ defmodule Webapp.Hypervisors do
 
   """
   def create_network(attrs \\ %{}) do
-    changeset = %Network{}
-                |> Network.changeset(attrs)
+    changeset =
+      %Network{}
+      |> Network.changeset(attrs)
 
     if changeset.valid? do
       hypervisor =

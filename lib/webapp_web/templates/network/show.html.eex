@@ -1,7 +1,9 @@
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
-    <li><%= link "Networks", to: Routes.network_path(@conn, :index) %></li>
+    <li><%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index) %></li>
+    <li><%= link @hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @hypervisor)  %></li>
+    <li><%= link "Networks", to: Routes.hypervisor_network_path(@conn, :index, @hypervisor) %></li>
     <li class="is-active"><a><%= @network.name %></a></li>
   </ul>
 </nav>
@@ -33,5 +35,9 @@
       <%= @network.network %>
     </li>
 
+    <li>
+      <strong>Hypervisor:</strong>
+      <%= @hypervisor.name %>
+    </li>
   </ul>
 </div>

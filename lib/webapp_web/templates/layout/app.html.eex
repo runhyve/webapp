@@ -27,8 +27,6 @@
               <%= link "Home", to: Routes.page_path(@conn, :index), class: "navbar-item" %>
               <%= link "Plans", to: Routes.plan_path(@conn, :index), class: "navbar-item" %>
               <%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index), class: "navbar-item" %>
-              <%= link "Networks", to: Routes.network_path(@conn, :index), class: "navbar-item" %>
-              <%= link "Machines", to: Routes.machine_path(@conn, :index), class: "navbar-item" %>
             </div>
 
             <div class="navbar-end">

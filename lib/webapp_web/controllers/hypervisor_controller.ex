@@ -12,6 +12,12 @@ defmodule WebappWeb.HypervisorController do
     render(conn, "index.html", hypervisor: hypervisor)
   end
 
+  def index_networks(conn, _params) do
+    hypervisor = conn.assigns[:hypervisor]
+    networks = Hypervisors.list_hypervisor_networks(hypervisor)
+    render(conn, "networks.html", networks: networks, hypervisor: hypervisor)
+  end
+
   def new(conn, _params) do
     changeset = Hypervisors.change_hypervisor(%Hypervisor{})
     render(conn, "new.html", changeset: changeset)

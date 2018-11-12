@@ -11,6 +11,6 @@ defmodule Webapp.Repo.Migrations.CreateNetworks do
     end
 
     create(index(:networks, [:hypervisor_id]))
-    create(unique_index(:networks, [:name]))
+    create(unique_index(:networks, [:name, :hypervisor_id]))
   end
 end

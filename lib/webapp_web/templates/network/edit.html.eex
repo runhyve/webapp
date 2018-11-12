@@ -1,7 +1,9 @@
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
-    <li><%= link "Networks", to: Routes.network_path(@conn, :index) %></li>
+    <li><%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index) %></li>
+    <li><%= link @hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @hypervisor)  %></li>
+    <li><%= link "Networks", to: Routes.hypervisor_network_path(@conn, :index, @hypervisor) %></li>
     <li><%= link @network.name, to: Routes.network_path(@conn, :show, @network)  %></li>
     <li class="is-active"><a>Edit</a></li>
   </ul>
@@ -15,7 +17,7 @@
   <div class="level-right">
     <span>
       <%= link "Back",
-            to: Routes.network_path(@conn, :index),
+            to: Routes.hypervisor_network_path(@conn, :index, @hypervisor),
             class: "button is-rounded" %>
     </span>
   </div>

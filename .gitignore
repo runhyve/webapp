@@ -44,3 +44,4 @@ npm-debug.log
 # IntelliJ IDEA files.
 *.iml
 .idea/
+.elixir_ls

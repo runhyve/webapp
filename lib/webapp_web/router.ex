@@ -17,7 +17,12 @@ defmodule WebappWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    resources "/hypervisors", HypervisorController
+
+    resources "/hypervisors", HypervisorController do
+      resources "/networks", NetworkController, only: [:new, :create, :index]
+    end
+
+    # get "/hypervisor/:id/networks", HypervisorController, :index_networks
 
     resources "/machines", MachineController
     get "/machines/:id/console", MachineController, :console
@@ -27,7 +32,7 @@ defmodule WebappWeb.Router do
 
     resources "/plans", PlanController
 
-    resources "/networks", NetworkController
+    resources "/networks", NetworkController, except: [:new, :create, :index]
   end
 
   # Other scopes may use custom stacks.

@@ -1,9 +1,13 @@
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index) %></li>
+    <li><%= link @hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @hypervisor)  %></li>
     <li class="is-active"><a>Networks</a></li>
   </ul>
 </nav>
+
+<%= render WebappWeb.HypervisorView, "_menu.html",  Map.put(assigns, :hide_status, false) %>
 
 <div class="level">
   <div class="level-left">
@@ -11,10 +15,9 @@
   </div>
 
   <div class="level-right">
-    <span><%= link "New Network", to: Routes.network_path(@conn, :new), class: "button is-rounded is-primary" %></span>
+    <span><%= link "New Network", to: Routes.hypervisor_network_path(@conn, :new, @hypervisor), class: "button is-rounded is-primary" %></span>
   </div>
 </div>
-
 
 <table class="table container">
   <thead>
@@ -30,7 +33,7 @@
     <tr>
       <td><%= link network.name, to: Routes.network_path(@conn, :show, network) %></td>
       <td><%= network.network %></td>
-      <td><%= link network.hypervisor.name, to: Routes.hypervisor_path(@conn, :show, network.hypervisor) %></td>
+      <td><%= link @hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @hypervisor) %></td>
 
 
       <td>

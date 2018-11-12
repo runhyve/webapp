@@ -21,6 +21,7 @@
 <div class="tabs">
   <ul>
     <%= active_link(@conn, "Dashboard", to: Routes.hypervisor_path(@conn, :show, @hypervisor), active: :exact)  %>
+    <%= active_link(@conn, "Networks", to: Routes.hypervisor_network_path(@conn, :index, @hypervisor), active: :exact)  %>
     <li><a>Machines</a></li>
     <li><a>Console</a></li>
     <%= active_link(@conn, "Settings", to: Routes.hypervisor_path(@conn, :edit, @hypervisor), active: :exact)  %>

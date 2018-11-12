@@ -4,18 +4,34 @@ defmodule WebappWeb.NetworkController do
   alias Webapp.Hypervisors
   alias Webapp.Hypervisors.Network
 
-  plug :load_references when action in [:new, :create, :edit, :update]
+  plug :load_hypervisor when action in [:index, :create, :new]
   plug :load_network when action not in [:index, :create, :new]
 
-
   def index(conn, _params) do
-    networks = Hypervisors.list_networks()
-    render(conn, "index.html", networks: networks)
+    hypervisor = conn.assigns[:hypervisor]
+
+    status =
+      case Hypervisors.update_hypervisor_status(hypervisor) do
+        {:ok, status} -> status
+        {:error, _} -> "unreachable"
+      end
+
+    conn =
+      if status == "unreachable" do
+        put_flash(conn, :error, "Failed to fetch hypervisor status")
+      else
+        conn
+      end
+
+    networks = Hypervisors.list_hypervisor_networks(hypervisor)
+    render(conn, "index.html", networks: networks, hypervisor: hypervisor, status: status)
   end
 
   def new(conn, _params) do
-    changeset = Hypervisors.change_network(%Network{})
-    render(conn, "new.html", changeset: changeset)
+    hypervisor = conn.assigns[:hypervisor]
+    changeset = Hypervisors.change_network(%Network{hypervisor_id: hypervisor.id})
+
+    render(conn, "new.html", changeset: changeset, hypervisor: hypervisor)
   end
 
   def create(conn, %{"network" => network_params}) do
@@ -49,13 +65,18 @@ defmodule WebappWeb.NetworkController do
 
   def show(conn, %{"id" => id}) do
     network = conn.assigns[:network]
-    render(conn, "show.html", network: network)
+    render(conn, "show.html", network: network, hypervisor: network.hypervisor)
   end
 
   def edit(conn, %{"id" => id}) do
     network = conn.assigns[:network]
     changeset = Hypervisors.change_network(network)
-    render(conn, "edit.html", network: network, changeset: changeset)
+
+    render(conn, "edit.html",
+      network: network,
+      changeset: changeset,
+      hypervisor: network.hypervisor
+    )
   end
 
   def update(conn, %{"id" => id, "network" => network_params}) do
@@ -96,9 +117,18 @@ defmodule WebappWeb.NetworkController do
     end
   end
 
+  defp load_hypervisor(conn, _) do
+    try do
+      %{"hypervisor_id" => id} = conn.params
+      hypervisor = Hypervisors.get_hypervisor!(id)
 
-  defp load_references(conn, _) do
-    conn
-    |> assign(:hypervisors, Hypervisors.list_hypervisor())
+      conn
+      |> assign(:hypervisor, hypervisor)
+    rescue
+      e ->
+        conn
+        |> put_flash(:error, "Hypervisor was not found.")
+        |> redirect(to: Routes.network_path(conn, :index))
+    end
   end
 end
