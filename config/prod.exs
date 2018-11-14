@@ -75,7 +75,7 @@ config :webapp, WebappWeb.Endpoint,
   server: true,
   secret_key_base: "${SECRET_KEY_BASE}"
 
-config :webapp, WebappWeb.Repo,
+config :webapp, Webapp.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: "${DATABASE_URL}",
   database: "",
