@@ -23,11 +23,12 @@
     </div>
 
     <div class="field">
-    <%= label f, :hypervisor_id, class: "label" %>
-    <div class="select">
-      <%= select f, :hypervisor_id, hypervisors_select_options(@hypervisors), prompt: "Hypervisor" %>
-    </div>
-    <%= error_tag f, :hypervisor_id %>
+      <%= label f, :hypervisor_id, class: "label" %>
+      <%= hidden_input f, :hypervisor_id, value: @hypervisor.id %>
+      <div class="item">
+        <%= @hypervisor.name %>
+      </div>
+      <%= error_tag f, :hypervisor_id %>
     </div>
 
     <div class="field">

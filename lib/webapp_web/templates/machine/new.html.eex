@@ -1,7 +1,9 @@
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
-    <li><%= link "Machines", to: Routes.machine_path(@conn, :index) %></li>
+    <li><%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index) %></li>
+    <li><%= link @hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @hypervisor)  %></li>
+    <li><%= link "Machines", to: Routes.hypervisor_machine_path(@conn, :index, @hypervisor) %></li>
     <li class="is-active"><a>New Machine</a></li>
   </ul>
 </nav>
@@ -14,10 +16,10 @@
   <div class="level-right">
     <span>
       <%= link "Back",
-            to: Routes.machine_path(@conn, :index),
+            to: Routes.hypervisor_machine_path(@conn, :index, @hypervisor),
             class: "button is-rounded" %>
     </span>
   </div>
 </div>
 
-<%= render "form.html", Map.put(assigns, :action, Routes.machine_path(@conn, :create)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.hypervisor_machine_path(@conn, :create, @hypervisor)) %>

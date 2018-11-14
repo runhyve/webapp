@@ -1,9 +1,16 @@
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <%= if @hypervisor do %>
+      <li><%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index) %></li>
+      <li><%= link @hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @hypervisor)  %></li>
+    <% end %>
+
     <li class="is-active"><a>Machines</a></li>
   </ul>
 </nav>
+
+<%= if @hypervisor, do: render WebappWeb.HypervisorView, "_menu.html",  Map.put(assigns, :hide_status, false) %>
 
 <div class="level">
   <div class="level-left">
@@ -11,7 +18,9 @@
   </div>
 
   <div class="level-right">
-    <span><%= link "New Machine", to: Routes.machine_path(@conn, :new), class: "button is-rounded is-primary" %></span>
+    <%= if @hypervisor do %>
+      <span><%= link "New Machine", to: Routes.hypervisor_machine_path(@conn, :new, @hypervisor), class: "button is-rounded is-primary" %></span>
+    <% end %>
   </div>
 </div>
 

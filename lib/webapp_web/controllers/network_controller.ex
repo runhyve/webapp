@@ -10,6 +10,7 @@ defmodule WebappWeb.NetworkController do
   def index(conn, _params) do
     hypervisor = conn.assigns[:hypervisor]
 
+    # @TODO: Refactor this
     status =
       case Hypervisors.update_hypervisor_status(hypervisor) do
         {:ok, status} -> status
@@ -63,12 +64,12 @@ defmodule WebappWeb.NetworkController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, _params) do
     network = conn.assigns[:network]
     render(conn, "show.html", network: network, hypervisor: network.hypervisor)
   end
 
-  def edit(conn, %{"id" => id}) do
+  def edit(conn, _params) do
     network = conn.assigns[:network]
     changeset = Hypervisors.change_network(network)
 
@@ -93,13 +94,15 @@ defmodule WebappWeb.NetworkController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, _params) do
     network = conn.assigns[:network]
+    hypervisor = network.hypervisor
+
     {:ok, _network} = Hypervisors.delete_network(network)
 
     conn
     |> put_flash(:info, "Network deleted successfully.")
-    |> redirect(to: Routes.network_path(conn, :index))
+    |> redirect(to: Routes.hypervisor_network_path(conn, :index, hypervisor))
   end
 
   defp load_network(conn, _) do
@@ -110,14 +113,14 @@ defmodule WebappWeb.NetworkController do
       conn
       |> assign(:network, network)
     rescue
-      e ->
+      _ ->
         conn
         |> put_flash(:error, "Network was not found.")
-        |> redirect(to: Routes.network_path(conn, :index))
+        |> redirect(to: Routes.hypervisor_path(conn, :index))
     end
   end
 
-  defp load_hypervisor(conn, _) do
+  def load_hypervisor(conn, _) do
     try do
       %{"hypervisor_id" => id} = conn.params
       hypervisor = Hypervisors.get_hypervisor!(id)
@@ -125,10 +128,10 @@ defmodule WebappWeb.NetworkController do
       conn
       |> assign(:hypervisor, hypervisor)
     rescue
-      e ->
+      _ ->
         conn
         |> put_flash(:error, "Hypervisor was not found.")
-        |> redirect(to: Routes.network_path(conn, :index))
+        |> redirect(to: Routes.hypervisor_path(conn, :index))
     end
   end
 end

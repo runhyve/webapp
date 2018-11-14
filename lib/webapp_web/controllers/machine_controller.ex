@@ -5,12 +5,36 @@ defmodule WebappWeb.MachineController do
   alias Webapp.Hypervisors.Machine
   alias Webapp.Plans
 
-  plug :load_references when action in [:new, :create, :edit, :update]
+  plug :load_hypervisor when action in [:new, :create]
+  plug :load_references when action in [:new, :create]
   plug :load_machine when action not in [:index, :create, :new]
+
+  def index(conn, %{"hypervisor_id" => hypervisor_id} = params) do
+    machines = Hypervisors.list_machines()
+
+    conn = load_hypervisor(conn, params)
+    hypervisor = conn.assigns[:hypervisor]
+
+    # @TODO: Refactor this
+    status =
+      case Hypervisors.update_hypervisor_status(hypervisor) do
+        {:ok, status} -> status
+        {:error, _} -> "unreachable"
+      end
+
+    conn =
+      if status == "unreachable" do
+        put_flash(conn, :error, "Failed to fetch hypervisor status")
+      else
+        conn
+      end
+
+    render(conn, "index.html", machines: machines, hypervisor: hypervisor, status: status)
+  end
 
   def index(conn, _params) do
     machines = Hypervisors.list_machines()
-    render(conn, "index.html", machines: machines)
+    render(conn, "index.html", machines: machines, hypervisor: false)
   end
 
   def new(conn, _params) do
@@ -182,7 +206,21 @@ defmodule WebappWeb.MachineController do
 
   defp load_references(conn, _) do
     conn
-    |> assign(:hypervisors, Hypervisors.list_hypervisor())
     |> assign(:plans, Plans.list_plans())
+  end
+
+  defp load_hypervisor(conn, _) do
+    try do
+      %{"hypervisor_id" => id} = conn.params
+      hypervisor = Hypervisors.get_hypervisor!(id)
+
+      conn
+      |> assign(:hypervisor, hypervisor)
+    rescue
+      _ ->
+        conn
+        |> put_flash(:error, "Hypervisor was not found.")
+        |> redirect(to: Routes.hypervisor_path(conn, :index))
+    end
   end
 end

@@ -1,7 +1,9 @@
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
-    <li><%= link "Machines", to: Routes.machine_path(@conn, :index) %></li>
+    <li><%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index) %></li>
+    <li><%= link @machine.hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @machine.hypervisor)  %></li>
+    <li><%= link "Machines", to: Routes.hypervisor_machine_path(@conn, :index, @machine.hypervisor) %></li>
     <li class="is-active"><a><%= @machine.name %></a></li>
   </ul>
 </nav>

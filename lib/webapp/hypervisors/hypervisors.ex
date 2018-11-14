@@ -541,7 +541,7 @@ defmodule Webapp.Hypervisors do
   def machine_can_do?(%Machine{} = machine, action) do
     case action do
       :console ->
-        machine.last_status == "Running"
+        machine.last_status == "Running" || machine.last_status == "Bootloader"
 
       :start ->
         machine.created &&

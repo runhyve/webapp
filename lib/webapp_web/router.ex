@@ -20,11 +20,12 @@ defmodule WebappWeb.Router do
 
     resources "/hypervisors", HypervisorController do
       resources "/networks", NetworkController, only: [:new, :create, :index]
+      resources "/machines", MachineController, only: [:new, :create, :index]
     end
 
     # get "/hypervisor/:id/networks", HypervisorController, :index_networks
 
-    resources "/machines", MachineController
+    resources "/machines", MachineController, except: [:new, :create]
     get "/machines/:id/console", MachineController, :console
     post "/machines/:id/start", MachineController, :start
     post "/machines/:id/stop", MachineController, :stop

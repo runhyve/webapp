@@ -45,3 +45,4 @@ npm-debug.log
 *.iml
 .idea/
 .elixir_ls
+.vscode
