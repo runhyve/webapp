@@ -80,4 +80,4 @@ config :webapp, WebappWeb.Repo,
   url: "${DATABASE_URL}",
   database: "",
   ssl: true,
-  pool_size: 2 # Free tier db only allows 4 connections. Rolling deploys need pool_size*(n+1) connections.
+  pool_size: 1 # Free tier db only allows 4 connections. Rolling deploys need pool_size*(n+1) connections.
