@@ -71,10 +71,6 @@ config :logger, level: :info
 # Finally import the config/prod.secret.exs which should be versioned
 # separately.
 
-config :webapp, WebappWeb.Endpoint,
-  server: true,
-  secret_key_base: "${SECRET_KEY_BASE}"
-
 config :webapp, Webapp.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: System.get_env("DATABASE_URL"),
