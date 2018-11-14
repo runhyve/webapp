@@ -11,6 +11,8 @@
     <h1>New Hypervisor</h1>
   </div>
 
+  <div class="notification is-info" role="alert">Here you can connect your hypervisor to Runhyve. Click <a href="https://gitlab.com/runhyve/chef-hypervisor">here</a> for details.</div>
+
   <div class="level-right">
     <span>
       <%= link "Back",
