@@ -8,8 +8,8 @@ defmodule Webapp.MixProject do
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
-      # TODO: Remove on real :prod!
-      start_permanent: Mix.env() == :prod,
+      # TODO: Uncomment on real :prod!
+      #start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
