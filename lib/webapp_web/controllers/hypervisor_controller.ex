@@ -36,7 +36,11 @@ defmodule WebappWeb.HypervisorController do
       {:error, :hypervisor, %Ecto.Changeset{} = changeset, _} ->
         render(conn, "new.html", changeset: changeset)
 
-      {:error, :network, %Ecto.Changeset{} = changeset, _} ->
+      {:error, :network, _network_changeset, _} ->
+        changeset =
+          %Hypervisor{}
+          |> Hypervisor.changeset(hypervisor_params)
+
         render(conn, "new.html", changeset: changeset)
     end
   end
@@ -81,12 +85,21 @@ defmodule WebappWeb.HypervisorController do
   end
 
   def delete(conn, %{"id" => id}) do
-    hypervisor = Hypervisors.get_hypervisor!(id)
-    {:ok, _hypervisor} = Hypervisors.delete_hypervisor(hypervisor)
+    hypervisor = Hypervisors.get_hypervisor_with_machines!(id)
 
-    conn
-    |> put_flash(:info, "Hypervisor deleted successfully.")
-    |> redirect(to: Routes.hypervisor_path(conn, :index))
+    case Enum.count(hypervisor.machines) do
+      0 ->
+        {:ok, _hypervisor} = Hypervisors.delete_hypervisor(hypervisor)
+
+        conn
+        |> put_flash(:info, "Hypervisor deleted successfully.")
+        |> redirect(to: Routes.hypervisor_path(conn, :index))
+
+      _ ->
+        conn
+        |> put_flash(:error, "Hypervisor can not be deleted. First, remove all related machines.")
+        |> redirect(to: Routes.hypervisor_path(conn, :show, hypervisor))
+    end
   end
 
   defp load_hypervisor(conn, _) do

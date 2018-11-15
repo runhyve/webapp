@@ -5,7 +5,7 @@ defmodule Webapp.Repo.Migrations.CreateNetworks do
     create table(:networks) do
       add(:name, :string)
       add(:network, :cidr)
-      add(:hypervisor_id, references(:hypervisors, on_delete: :nothing))
+      add(:hypervisor_id, references(:hypervisors, on_delete: :delete_all), null: false)
 
       timestamps()
     end

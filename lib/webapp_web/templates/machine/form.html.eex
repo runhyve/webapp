@@ -7,11 +7,28 @@
     <% end %>
 
     <div class="field">
+      <%= label f, :hypervisor_id, class: "label" %>
+      <%= hidden_input f, :hypervisor_id, value: @hypervisor.id %>
+      <div class="item">
+        <%= @hypervisor.name %>
+      </div>
+      <%= error_tag f, :hypervisor_id %>
+    </div>
+
+    <div class="field">
       <%= label f, :name, class: "label" %>
       <div class="control">
         <%= text_input f, :name, class: "input" %>
       </div>
       <%= error_tag f, :name %>
+    </div>
+
+    <div class="field">
+    <%= label f, :plan_id, class: "label" %>
+    <div class="select">
+      <%= select f, :plan_id, plans_select_options(@plans), prompt: "Plan" %>
+    </div>
+    <%= error_tag f, :plan_id %>
     </div>
 
     <div class="field">
@@ -23,20 +40,11 @@
     </div>
 
     <div class="field">
-      <%= label f, :hypervisor_id, class: "label" %>
-      <%= hidden_input f, :hypervisor_id, value: @hypervisor.id %>
-      <div class="item">
-        <%= @hypervisor.name %>
+      <%= label f, :network, class: "label" %>
+      <div class="select">
+        <%= select f, :network_ids, networks_select_options(@networks) %>
       </div>
-      <%= error_tag f, :hypervisor_id %>
-    </div>
-
-    <div class="field">
-    <%= label f, :plan_id, class: "label" %>
-    <div class="select">
-      <%= select f, :plan_id, plans_select_options(@plans), prompt: "Plan" %>
-    </div>
-    <%= error_tag f, :plan_id %>
+      <%= error_tag f, :networks %>
     </div>
 
     <div class="field">

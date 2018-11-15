@@ -8,7 +8,7 @@ defmodule Webapp.Plans.Plan do
     field(:ram, :integer)
     field(:storage, :integer)
 
-    has_many(:machines, Webapp.Hypervisors.Machine)
+    has_many(:machines, Webapp.Machines.Machine)
 
     timestamps()
   end
@@ -18,5 +18,6 @@ defmodule Webapp.Plans.Plan do
     plan
     |> cast(attrs, [:name, :storage, :ram, :cpu])
     |> validate_required([:name, :storage, :ram, :cpu])
+    |> unique_constraint(:name)
   end
 end

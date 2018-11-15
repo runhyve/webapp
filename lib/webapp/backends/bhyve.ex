@@ -5,9 +5,9 @@ defmodule Webapp.Hypervisors.Bhyve do
   require Logger
   alias Webapp.Repo
 
-  alias Webapp.Hypervisors.{
-    Machine,
-    Network
+  alias Webapp.{
+    Machines.Machine,
+    Hypervisors.Network
   }
 
   @headers [{"Content-Type", "application/json"}]
@@ -32,7 +32,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   Creates a machine on bhyve hypervisor.
   """
   def create_machine(_repo, _multi_changes, %Machine{} = machine) do
-    machine = Repo.preload(machine, [:plan, :hypervisor])
+    machine = Repo.preload(machine, [:plan, :hypervisor, :networks])
 
     """
       Before we can call create_machine webhook we need to
@@ -53,14 +53,15 @@ defmodule Webapp.Hypervisors.Bhyve do
           "xenial-server-cloudimg-amd64-uefi1.img"
       end
 
-    # TODO: Prepare network for the machine.
+    [network | _] = machine.networks
+
     # TODO: machine name should be prefixed with owner namespace.
     payload = %{
       "plan" => machine.plan.name,
       "name" => machine.name,
       "system" => system,
       "image" => image,
-      "network" => "public"
+      "network" => network.name
     }
 
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/create"

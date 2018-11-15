@@ -3,7 +3,7 @@ defmodule WebappWeb.MachineChannel do
 
   alias Webapp.{
     Hypervisors,
-    Hypervisors.Machine
+    Machines.Machine
   }
 
   import WebappWeb.MachineView, only: [map_status_to_css: 1, status_icon: 1]

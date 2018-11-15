@@ -127,7 +127,7 @@ defmodule Webapp.HypervisorsTest do
   end
 
   describe "machines" do
-    #    alias Webapp.Hypervisors.Machine
+    #    alias Webapp.Machines.Machine
     #
     #    @valid_attrs %{name: "some name", template: "some template"}
     #    @update_attrs %{name: "some updated name", template: "some updated template"}

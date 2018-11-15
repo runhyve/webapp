@@ -57,7 +57,11 @@ defmodule WebappWeb.NetworkController do
         |> put_flash(:error, error)
         |> render("new.html", changeset: changeset)
 
-      {:error, :hypervisor_not_found, %Ecto.Changeset{} = changeset} ->
+      {:error, :hypervisor_not_found} ->
+        changeset =
+          %Network{}
+          |> Network.changeset(network_params)
+
         conn
         |> put_flash(:error, "Network was not created successfully.")
         |> render("new.html", changeset: changeset)

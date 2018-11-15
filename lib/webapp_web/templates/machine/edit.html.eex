@@ -11,10 +11,8 @@
 
 <%= render "_menu.html", assigns %>
 
-<% action = Routes.hypervisor_machine_path(@conn, :create, @machine.hypervisor) %>
-
 <div class="box">
-  <%= form_for @changeset, action, fn f -> %>
+  <%= form_for @changeset, Routes.machine_path(@conn, :update, @machine), fn f -> %>
     <%= if @changeset.action do %>
       <div class="notification is-danger">
         <p>Oops, something went wrong! Please check the errors below.</p>
@@ -32,6 +30,31 @@
     <div class="field">
       <div class="control">
         <%= submit "Save", class: "button is-rounded is-primary" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="box">
+  <%= form_for @changeset, Routes.machine_path(@conn, :update, @machine), fn f -> %>
+    <%= if @changeset.action do %>
+      <div class="notification is-danger">
+        <p>Oops, something went wrong! Please check the errors below.</p>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <%= label f, "Add a new network", class: "label" %>
+      <div class="select">
+        <%= select f, :network_ids, networks_select_options(@networks -- @machine.networks) %>
+      </div>
+      <%= error_tag f, :networks %>
+    </div>
+
+
+    <div class="field">
+      <div class="control">
+        <%= submit "Add", class: "button is-rounded is-primary" %>
       </div>
     </div>
   <% end %>

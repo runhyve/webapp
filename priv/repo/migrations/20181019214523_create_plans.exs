@@ -10,5 +10,7 @@ defmodule Webapp.Repo.Migrations.CreatePlans do
 
       timestamps()
     end
+
+    create(unique_index(:plans, [:name]))
   end
 end

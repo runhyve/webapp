@@ -5,8 +5,15 @@ defmodule WebappWeb.MachineView do
 
   def hypervisors_select_options(hypervisors) do
     for hypervisor <- hypervisors do
-      label = hypervisor.name <> " (" <> hypervisor.ip_address <> ")"
+      label = "#{hypervisor.name} (#{hypervisor.ip_address})"
       {label, hypervisor.id}
+    end
+  end
+
+  def networks_select_options(networks) do
+    for network <- networks do
+      label = "#{network.name} (#{network.network})"
+      {label, network.id}
     end
   end
 

@@ -5,15 +5,16 @@ defmodule Webapp.Repo.Migrations.CreateMachines do
     create table(:machines) do
       add(:name, :string)
       add(:template, :string)
-      add(:hypervisor_id, references(:hypervisors, on_delete: :nothing))
+      add(:hypervisor_id, references(:hypervisors, on_delete: :delete_all), null: false)
       add(:plan_id, references(:plans, on_delete: :nothing))
       add(:last_status, :string, default: "")
       add(:created, :boolean)
+      add(:job_id, :integer, null: true)
 
       timestamps()
     end
 
     create(index(:machines, [:hypervisor_id]))
-    create(unique_index(:machines, [:name]))
+    create(unique_index(:machines, [:name, :hypervisor_id]))
   end
 end

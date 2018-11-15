@@ -11,11 +11,11 @@ defmodule Webapp.Hypervisors do
     Changeset
   }
 
-  alias Webapp.Hypervisors.{
-    Type,
-    Hypervisor,
-    Machine,
-    Network
+  alias Webapp.{
+    Hypervisors.Type,
+    Hypervisors.Hypervisor,
+    Machines.Machine,
+    Hypervisors.Network
   }
 
   # Number of seconds after the create action is considered as failed.
@@ -131,6 +131,36 @@ defmodule Webapp.Hypervisors do
   end
 
   @doc """
+  Returns the list of hypervisor's networks.
+
+  ## Examples
+
+      iex> list_networks()
+      [%Network{}, ...]
+
+  """
+  def list_hypervisor_networks(hypervisor) do
+    hypervisor
+    |> Ecto.assoc(:networks)
+    |> Repo.all()
+  end
+
+  @doc """
+  Returns the list of hypervisor's machines.
+
+  ## Examples
+
+      iex> list_networks()
+      [%Network{}, ...]
+
+  """
+  def list_hypervisor_machines(hypervisor) do
+    hypervisor
+    |> Ecto.assoc(:machines)
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single hypervisor.
 
   Raises `Ecto.NoResultsError` if the Hypervisor does not exist.
@@ -147,6 +177,11 @@ defmodule Webapp.Hypervisors do
   def get_hypervisor!(id) do
     Repo.get!(Hypervisor, id)
     |> Repo.preload(:hypervisor_type)
+  end
+
+  def get_hypervisor_with_machines!(id) do
+    Repo.get!(Hypervisor, id)
+    |> Repo.preload([:hypervisor_type, :machines])
   end
 
   @doc """
@@ -184,7 +219,7 @@ defmodule Webapp.Hypervisors do
     |> Multi.run(:network, fn _repo, %{hypervisor: hypervisor} ->
       %Network{}
       |> Network.changeset(%{
-        name: "#{hypervisor.name}-public",
+        name: "public",
         network: "0.0.0.0/32",
         hypervisor_id: hypervisor.id
       })
@@ -249,10 +284,9 @@ defmodule Webapp.Hypervisors do
       [%Machine{}, ...]
 
   """
-  def list_machines do
+  def list_machines(preloads \\ [:hypervisor, :plan]) do
     Repo.all(Machine)
-    |> Repo.preload(:hypervisor)
-    |> Repo.preload(:plan)
+    |> Repo.preload(preloads)
   end
 
   @doc """
@@ -269,10 +303,9 @@ defmodule Webapp.Hypervisors do
       ** (Ecto.NoResultsError)
 
   """
-  def get_machine!(id) do
+  def get_machine!(id, preloads \\ [:hypervisor, :plan]) do
     Repo.get!(Machine, id)
-    |> Repo.preload(:hypervisor)
-    |> Repo.preload(:plan)
+    |> Repo.preload(preloads)
   end
 
   @doc """
@@ -338,7 +371,7 @@ defmodule Webapp.Hypervisors do
   """
   def update_machine(%Machine{} = machine, attrs) do
     machine
-    |> Machine.changeset(attrs)
+    |> Machine.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -372,7 +405,7 @@ defmodule Webapp.Hypervisors do
   """
   def update_machine_status(%Machine{} = machine) do
     module = get_hypervisor_module(machine)
-    changeset = change_machine(machine)
+    changeset = Machine.update_changeset(machine, %{})
 
     try do
       Multi.new()
@@ -532,7 +565,7 @@ defmodule Webapp.Hypervisors do
 
   """
   def change_machine(%Machine{} = machine) do
-    Machine.changeset(machine, %{})
+    Machine.update_changeset(machine, %{})
   end
 
   @doc """
@@ -568,24 +601,13 @@ defmodule Webapp.Hypervisors do
       [%Network{}, ...]
 
   """
-  def list_networks do
+  def list_networks(preloads \\ [:hypervisor]) do
     Repo.all(Network)
-    |> Repo.preload(:hypervisor)
+    |> Repo.preload(preloads)
   end
 
-  @doc """
-  Returns the list of networks.
-
-  ## Examples
-
-      iex> list_networks()
-      [%Network{}, ...]
-
-  """
-  def list_hypervisor_networks(hypervisor) do
-    hypervisor
-    |> Ecto.assoc(:networks)
-    |> Repo.all()
+  def list_networks_by_id(network_ids, preloads \\ []) do
+    Repo.all(from n in Network, where: n.id in ^network_ids)
   end
 
   @doc """
@@ -602,9 +624,9 @@ defmodule Webapp.Hypervisors do
       ** (Ecto.NoResultsError)
 
   """
-  def get_network!(id) do
+  def get_network!(id, preloads \\ [:hypervisor]) do
     Repo.get!(Network, id)
-    |> Repo.preload(:hypervisor)
+    |> Repo.preload([preloads])
   end
 
   @doc """
@@ -623,6 +645,8 @@ defmodule Webapp.Hypervisors do
     changeset =
       %Network{}
       |> Network.changeset(attrs)
+
+      IO.inspect(changeset)
 
     if changeset.valid? do
       hypervisor =
@@ -644,7 +668,8 @@ defmodule Webapp.Hypervisors do
         end)
         |> Repo.transaction()
       rescue
-        UndefinedFunctionError -> {:error, :hypervisor_not_found}
+         UndefinedFunctionError ->
+          {:error, :hypervisor_not_found}
       end
     else
       Repo.insert(changeset)

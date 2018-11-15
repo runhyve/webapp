@@ -31,5 +31,14 @@
       <strong>Plan:</strong>
       <%= link @machine.plan.name, to: Routes.plan_path(@conn, :show, @machine.plan) %>
     </li>
+
+    <li>
+      <strong>Networks:</strong>
+      <ul>
+        <%= for network <- @machine.networks do %>
+          <li><%= link "#{network.name} (#{network.network})", to: Routes.network_path(@conn, :show, network) %></li>
+        <% end %>
+      </ul>
+    </li>
   </ul>
 </div>

@@ -31,6 +31,14 @@
     </div>
 
     <div class="field">
+      <%= label f, :webhook_token, class: "label" %>
+      <div class="control">
+        <%= text_input f, :webhook_token, class: "input" %>
+      </div>
+      <%= error_tag f, :webhook_token %>
+    </div>
+
+    <div class="field">
       <%= label f, :hypervisor_type_id, class: "label" %>
       <div class="select">
         <%= select f, :hypervisor_type_id, hypervisor_types_select_options(@hypervisor_types), prompt: "Hypervisor type" %>

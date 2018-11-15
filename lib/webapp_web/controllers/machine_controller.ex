@@ -1,16 +1,17 @@
 defmodule WebappWeb.MachineController do
   use WebappWeb, :controller
 
-  alias Webapp.Hypervisors
-  alias Webapp.Hypervisors.Machine
-  alias Webapp.Plans
-
-  plug :load_hypervisor when action in [:new, :create]
-  plug :load_references when action in [:new, :create]
+  alias Webapp.{
+      Machines.Machine,
+      Hypervisors,
+      Plans
+    }
   plug :load_machine when action not in [:index, :create, :new]
+  plug :load_hypervisor when action in [:new, :create]
+  plug :load_references when action in [:new, :create, :edit, :update]
 
   def index(conn, %{"hypervisor_id" => hypervisor_id} = params) do
-    machines = Hypervisors.list_machines()
+    machines = Hypervisors.list_machines([:hypervisor, :plan, :networks])
 
     conn = load_hypervisor(conn, params)
     hypervisor = conn.assigns[:hypervisor]
@@ -33,7 +34,7 @@ defmodule WebappWeb.MachineController do
   end
 
   def index(conn, _params) do
-    machines = Hypervisors.list_machines()
+    machines = Hypervisors.list_machines([:hypervisor, :plan, :networks])
     render(conn, "index.html", machines: machines, hypervisor: false)
   end
 
@@ -87,23 +88,29 @@ defmodule WebappWeb.MachineController do
   end
 
   def edit(conn, %{"id" => id}) do
-    machine = Hypervisors.get_machine!(id)
+    machine = Hypervisors.get_machine!(id, [:hypervisor, :networks])
     changeset = Hypervisors.change_machine(machine)
+
     render(conn, "edit.html", machine: machine, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "machine" => machine_params}) do
-    machine = Hypervisors.get_machine!(id)
 
-    case Hypervisors.update_machine(machine, machine_params) do
-      {:ok, machine} ->
-        conn
-        |> put_flash(:info, "Machine updated successfully.")
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+  # Add network
+  def update(conn, %{"id" => id, "machine" => %{"network_ids" => network_id}}) do
+    machine = Hypervisors.get_machine!(id, [:networks])
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", machine: machine, changeset: changeset)
-    end
+    conn
+    |> put_flash(:error, "Not implemented yet.")
+    |> redirect(to: Routes.machine_path(conn, :show, machine))
+  end
+
+  # Change machine name
+  def update(conn, %{"id" => id, "machine" => %{"name" => name} = machine_params}) do
+    machine = Hypervisors.get_machine!(id, [:networks])
+
+    conn
+    |> put_flash(:error, "Not implemented yet.")
+    |> redirect(to: Routes.machine_path(conn, :show, machine))
   end
 
   def delete(conn, %{"id" => id}) do
@@ -113,17 +120,17 @@ defmodule WebappWeb.MachineController do
       {:ok, _machine} ->
         conn
         |> put_flash(:info, "Machine deleted successfully.")
-        |> redirect(to: Routes.machine_path(conn, :index))
+        |> redirect(to: Routes.hypervisor_machine_path(conn, :index, machine.hypervisor))
 
       {:error, :hypervisor, error, changes} ->
         conn
         |> put_flash(:error, error)
-        |> redirect(to: Routes.machine_path(conn, :index))
+        |> redirect(to: Routes.hypervisor_machine_path(conn, :index, machine.hypervisor))
 
       {:error, :hypervisor_not_found, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_flash(:error, "Machine was not deleted successfully.")
-        |> redirect(to: Routes.machine_path(conn, :index))
+        |> redirect(to: Routes.hypervisor_machine_path(conn, :index, machine.hypervisor))
     end
   end
 
@@ -192,7 +199,7 @@ defmodule WebappWeb.MachineController do
   defp load_machine(conn, _) do
     try do
       %{"id" => id} = conn.params
-      machine = Hypervisors.get_machine!(id)
+      machine = Hypervisors.get_machine!(id, [:hypervisor, :plan, :networks])
 
       conn
       |> assign(:machine, machine)
@@ -205,7 +212,16 @@ defmodule WebappWeb.MachineController do
   end
 
   defp load_references(conn, _) do
+    # The :index, :create and :new are under /hypervisors resource
+    # for them, we use load_hypervisor which puts assign with hypervisor.
+    # For other methods we're loading hypervisor from machine.
+    hypervisor = case Map.has_key?(conn.assigns, :hypervisor) do
+      true -> conn.assigns[:hypervisor]
+      _ -> conn.assigns[:machine].hypervisor
+    end
+
     conn
+    |> assign(:networks, Hypervisors.list_hypervisor_networks(hypervisor))
     |> assign(:plans, Plans.list_plans())
   end
 

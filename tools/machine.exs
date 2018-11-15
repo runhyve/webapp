@@ -1,5 +1,5 @@
 defmodule Script do
-  alias Webapp.{Hypervisors, Repo, Hypervisors.Machine}
+  alias Webapp.{Hypervisors, Repo, Machines.Machine}
 
   def main(argv) do
     {options, args, _invalid} = OptionParser.parse(argv, strict: options())
@@ -34,7 +34,7 @@ defmodule Script do
     header = ["id", "name", "created", "last status", "hypervisor", "plan"]
 
     machines = Hypervisors.list_machines()
-    |> Enum.map(fn %Hypervisors.Machine{} = machine ->
+    |> Enum.map(fn %Machines.Machine{} = machine ->
       [
         machine.id,
         machine.name,
