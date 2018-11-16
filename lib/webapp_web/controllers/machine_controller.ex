@@ -5,18 +5,17 @@ defmodule WebappWeb.MachineController do
       Machines,
       Machines.Machine,
       Hypervisors,
+      Networks,
       Plans
     }
   plug :load_machine when action not in [:index, :create, :new]
-  plug :load_hypervisor when action in [:new, :create, :index]
+  plug :load_hypervisor when action in [:new, :create]
   plug :load_references when action in [:new, :create, :edit, :update]
 
   def index(conn, %{"hypervisor_id" => hypervisor_id} = params) do
-    hypervisor = conn.assigns[:hypervisor]
-    machines = Hypervisors.list_hypervisor_machines(hypervisor, [:hypervisor, :plan, :networks])
-
     conn = load_hypervisor(conn, params)
     hypervisor = conn.assigns[:hypervisor]
+    machines = Hypervisors.list_hypervisor_machines(hypervisor, [:hypervisor, :plan, :networks])
 
     # @TODO: Refactor this
     status =
@@ -74,7 +73,7 @@ defmodule WebappWeb.MachineController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, _params) do
     machine = conn.assigns[:machine]
 
     case Machines.check_status(machine) do
@@ -89,17 +88,17 @@ defmodule WebappWeb.MachineController do
     end
   end
 
-  def edit(conn, %{"id" => id}) do
-    machine = Machines.get_machine!(id, [:hypervisor, :networks])
+  def edit(conn, _params) do
+    machine = conn.assigns[:machine]
     changeset = Machines.change_machine(machine)
 
-    render(conn, "edit.html", machine: machine, changeset: changeset)
+    render(conn, "settings.html", machine: machine, changeset: changeset)
   end
 
 
   # Add network
-  def update(conn, %{"id" => id, "machine" => %{"network_ids" => network_id}}) do
-    machine = Machines.get_machine!(id, [:hypervisor, :networks])
+  def update(conn, %{"machine" => %{"network_ids" => network_id}}) do
+    machine = conn.assigns[:machine]
     network = Networks.get_network!(network_id)
 
     case Machines.add_network_to_machine(machine, network) do
@@ -142,7 +141,7 @@ defmodule WebappWeb.MachineController do
     |> redirect(to: Routes.machine_path(conn, :show, machine))
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, _params) do
     machine = conn.assigns[:machine]
 
     case Machines.delete_machine(machine) do
@@ -163,7 +162,7 @@ defmodule WebappWeb.MachineController do
     end
   end
 
-  def start(conn, %{"id" => id}) do
+  def start(conn, _params) do
     machine = conn.assigns[:machine]
 
     case Machines.start_machine(machine) do
@@ -179,7 +178,7 @@ defmodule WebappWeb.MachineController do
     end
   end
 
-  def stop(conn, %{"id" => id}) do
+  def stop(conn, _params) do
     machine = conn.assigns[:machine]
 
     case Machines.stop_machine(machine) do
@@ -195,8 +194,8 @@ defmodule WebappWeb.MachineController do
     end
   end
 
-  def poweroff(conn, %{"id" => id}) do
-    machine = Machines.get_machine!(id)
+  def poweroff(conn, _params) do
+    machine = conn.assigns[:machine]
 
     case Machines.poweroff_machine(machine) do
       {:ok, _} ->
@@ -211,7 +210,7 @@ defmodule WebappWeb.MachineController do
     end
   end
 
-  def console(conn, %{"id" => id}) do
+  def console(conn, _params) do
     machine = conn.assigns[:machine]
 
     with {:ok, console} <- Machines.console_machine(machine) do

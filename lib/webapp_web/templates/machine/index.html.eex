@@ -28,17 +28,23 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th></th>
       <th>Template</th>
       <th>Hypervisor</th>
       <th>Plan</th>
       <th>Networks</th>
-      <th></th>
     </tr>
   </thead>
   <tbody>
 <%= for machine <- @machines do %>
     <tr>
       <td><%= link machine.name, to: Routes.machine_path(@conn, :show, machine) %></td>
+      <td>
+        <div class="tags has-addons">
+          <span class="tag status status-icon <%= map_status_to_css(machine.last_status) %>" data-status="<%= map_status_to_css(machine.last_status) %>"><i class="<%= status_icon(machine.last_status) %>"></i></span>
+          <span class="tag status <%= map_status_to_css(machine.last_status) %>" data-status="<%= map_status_to_css(machine.last_status) %>"><%= machine.last_status %></span>
+        </div>
+      </td>
       <td><%= machine.template %></td>
       <td><%= link machine.hypervisor.name, to: Routes.hypervisor_path(@conn, :show, machine.hypervisor) %></td>
       <td><%= link machine.plan.name, to: Routes.plan_path(@conn, :show, machine.plan) %></td>
@@ -48,12 +54,6 @@
            <li><%= link "#{network.name} (#{network.network})", to: Routes.network_path(@conn, :show, network) %></li>
         <% end %>
       </ul></td>
-
-      <td class="has-text-right">
-        <%= link "Show", to: Routes.machine_path(@conn, :show, machine), class: "button is-rounded"  %>
-        <%= link "Edit", to: Routes.machine_path(@conn, :edit, machine), class: "button is-rounded is-info"  %>
-        <%= link "Delete", to: Routes.machine_path(@conn, :delete, machine), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger"  %>
-      </td>
     </tr>
 <% end %>
 <%= if Enum.empty?(@machines) do %>

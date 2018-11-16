@@ -30,7 +30,7 @@ defmodule WebappWeb do
   def view do
     quote do
       use Phoenix.View,
-        root: "lib/webapp_web/templates",
+        root: "lib/webapp_web/templates", pattern: "**/*",
         namespace: WebappWeb
 
       # Import convenience functions from controllers
