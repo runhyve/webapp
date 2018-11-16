@@ -8,11 +8,12 @@ defmodule WebappWeb.MachineController do
       Plans
     }
   plug :load_machine when action not in [:index, :create, :new]
-  plug :load_hypervisor when action in [:new, :create]
+  plug :load_hypervisor when action in [:new, :create, :index]
   plug :load_references when action in [:new, :create, :edit, :update]
 
   def index(conn, %{"hypervisor_id" => hypervisor_id} = params) do
-    machines = Machines.list_machines([:hypervisor, :plan, :networks])
+    hypervisor = conn.assigns[:hypervisor]
+    machines = Hypervisors.list_hypervisor_machines(hypervisor, [:hypervisor, :plan, :networks])
 
     conn = load_hypervisor(conn, params)
     hypervisor = conn.assigns[:hypervisor]

@@ -135,14 +135,15 @@ defmodule Webapp.Hypervisors do
 
   ## Examples
 
-      iex> list_networks()
+      iex> list_networks(hypervisor)
       [%Network{}, ...]
 
   """
-  def list_hypervisor_networks(hypervisor) do
+  def list_hypervisor_networks(hypervisor, preloads \\ []) do
     hypervisor
     |> Ecto.assoc(:networks)
     |> Repo.all()
+    |> Repo.preload(preloads)
   end
 
   @doc """
@@ -150,14 +151,15 @@ defmodule Webapp.Hypervisors do
 
   ## Examples
 
-      iex> list_networks()
+      iex> list_hypervisor_machines(hypervisor)
       [%Network{}, ...]
 
   """
-  def list_hypervisor_machines(hypervisor) do
+  def list_hypervisor_machines(hypervisor, preloads \\ []) do
     hypervisor
     |> Ecto.assoc(:machines)
     |> Repo.all()
+    |> Repo.preload(preloads)
   end
 
   @doc """
