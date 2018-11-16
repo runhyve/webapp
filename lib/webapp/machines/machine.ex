@@ -5,6 +5,7 @@ defmodule Webapp.Machines.Machine do
   alias Webapp.{
     Hypervisors,
     Hypervisors.Hypervisor,
+    Networks,
     Networks.Network
     }
 
