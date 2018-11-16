@@ -35,7 +35,6 @@
       <td><%= network.network %></td>
       <td><%= link @hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @hypervisor) %></td>
 
-
       <td>
         <%= link "Show", to: Routes.network_path(@conn, :show, network), class: "button is-rounded" %>
         <%= link "Edit", to: Routes.network_path(@conn, :edit, network), class: "button is-rounded is-info" %>

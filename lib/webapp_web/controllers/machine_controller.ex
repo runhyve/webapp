@@ -2,6 +2,7 @@ defmodule WebappWeb.MachineController do
   use WebappWeb, :controller
 
   alias Webapp.{
+      Machines,
       Machines.Machine,
       Hypervisors,
       Plans
@@ -11,7 +12,7 @@ defmodule WebappWeb.MachineController do
   plug :load_references when action in [:new, :create, :edit, :update]
 
   def index(conn, %{"hypervisor_id" => hypervisor_id} = params) do
-    machines = Hypervisors.list_machines([:hypervisor, :plan, :networks])
+    machines = Machines.list_machines([:hypervisor, :plan, :networks])
 
     conn = load_hypervisor(conn, params)
     hypervisor = conn.assigns[:hypervisor]
@@ -34,17 +35,17 @@ defmodule WebappWeb.MachineController do
   end
 
   def index(conn, _params) do
-    machines = Hypervisors.list_machines([:hypervisor, :plan, :networks])
+    machines = Machines.list_machines([:hypervisor, :plan, :networks])
     render(conn, "index.html", machines: machines, hypervisor: false)
   end
 
   def new(conn, _params) do
-    changeset = Hypervisors.change_machine(%Machine{})
+    changeset = Machines.change_machine(%Machine{})
     render(conn, "new.html", changeset: changeset)
   end
 
   def create(conn, %{"machine" => machine_params}) do
-    case Hypervisors.create_machine(machine_params) do
+    case Machines.create_machine(machine_params) do
       {:ok, %{machine: machine}} ->
         conn
         |> put_flash(:info, "Machine created successfully.")
@@ -75,7 +76,7 @@ defmodule WebappWeb.MachineController do
   def show(conn, %{"id" => id}) do
     machine = conn.assigns[:machine]
 
-    case Hypervisors.check_status(machine) do
+    case Machines.check_status(machine) do
       {:ok, %Machine{} = machine} ->
         conn
         |> render("show.html", machine: machine)
@@ -88,8 +89,8 @@ defmodule WebappWeb.MachineController do
   end
 
   def edit(conn, %{"id" => id}) do
-    machine = Hypervisors.get_machine!(id, [:hypervisor, :networks])
-    changeset = Hypervisors.change_machine(machine)
+    machine = Machines.get_machine!(id, [:hypervisor, :networks])
+    changeset = Machines.change_machine(machine)
 
     render(conn, "edit.html", machine: machine, changeset: changeset)
   end
@@ -97,16 +98,43 @@ defmodule WebappWeb.MachineController do
 
   # Add network
   def update(conn, %{"id" => id, "machine" => %{"network_ids" => network_id}}) do
-    machine = Hypervisors.get_machine!(id, [:networks])
+    machine = Machines.get_machine!(id, [:hypervisor, :networks])
+    network = Networks.get_network!(network_id)
 
-    conn
-    |> put_flash(:error, "Not implemented yet.")
-    |> redirect(to: Routes.machine_path(conn, :show, machine))
+    case Machines.add_network_to_machine(machine, network) do
+      {:ok, %{machine: machine}} ->
+        conn
+        |> put_flash(:info, "Network added to Machine successfully.")
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+
+      # Errors from changeset should be displayed!
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_flash(:error, "Network was not added to Machine successfully.")
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+
+      # Errors from changeset should be displayed!
+      {:error, :machine, %Ecto.Changeset{} = changeset, _} ->
+        conn
+        |> put_flash(:error, "Network was not added to Machine successfully.")
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+
+      {:error, :hypervisor, error, _} ->
+        conn
+        |> put_flash(:error, error)
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+
+      {:error, :hypervisor_not_found} ->
+        conn
+        |> put_flash(:error, "Machine was not created successfully.")
+        |> redirect(to: Routes.machine_path(conn, :show, machine))
+    end
+
   end
 
   # Change machine name
   def update(conn, %{"id" => id, "machine" => %{"name" => name} = machine_params}) do
-    machine = Hypervisors.get_machine!(id, [:networks])
+    machine = Machines.get_machine!(id, [:networks])
 
     conn
     |> put_flash(:error, "Not implemented yet.")
@@ -116,7 +144,7 @@ defmodule WebappWeb.MachineController do
   def delete(conn, %{"id" => id}) do
     machine = conn.assigns[:machine]
 
-    case Hypervisors.delete_machine(machine) do
+    case Machines.delete_machine(machine) do
       {:ok, _machine} ->
         conn
         |> put_flash(:info, "Machine deleted successfully.")
@@ -137,7 +165,7 @@ defmodule WebappWeb.MachineController do
   def start(conn, %{"id" => id}) do
     machine = conn.assigns[:machine]
 
-    case Hypervisors.start_machine(machine) do
+    case Machines.start_machine(machine) do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Machine is starting")
@@ -153,7 +181,7 @@ defmodule WebappWeb.MachineController do
   def stop(conn, %{"id" => id}) do
     machine = conn.assigns[:machine]
 
-    case Hypervisors.stop_machine(machine) do
+    case Machines.stop_machine(machine) do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Machine is stopping")
@@ -167,9 +195,9 @@ defmodule WebappWeb.MachineController do
   end
 
   def poweroff(conn, %{"id" => id}) do
-    machine = Hypervisors.get_machine!(id)
+    machine = Machines.get_machine!(id)
 
-    case Hypervisors.poweroff_machine(machine) do
+    case Machines.poweroff_machine(machine) do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Machine is being powered off")
@@ -185,7 +213,7 @@ defmodule WebappWeb.MachineController do
   def console(conn, %{"id" => id}) do
     machine = conn.assigns[:machine]
 
-    with {:ok, console} <- Hypervisors.console_machine(machine) do
+    with {:ok, console} <- Machines.console_machine(machine) do
       token = Base.encode64(console["user"] <> ":" <> console["password"])
       render(conn, "console.html", machine: machine, console: console, token: token)
     else
@@ -199,7 +227,7 @@ defmodule WebappWeb.MachineController do
   defp load_machine(conn, _) do
     try do
       %{"id" => id} = conn.params
-      machine = Hypervisors.get_machine!(id, [:hypervisor, :plan, :networks])
+      machine = Machines.get_machine!(id, [:hypervisor, :plan, :networks])
 
       conn
       |> assign(:machine, machine)

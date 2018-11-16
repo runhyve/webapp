@@ -137,34 +137,34 @@ defmodule Webapp.HypervisorsTest do
     #      {:ok, machine} =
     #        attrs
     #        |> Enum.into(@valid_attrs)
-    #        |> Hypervisors.create_machine()
+    #        |> Machines.create_machine()
     #
     #      machine
     #    end
     #
     #    test "list_machines/0 returns all machines" do
     #      machine = machine_fixture()
-    #      assert Hypervisors.list_machines() == [machine]
+    #      assert Machines.list_machines() == [machine]
     #    end
     #
     #    test "get_machine!/1 returns the machine with given id" do
     #      machine = machine_fixture()
-    #      assert Hypervisors.get_machine!(machine.id) == machine
+    #      assert Machines.get_machine!(machine.id) == machine
     #    end
     #
     #    test "create_machine/1 with valid data creates a machine" do
-    #      assert {:ok, %Machine{} = machine} = Hypervisors.create_machine(@valid_attrs)
+    #      assert {:ok, %Machine{} = machine} = Machines.create_machine(@valid_attrs)
     #      assert machine.name == "some name"
     #      assert machine.template == "some template"
     #    end
     #
     #    test "create_machine/1 with invalid data returns error changeset" do
-    #      assert {:error, %Ecto.Changeset{}} = Hypervisors.create_machine(@invalid_attrs)
+    #      assert {:error, %Ecto.Changeset{}} = Machines.create_machine(@invalid_attrs)
     #    end
     #
     #    test "update_machine/2 with valid data updates the machine" do
     #      machine = machine_fixture()
-    #      assert {:ok, %Machine{} = machine} = Hypervisors.update_machine(machine, @update_attrs)
+    #      assert {:ok, %Machine{} = machine} = Machines.update_machine(machine, @update_attrs)
     #
     #
     #      assert machine.name == "some updated name"
@@ -173,24 +173,24 @@ defmodule Webapp.HypervisorsTest do
     #
     #    test "update_machine/2 with invalid data returns error changeset" do
     #      machine = machine_fixture()
-    #      assert {:error, %Ecto.Changeset{}} = Hypervisors.update_machine(machine, @invalid_attrs)
-    #      assert machine == Hypervisors.get_machine!(machine.id)
+    #      assert {:error, %Ecto.Changeset{}} = Machines.update_machine(machine, @invalid_attrs)
+    #      assert machine == Machines.get_machine!(machine.id)
     #    end
     #
     #    test "delete_machine/1 deletes the machine" do
     #      machine = machine_fixture()
-    #      assert {:ok, %Machine{}} = Hypervisors.delete_machine(machine)
-    #      assert_raise Ecto.NoResultsError, fn -> Hypervisors.get_machine!(machine.id) end
+    #      assert {:ok, %Machine{}} = Machines.delete_machine(machine)
+    #      assert_raise Ecto.NoResultsError, fn -> Machines.get_machine!(machine.id) end
     #    end
     #
     #    test "change_machine/1 returns a machine changeset" do
     #      machine = machine_fixture()
-    #      assert %Ecto.Changeset{} = Hypervisors.change_machine(machine)
+    #      assert %Ecto.Changeset{} = Machines.change_machine(machine)
     #    end
   end
 
   describe "networks" do
-    alias Webapp.Hypervisors.Network
+    alias Webapp.Networks.Network
 
     @valid_attrs %{name: "some name", network: "some network"}
     @update_attrs %{name: "some updated name", network: "some updated network"}
@@ -200,53 +200,53 @@ defmodule Webapp.HypervisorsTest do
       {:ok, network} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Hypervisors.create_network()
+        |> Networks.create_network()
 
       network
     end
 
     test "list_networks/0 returns all networks" do
       network = network_fixture()
-      assert Hypervisors.list_networks() == [network]
+      assert Networks.list_networks() == [network]
     end
 
     test "get_network!/1 returns the network with given id" do
       network = network_fixture()
-      assert Hypervisors.get_network!(network.id) == network
+      assert Networks.get_network!(network.id) == network
     end
 
     test "create_network/1 with valid data creates a network" do
-      assert {:ok, %Network{} = network} = Hypervisors.create_network(@valid_attrs)
+      assert {:ok, %Network{} = network} = Networks.create_network(@valid_attrs)
       assert network.name == "some name"
       assert network.network == "some network"
     end
 
     test "create_network/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Hypervisors.create_network(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Networks.create_network(@invalid_attrs)
     end
 
     test "update_network/2 with valid data updates the network" do
       network = network_fixture()
-      assert {:ok, %Network{} = network} = Hypervisors.update_network(network, @update_attrs)
+      assert {:ok, %Network{} = network} = Networks.update_network(network, @update_attrs)
       assert network.name == "some updated name"
       assert network.network == "some updated network"
     end
 
     test "update_network/2 with invalid data returns error changeset" do
       network = network_fixture()
-      assert {:error, %Ecto.Changeset{}} = Hypervisors.update_network(network, @invalid_attrs)
-      assert network == Hypervisors.get_network!(network.id)
+      assert {:error, %Ecto.Changeset{}} = Networks.update_network(network, @invalid_attrs)
+      assert network == Networks.get_network!(network.id)
     end
 
     test "delete_network/1 deletes the network" do
       network = network_fixture()
-      assert {:ok, %Network{}} = Hypervisors.delete_network(network)
-      assert_raise Ecto.NoResultsError, fn -> Hypervisors.get_network!(network.id) end
+      assert {:ok, %Network{}} = Networks.delete_network(network)
+      assert_raise Ecto.NoResultsError, fn -> Networks.get_network!(network.id) end
     end
 
     test "change_network/1 returns a network changeset" do
       network = network_fixture()
-      assert %Ecto.Changeset{} = Hypervisors.change_network(network)
+      assert %Ecto.Changeset{} = Networks.change_network(network)
     end
   end
 end

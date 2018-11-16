@@ -17,7 +17,7 @@ defmodule Webapp.TestHelpers do
   end
 
   def fixture_machine(machine) do
-    {:ok, %{machine: machine}} = Hypervisors.create_machine(machine)
+    {:ok, %{machine: machine}} = Machines.create_machine(machine)
     machine
   end
 end

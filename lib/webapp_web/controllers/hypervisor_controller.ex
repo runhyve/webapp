@@ -85,7 +85,7 @@ defmodule WebappWeb.HypervisorController do
   end
 
   def delete(conn, %{"id" => id}) do
-    hypervisor = Hypervisors.get_hypervisor_with_machines!(id)
+    hypervisor = Hypervisors.get_hypervisor!(id, [:machines])
 
     case Enum.count(hypervisor.machines) do
       0 ->

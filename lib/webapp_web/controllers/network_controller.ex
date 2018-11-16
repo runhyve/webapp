@@ -1,8 +1,11 @@
 defmodule WebappWeb.NetworkController do
   use WebappWeb, :controller
 
-  alias Webapp.Hypervisors
-  alias Webapp.Hypervisors.Network
+  alias Webapp.{
+    Hypervisors,
+    Networks,
+    Networks.Network
+    }
 
   plug :load_hypervisor when action in [:index, :create, :new]
   plug :load_network when action not in [:index, :create, :new]
@@ -30,13 +33,13 @@ defmodule WebappWeb.NetworkController do
 
   def new(conn, _params) do
     hypervisor = conn.assigns[:hypervisor]
-    changeset = Hypervisors.change_network(%Network{hypervisor_id: hypervisor.id})
+    changeset = Networks.change_network(%Network{hypervisor_id: hypervisor.id})
 
     render(conn, "new.html", changeset: changeset, hypervisor: hypervisor)
   end
 
   def create(conn, %{"network" => network_params}) do
-    case Hypervisors.create_network(network_params) do
+    case Networks.create_network(network_params) do
       {:ok, %{network: network}} ->
         conn
         |> put_flash(:info, "Network created successfully.")
@@ -75,7 +78,7 @@ defmodule WebappWeb.NetworkController do
 
   def edit(conn, _params) do
     network = conn.assigns[:network]
-    changeset = Hypervisors.change_network(network)
+    changeset = Networks.change_network(network)
 
     render(conn, "edit.html",
       network: network,
@@ -85,9 +88,9 @@ defmodule WebappWeb.NetworkController do
   end
 
   def update(conn, %{"id" => id, "network" => network_params}) do
-    network = Hypervisors.get_network!(id)
+    network = Networks.get_network!(id)
 
-    case Hypervisors.update_network(network, network_params) do
+    case Networks.update_network(network, network_params) do
       {:ok, network} ->
         conn
         |> put_flash(:info, "Network updated successfully.")
@@ -102,7 +105,7 @@ defmodule WebappWeb.NetworkController do
     network = conn.assigns[:network]
     hypervisor = network.hypervisor
 
-    {:ok, _network} = Hypervisors.delete_network(network)
+    {:ok, _network} = Networks.delete_network(network)
 
     conn
     |> put_flash(:info, "Network deleted successfully.")
@@ -112,7 +115,7 @@ defmodule WebappWeb.NetworkController do
   defp load_network(conn, _) do
     try do
       %{"id" => id} = conn.params
-      network = Hypervisors.get_network!(id)
+      network = Networks.get_network!(id)
 
       conn
       |> assign(:network, network)

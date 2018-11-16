@@ -33,7 +33,7 @@ defmodule Script do
   def run(["list"], _options) do
     header = ["id", "name", "created", "last status", "hypervisor", "plan"]
 
-    machines = Hypervisors.list_machines()
+    machines = Machines.list_machines()
     |> Enum.map(fn %Machines.Machine{} = machine ->
       [
         machine.id,
@@ -87,8 +87,8 @@ defmodule Script do
       raise ArgumentError, message: "missing --machine"
     end
 
-    machine = Hypervisors.get_machine!(options[:machine])
-    changeset = Hypervisors.change_machine(machine)
+    machine = Machines.get_machine!(options[:machine])
+    changeset = Machines.change_machine(machine)
 
     changeset = if options[:created] do
       Ecto.Changeset.put_change(changeset, :created, String.to_atom(options[:created]))

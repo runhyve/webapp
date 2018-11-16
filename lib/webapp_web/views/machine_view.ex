@@ -1,7 +1,7 @@
 defmodule WebappWeb.MachineView do
   use WebappWeb, :view
 
-  import Webapp.Hypervisors, only: [machine_can_do?: 2]
+  import Webapp.Machines, only: [machine_can_do?: 2]
 
   def hypervisors_select_options(hypervisors) do
     for hypervisor <- hypervisors do

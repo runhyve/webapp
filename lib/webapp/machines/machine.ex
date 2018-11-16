@@ -5,7 +5,7 @@ defmodule Webapp.Machines.Machine do
   alias Webapp.{
     Hypervisors,
     Hypervisors.Hypervisor,
-    Hypervisors.Network
+    Networks.Network
     }
 
   alias Webapp.Plans.Plan
@@ -27,7 +27,7 @@ defmodule Webapp.Machines.Machine do
   @doc false
   def changeset(machine, attrs) do
     network_ids = Map.get(attrs, "network_ids", [])
-    networks = Hypervisors.list_networks_by_id(network_ids)
+    networks = Networks.list_networks_by_id(network_ids)
 
     machine
     |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id])
@@ -35,6 +35,13 @@ defmodule Webapp.Machines.Machine do
     |> unique_constraint(:name)
     |> assoc_constraint(:hypervisor)
     |> assoc_constraint(:plan)
+    |> put_assoc(:networks, networks)
+    |> validate_length(:networks, min: 1)
+  end
+
+  def networks_changeset(machine, networks) do
+    machine
+    |> cast(%{}, [])
     |> put_assoc(:networks, networks)
     |> validate_length(:networks, min: 1)
   end

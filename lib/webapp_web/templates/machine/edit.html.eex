@@ -12,50 +12,45 @@
 <%= render "_menu.html", assigns %>
 
 <div class="box">
-  <%= form_for @changeset, Routes.machine_path(@conn, :update, @machine), fn f -> %>
-    <%= if @changeset.action do %>
-      <div class="notification is-danger">
-        <p>Oops, something went wrong! Please check the errors below.</p>
-      </div>
+
+  <div class="">
+  <div class="level">
+    <div class="level-left">
+      <h2>Add new network to machine</h2>
+    </div>
+
+    <div class="level-right">
+      <span><%= link "Add Network", to: Routes.hypervisor_network_path(@conn, :new, @machine.hypervisor), class: "button is-rounded is-primary" %></span>
+    </div>
+  </div>
+
+    <% other_networks = @networks -- @machine.networks %>
+
+    <%= if Enum.count(other_networks) > 0 do %>
+      <%= form_for @changeset, Routes.machine_path(@conn, :update, @machine), fn f -> %>
+        <%= if @changeset.action do %>
+          <div class="notification is-danger">
+            <p>Oops, something went wrong! Please check the errors below.</p>
+          </div>
+        <% end %>
+
+        <div class="field">
+          <%= label f, "Select network", class: "label" %>
+          <div class="select">
+            <%= select f, :network_ids, networks_select_options(other_networks) %>
+          </div>
+          <%= error_tag f, :networks %>
+        </div>
+
+
+        <div class="field">
+          <div class="control">
+            <%= submit "Add network to machine", class: "button is-rounded is-primary" %>
+          </div>
+        </div>
+      <% end %>
+      <% else %>
+      <div class="notification">There is no other network available... Add Network first!</div>
     <% end %>
-
-    <div class="field">
-      <%= label f, :name, class: "label" %>
-      <div class="control">
-        <%= text_input f, :name, class: "input" %>
-      </div>
-      <%= error_tag f, :name %>
-    </div>
-
-    <div class="field">
-      <div class="control">
-        <%= submit "Save", class: "button is-rounded is-primary" %>
-      </div>
-    </div>
-  <% end %>
-</div>
-
-<div class="box">
-  <%= form_for @changeset, Routes.machine_path(@conn, :update, @machine), fn f -> %>
-    <%= if @changeset.action do %>
-      <div class="notification is-danger">
-        <p>Oops, something went wrong! Please check the errors below.</p>
-      </div>
-    <% end %>
-
-    <div class="field">
-      <%= label f, "Add a new network", class: "label" %>
-      <div class="select">
-        <%= select f, :network_ids, networks_select_options(@networks -- @machine.networks) %>
-      </div>
-      <%= error_tag f, :networks %>
-    </div>
-
-
-    <div class="field">
-      <div class="control">
-        <%= submit "Add", class: "button is-rounded is-primary" %>
-      </div>
-    </div>
-  <% end %>
+  </div>
 </div>

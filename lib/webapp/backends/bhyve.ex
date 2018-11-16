@@ -7,7 +7,7 @@ defmodule Webapp.Hypervisors.Bhyve do
 
   alias Webapp.{
     Machines.Machine,
-    Hypervisors.Network
+    Networks.Network
   }
 
   @headers [{"Content-Type", "application/json"}]
@@ -106,6 +106,23 @@ defmodule Webapp.Hypervisors.Bhyve do
         {:ok, %{"state" => status}} -> {:ok, status}
         {:error, error} -> {:error, error}
       end
+    rescue
+      e -> {:error, e.message}
+    end
+  end
+
+  @doc """
+  Adds a network to machine.
+  """
+  def add_network_to_machine(_repo, %{machine: machine}) do
+    # Since we are adding network to machine, last one is the new one.
+    [network] = tl(machine.networks)
+
+    endpoint = machine.hypervisor.webhook_endpoint <> "/vm/add-network"
+    payload = %{machine: machine.name, network: network.name}
+
+    try do
+      webbook_trigger(endpoint, payload)
     rescue
       e -> {:error, e.message}
     end

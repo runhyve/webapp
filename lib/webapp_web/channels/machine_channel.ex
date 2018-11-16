@@ -2,7 +2,7 @@ defmodule WebappWeb.MachineChannel do
   use WebappWeb, :channel
 
   alias Webapp.{
-    Hypervisors,
+    Machines,
     Machines.Machine
   }
 
@@ -26,10 +26,10 @@ defmodule WebappWeb.MachineChannel do
   def handle_in("status", payload, socket) do
     machine =
       socket.assigns[:machine_id]
-      |> Hypervisors.get_machine!()
+      |> Machines.get_machine!()
 
     response =
-      case Hypervisors.check_status(machine) do
+      case Machines.check_status(machine) do
         {:ok, %Machine{} = machine} ->
           %{
             success: true,
@@ -54,10 +54,10 @@ defmodule WebappWeb.MachineChannel do
 
   defp machine_actions(%Machine{} = machine) do
     %{
-      start: Hypervisors.machine_can_do?(machine, :start),
-      stop: Hypervisors.machine_can_do?(machine, :stop),
-      console: Hypervisors.machine_can_do?(machine, :console),
-      poweroff: Hypervisors.machine_can_do?(machine, :poweroff)
+      start: Machines.machine_can_do?(machine, :start),
+      stop: Machines.machine_can_do?(machine, :stop),
+      console: Machines.machine_can_do?(machine, :console),
+      poweroff: Machines.machine_can_do?(machine, :poweroff)
     }
   end
 end

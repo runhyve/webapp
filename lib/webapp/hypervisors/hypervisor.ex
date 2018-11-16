@@ -10,7 +10,7 @@ defmodule Webapp.Hypervisors.Hypervisor do
 
     belongs_to(:hypervisor_type, Webapp.Hypervisors.Type)
     has_many(:machines, Webapp.Machines.Machine)
-    has_many(:networks, Webapp.Hypervisors.Network)
+    has_many(:networks, Webapp.Networks.Network)
 
     timestamps()
   end

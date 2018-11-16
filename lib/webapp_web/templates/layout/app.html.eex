@@ -65,6 +65,7 @@
         <p>
           <strong>Runhyve</strong> made with <i class="has-text-danger fa fa-heart"></i> in Poland. <br /> Powered by <a href="https://runateam.com">Runateam.com</a>.
         </p>
+        <p><%= version() %></p>
       </div>
     </footer>
 

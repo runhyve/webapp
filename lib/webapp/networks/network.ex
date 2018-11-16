@@ -1,10 +1,10 @@
-defmodule Webapp.Hypervisors.Network do
+defmodule Webapp.Networks.Network do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Webapp.Hypervisors.{
-    Hypervisor,
-    Machine
+  alias Webapp.{
+    Hypervisors.Hypervisor,
+    Machines.Machine
     }
 
   schema "networks" do

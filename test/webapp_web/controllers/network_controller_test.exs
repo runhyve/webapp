@@ -8,7 +8,7 @@ defmodule WebappWeb.NetworkControllerTest do
   @invalid_attrs %{name: nil, network: nil}
 
   def fixture(:network) do
-    {:ok, network} = Hypervisors.create_network(@create_attrs)
+    {:ok, network} = Networks.create_network(@create_attrs)
     network
   end
 
