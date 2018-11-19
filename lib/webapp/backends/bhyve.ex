@@ -20,7 +20,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     token = hypervisor.webhook_token
 
     try do
-      case webhook_trigger(token,endpoint) do
+      case webhook_trigger(token, endpoint) do
         {:ok, status} -> {:ok, status}
         {:error, error} -> {:error, error}
       end
@@ -69,7 +69,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     token = machine.hypervisor.webhook_token
 
     try do
-      case webhook_trigger(token,endpoint, payload) do
+      case webhook_trigger(token, endpoint, payload) do
         {:ok, %{"taskid" => task_id}} -> {:ok, task_id}
         {:error, error} -> {:error, error}
       end
@@ -87,7 +87,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{name: machine.name}
 
     try do
-      case webhook_trigger(token,endpoint, payload) do
+      case webhook_trigger(token, endpoint, payload) do
         {:ok, message} -> {:ok, message}
         {:error, error} -> {:error, error}
       end
@@ -106,7 +106,7 @@ defmodule Webapp.Hypervisors.Bhyve do
 
     try do
       # TODO: Map statuses to unified format.
-      case webhook_trigger(token,endpoint, payload) do
+      case webhook_trigger(token, endpoint, payload) do
         {:ok, %{"state" => status}} -> {:ok, status}
         {:error, error} -> {:error, error}
       end
@@ -127,7 +127,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{machine: machine.name, network: network.name}
 
     try do
-      webhook_trigger(token,endpoint, payload)
+      webhook_trigger(token, endpoint, payload)
     rescue
       e -> {:error, e.message}
     end
@@ -142,7 +142,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{name: machine.name}
 
     try do
-      webhook_trigger(token,endpoint, payload)
+      webhook_trigger(token, endpoint, payload)
     rescue
       e -> {:error, e.message}
     end
@@ -157,7 +157,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{name: machine.name}
 
     try do
-      webhook_trigger(token,endpoint, payload)
+      webhook_trigger(token, endpoint, payload)
     rescue
       e -> {:error, e.message}
     end
@@ -172,7 +172,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{name: machine.name}
 
     try do
-      webhook_trigger(token,endpoint, payload)
+      webhook_trigger(token, endpoint, payload)
     rescue
       e -> {:error, e.message}
     end
@@ -187,7 +187,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{name: machine.name}
 
     try do
-      webhook_trigger(token,endpoint, payload)
+      webhook_trigger(token, endpoint, payload)
     rescue
       e -> {:error, e.message}
     end
@@ -202,7 +202,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{taskid: task_id}
 
     try do
-      webhook_trigger(token,endpoint, payload)
+      webhook_trigger(token, endpoint, payload)
     rescue
       e -> {:error, e.message}
     end
@@ -223,13 +223,13 @@ defmodule Webapp.Hypervisors.Bhyve do
     }
 
     try do
-      webhook_trigger(token,endpoint, payload)
+      webhook_trigger(token, endpoint, payload)
     rescue
       e -> {:error, e.message}
     end
   end
 
-  defp webhook_trigger(token,endpoint) do
+  defp webhook_trigger(token, endpoint) do
     Logger.debug("Bhyve webhook GET call: #{endpoint} without parameters")
 
     case HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", token}]) do
@@ -246,7 +246,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     end
   end
 
-  defp webhook_trigger(token,endpoint, payload) do
+  defp webhook_trigger(token, endpoint, payload) do
     json = Jason.encode!(payload)
     Logger.debug("Bhyve webhook POST call: #{endpoint} with #{json}")
 

@@ -7,6 +7,8 @@ defmodule WebappWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Phauxth.Authenticate
+    plug Phauxth.Remember
   end
 
   pipeline :api do
@@ -17,6 +19,15 @@ defmodule WebappWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    resources "/users", UserController
+    resources "/sessions", SessionController, only: [:new, :create, :delete]
+    get "/confirm", ConfirmController, :index
+    resources "/password_resets", PasswordResetController, only: [:new, :create]
+    get "/password_resets/edit", PasswordResetController, :edit
+    put "/password_resets/update", PasswordResetController, :update
+
+    resources "/groups", GroupController
 
     resources "/hypervisors", HypervisorController do
       resources "/networks", NetworkController, only: [:new, :create, :index]
@@ -34,6 +45,15 @@ defmodule WebappWeb.Router do
     resources "/plans", PlanController
 
     resources "/networks", NetworkController, except: [:new, :create, :index]
+  end
+
+  scope "/" do
+    pipe_through :browser
+
+    # Useful development tools.
+    if Mix.env == :dev do
+      forward "/dev/mailbox", Bamboo.SentEmailViewerPlug
+    end
   end
 
   # Other scopes may use custom stacks.

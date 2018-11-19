@@ -5,7 +5,7 @@ defmodule WebappWeb.NetworkController do
     Hypervisors,
     Networks,
     Networks.Network
-    }
+  }
 
   plug :load_hypervisor when action in [:index, :create, :new]
   plug :load_network when action not in [:index, :create, :new]

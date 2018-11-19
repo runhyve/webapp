@@ -9,7 +9,7 @@ defmodule Webapp.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       # TODO: Uncomment on real :prod!
-      #start_permanent: Mix.env() == :prod,
+      # start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
@@ -55,6 +55,9 @@ defmodule Webapp.MixProject do
       {:phoenix_live_reload, "~> 1.2-rc", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
+      {:phauxth, "~> 2.0.0-rc"},
+      {:argon2_elixir, "~> 1.3"},
+      {:bamboo, "~> 1.1"},
       {:plug_cowboy, "~> 2.0"},
       {:plug, "~> 1.7"},
       {:excoveralls, "~> 0.10", only: [:dev, :test]},
@@ -81,8 +84,8 @@ defmodule Webapp.MixProject do
 
   # Combines version with commit hash, environment etc.
   defp get_version do
-    if Mix.env == :prod do
-      {hash, _} = System.cmd "git", ~w(show -s --format=%h)
+    if Mix.env() == :prod do
+      {hash, _} = System.cmd("git", ~w(show -s --format=%h))
       hash = String.trim(hash)
 
       "#{version()}-#{hash}"

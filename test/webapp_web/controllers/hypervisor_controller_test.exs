@@ -49,35 +49,35 @@ defmodule WebappWeb.HypervisorControllerTest do
     end
   end
 
-#  describe "edit hypervisor" do
-#    setup [:create_hypervisor]
-#
-#    test "renders form for editing chosen hypervisor", %{conn: conn, hypervisor: hypervisor} do
-#      conn = get(conn, Routes.hypervisor_path(conn, :edit, hypervisor))
-#      assert html_response(conn, 200) =~ "Edit"
-#    end
-#  end
+  #  describe "edit hypervisor" do
+  #    setup [:create_hypervisor]
+  #
+  #    test "renders form for editing chosen hypervisor", %{conn: conn, hypervisor: hypervisor} do
+  #      conn = get(conn, Routes.hypervisor_path(conn, :edit, hypervisor))
+  #      assert html_response(conn, 200) =~ "Edit"
+  #    end
+  #  end
 
-#  describe "update hypervisor" do
-#    setup [:create_hypervisor]
-#
-#    test "redirects when data is valid", %{conn: conn, hypervisor: hypervisor} do
-#      conn =
-#        put(conn, Routes.hypervisor_path(conn, :update, hypervisor), hypervisor: @update_attrs)
-#
-#      assert redirected_to(conn) == Routes.hypervisor_path(conn, :show, hypervisor)
-#
-#      conn = get(conn, Routes.hypervisor_path(conn, :show, hypervisor))
-#      assert html_response(conn, 200) =~ "some updated name"
-#    end
-#
-#    test "renders errors when data is invalid", %{conn: conn, hypervisor: hypervisor} do
-#      conn =
-#        put(conn, Routes.hypervisor_path(conn, :update, hypervisor), hypervisor: @invalid_attrs)
-#
-#      assert html_response(conn, 200) =~ "Edit"
-#    end
-#  end
+  #  describe "update hypervisor" do
+  #    setup [:create_hypervisor]
+  #
+  #    test "redirects when data is valid", %{conn: conn, hypervisor: hypervisor} do
+  #      conn =
+  #        put(conn, Routes.hypervisor_path(conn, :update, hypervisor), hypervisor: @update_attrs)
+  #
+  #      assert redirected_to(conn) == Routes.hypervisor_path(conn, :show, hypervisor)
+  #
+  #      conn = get(conn, Routes.hypervisor_path(conn, :show, hypervisor))
+  #      assert html_response(conn, 200) =~ "some updated name"
+  #    end
+  #
+  #    test "renders errors when data is invalid", %{conn: conn, hypervisor: hypervisor} do
+  #      conn =
+  #        put(conn, Routes.hypervisor_path(conn, :update, hypervisor), hypervisor: @invalid_attrs)
+  #
+  #      assert html_response(conn, 200) =~ "Edit"
+  #    end
+  #  end
 
   #
   #  describe "delete hypervisor" do

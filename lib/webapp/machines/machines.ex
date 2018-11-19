@@ -9,13 +9,13 @@ defmodule Webapp.Machines do
   alias Ecto.{
     Multi,
     Changeset
-    }
+  }
 
   alias Webapp.{
     Hypervisors,
     Machines.Machine,
     Networks.Network
-    }
+  }
 
   @doc """
   Returns the list of machines.
@@ -73,7 +73,7 @@ defmodule Webapp.Machines do
     if changeset.valid? do
       hypervisor =
         Ecto.Changeset.get_change(changeset, :hypervisor_id)
-        |> Hypervisors.get_hypervisor!
+        |> Hypervisors.get_hypervisor!()
 
       module =
         ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
@@ -361,5 +361,4 @@ defmodule Webapp.Machines do
       ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
       |> String.to_atom()
   end
-
 end

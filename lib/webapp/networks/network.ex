@@ -5,7 +5,7 @@ defmodule Webapp.Networks.Network do
   alias Webapp.{
     Hypervisors.Hypervisor,
     Machines.Machine
-    }
+  }
 
   schema "networks" do
     field(:name, :string)

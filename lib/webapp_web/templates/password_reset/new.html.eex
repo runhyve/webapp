@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="column is-4 is-offset-4 box">
+    <h2 class="has-text-centered">Reset Password</h2>
+
+    <%= form_for @conn, Routes.password_reset_path(@conn, :create), [as: :password_reset], fn f -> %>
+      <%= if f.errors != [] do %>
+        <div class="notification is-danger">
+          <p>Please check the errors below:</p>
+        </div>
+      <% end %>
+
+      <div class="field">
+        <%= label f, :email, class: "label" %>
+        <div class="control">
+          <%= text_input f, :email, class: "input" %>
+        </div>
+        <%= error_tag f, :email %>
+      </div>
+
+      <div class="field">
+        <%= submit "Reset password", class: "button is-rounded is-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

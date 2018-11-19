@@ -1,0 +1,6 @@
+<div class="container">
+  <div class="column is-4 is-offset-4 box">
+    <h1 class="has-text-centered">New User</h1>
+    <%= render "form.html", Map.put(assigns, :action, Routes.user_path(@conn, :create)) %>
+  </div>
+</div>

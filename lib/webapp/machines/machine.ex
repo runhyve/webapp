@@ -7,7 +7,7 @@ defmodule Webapp.Machines.Machine do
     Hypervisors.Hypervisor,
     Networks,
     Networks.Network
-    }
+  }
 
   alias Webapp.Plans.Plan
 

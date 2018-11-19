@@ -2,12 +2,13 @@ defmodule WebappWeb.MachineController do
   use WebappWeb, :controller
 
   alias Webapp.{
-      Machines,
-      Machines.Machine,
-      Hypervisors,
-      Networks,
-      Plans
-    }
+    Machines,
+    Machines.Machine,
+    Hypervisors,
+    Networks,
+    Plans
+  }
+
   plug :load_machine when action not in [:index, :create, :new]
   plug :load_hypervisor when action in [:new, :create]
   plug :load_references when action in [:new, :create, :edit, :update]
@@ -95,7 +96,6 @@ defmodule WebappWeb.MachineController do
     render(conn, "settings.html", machine: machine, changeset: changeset)
   end
 
-
   # Add network
   def update(conn, %{"machine" => %{"network_ids" => network_id}}) do
     machine = conn.assigns[:machine]
@@ -129,7 +129,6 @@ defmodule WebappWeb.MachineController do
         |> put_flash(:error, "Machine was not created successfully.")
         |> redirect(to: Routes.machine_path(conn, :show, machine))
     end
-
   end
 
   # Change machine name
@@ -243,10 +242,11 @@ defmodule WebappWeb.MachineController do
     # The :index, :create and :new are under /hypervisors resource
     # for them, we use load_hypervisor which puts assign with hypervisor.
     # For other methods we're loading hypervisor from machine.
-    hypervisor = case Map.has_key?(conn.assigns, :hypervisor) do
-      true -> conn.assigns[:hypervisor]
-      _ -> conn.assigns[:machine].hypervisor
-    end
+    hypervisor =
+      case Map.has_key?(conn.assigns, :hypervisor) do
+        true -> conn.assigns[:hypervisor]
+        _ -> conn.assigns[:machine].hypervisor
+      end
 
     conn
     |> assign(:networks, Hypervisors.list_hypervisor_networks(hypervisor))
