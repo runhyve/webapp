@@ -4,7 +4,7 @@ defmodule WebappWeb.UserController do
   import WebappWeb.Authorize
 
   alias Phauxth.Log
-  alias Webapp.{Accounts, Accounts.User}
+  alias Webapp.{Accounts, Accounts.User, Accounts.Namespace}
   alias WebappWeb.{Auth.Token}
   alias WebappWeb.Emails.UserEmail, as: Email
 
@@ -18,7 +18,7 @@ defmodule WebappWeb.UserController do
   end
 
   def new(conn, _) do
-    changeset = Accounts.change_user(%User{})
+    changeset = Accounts.change_user(%User{namespace: %Namespace{}})
     render(conn, "new.html", changeset: changeset)
   end
 

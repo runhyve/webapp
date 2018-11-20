@@ -51,7 +51,7 @@ defmodule WebappWeb.Router do
     pipe_through :browser
 
     # Useful development tools.
-    if Mix.env == :dev do
+    if Mix.env() == :dev do
       forward "/dev/mailbox", Bamboo.SentEmailViewerPlug
     end
   end

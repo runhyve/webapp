@@ -51,7 +51,10 @@ defmodule WebappWeb.Emails.UserEmail do
   def reset_request(address, nil) do
     prep_mail(address)
     |> subject("Reset your password")
-    |> assign(:body, "You requested a password reset, but no user is associated with the email you provided.")
+    |> assign(
+      :body,
+      "You requested a password reset, but no user is associated with the email you provided."
+    )
     |> render("email/default.html")
     |> Mailer.deliver_now()
   end
@@ -59,7 +62,10 @@ defmodule WebappWeb.Emails.UserEmail do
   def reset_request(address, key) do
     prep_mail(address)
     |> subject("Reset your password")
-    |> assign(:body, "Reset your password at http://www.example.com/password_resets/edit?key=#{key}")
+    |> assign(
+      :body,
+      "Reset your password at http://www.example.com/password_resets/edit?key=#{key}"
+    )
     |> render("email/default.html")
     |> Mailer.deliver_now()
   end

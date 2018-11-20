@@ -4,9 +4,9 @@ defmodule WebappWeb.UserControllerTest do
   import WebappWeb.AuthCase
   alias Webapp.Accounts
 
-  @create_attrs %{email: "bill@example.com", password: "hard2guess", name: "bill"}
+  @valid_user %{email: "bill@example.com", password: "hard2guess", name: "bill", namespace: %{namespace: "bill"}}
   @update_attrs %{email: "william@example.com"}
-  @invalid_attrs %{email: nil}
+  @invalid_user %{email: nil}
 
   setup %{conn: conn} = config do
     conn = conn |> bypass_through(WebappWeb.Router, [:browser]) |> get("/")
@@ -57,12 +57,12 @@ defmodule WebappWeb.UserControllerTest do
 
   describe "create user" do
     test "creates user when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
+      conn = post(conn, Routes.user_path(conn, :create), user: @valid_user)
       assert redirected_to(conn) == Routes.session_path(conn, :new)
     end
 
     test "does not create user and renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
+      conn = post(conn, Routes.user_path(conn, :create), user: @invalid_user)
       assert html_response(conn, 200) =~ "New User"
     end
   end
@@ -83,7 +83,7 @@ defmodule WebappWeb.UserControllerTest do
       conn: conn,
       user: user
     } do
-      conn = put(conn, Routes.user_path(conn, :update, user), user: @invalid_attrs)
+      conn = put(conn, Routes.user_path(conn, :update, user), user: @invalid_user)
       assert html_response(conn, 200) =~ "Edit User"
     end
   end

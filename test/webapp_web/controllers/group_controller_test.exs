@@ -3,7 +3,7 @@ defmodule WebappWeb.GroupControllerTest do
 
   alias Webapp.Accounts
 
-  @create_attrs %{name: "some name", namespace: "some-name"}
+  @create_attrs %{name: "some name", namespace: %{namespace: "some-name"}}
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 

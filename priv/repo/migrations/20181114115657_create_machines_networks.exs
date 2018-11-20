@@ -1,4 +1,4 @@
-defmodule Webapp.Repo.Migrations.AddNetworkToMachines do
+defmodule Webapp.Repo.Migrations.CreateMachinesNetworks do
   use Ecto.Migration
 
   def change do

@@ -6,7 +6,6 @@ defmodule WebappWeb.PasswordResetController do
   alias WebappWeb.{Auth.Token}
   alias WebappWeb.Emails.UserEmail, as: Email
 
-
   def new(conn, _params) do
     render(conn, "new.html")
   end

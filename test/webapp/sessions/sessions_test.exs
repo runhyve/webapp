@@ -4,7 +4,7 @@ defmodule Webapp.SessionsTest do
   alias Webapp.{Accounts, Sessions, Sessions.Session}
 
   setup do
-    attrs = %{email: "fred@example.com", password: "reallyHard2gue$$", name: "fred"}
+    attrs = %{email: "fred@example.com", password: "reallyHard2gue$$", name: "fred", namespace: %{namespace: "fred"}}
     {:ok, user} = Accounts.create_user(attrs)
     {:ok, user: user}
   end

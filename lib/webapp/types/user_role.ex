@@ -5,5 +5,5 @@ defmodule Webapp.Types.UserRole do
   use Webapp.Types.EnumTypes
 
   def type, do: :user_role
-  def valid_types, do: ["Owner", "Administrator", "Member"]
+  def valid_types, do: ["Administrator", "User"]
 end

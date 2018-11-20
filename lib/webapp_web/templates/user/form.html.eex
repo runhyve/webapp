@@ -21,13 +21,15 @@
     <%= error_tag f, :name %>
   </div>
 
-  <div class="field">
-    <%= label f, :namespace, class: "label" %>
-    <div class="control">
-      <%= text_input f, :namespace, class: "input" %>
+  <%= inputs_for f, :namespace, fn nf -> %>
+    <div class="field">
+      <%= label nf, :namespace, class: "label" %>
+      <div class="control">
+        <%= text_input nf, :namespace, class: "input" %>
+      </div>
+      <%= error_tag nf, :namespace %>
     </div>
-    <%= error_tag f, :namespace %>
-  </div>
+  <% end %>
 
   <div class="field">
     <%= label f, :password, class: "label" %>
@@ -39,7 +41,7 @@
 
   <div class="level">
     <div class="level-left">
-      <%= submit "Login", class: "button is-rounded is-primary" %>
+      <%= submit "Sign up", class: "button is-rounded is-primary" %>
     </div>
 
     <div class="level-right">

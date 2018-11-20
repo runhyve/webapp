@@ -5,33 +5,50 @@ defmodule Webapp.Accounts do
 
   import Ecto.Query, warn: false
 
-  alias Webapp.{Accounts.User, Repo, Sessions, Sessions.Session}
+  alias Webapp.{
+    Repo,
+    Accounts.User,
+    Sessions,
+    Sessions.Session
+  }
 
   @doc """
   Returns the list of users.
   """
-  def list_users, do: Repo.all(User)
+  def list_users(preloads \\ []) do
+    Repo.all(User)
+    |> Repo.preload(preloads)
+  end
 
   @doc """
   Gets a single user.
   """
-  def get_user(id), do: Repo.get(User, id)
+  def get_user(id, preloads \\ [:namespace]) do
+    Repo.get(User, id)
+    |> Repo.preload(preloads)
+  end
 
   @doc """
   Gets a user based on the params.
 
   This is used by Phauxth to get user information.
   """
-  def get_by(%{"session_id" => session_id}) do
+  def get_by(_conditions, preloads \\ [:namespace])
+
+  def get_by(%{"session_id" => session_id}, preloads) do
     with %Session{user_id: user_id} <- Sessions.get_session(session_id),
-         do: get_user(user_id)
+         do: get_user(user_id, preloads)
   end
 
-  def get_by(%{"email" => email}) do
+  def get_by(%{"email" => email}, preloads) do
     Repo.get_by(User, email: email)
+    |> Repo.preload(preloads)
   end
 
-  def get_by(%{"user_id" => user_id}), do: Repo.get(User, user_id)
+  def get_by(%{"user_id" => user_id}, preloads) do
+    Repo.get(User, user_id)
+    |> Repo.preload(preloads)
+  end
 
   @doc """
   Creates a session for the user.
@@ -54,7 +71,7 @@ defmodule Webapp.Accounts do
   """
   def update_user(%User{} = user, attrs) do
     user
-    |> User.changeset(attrs)
+    |> User.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -113,8 +130,9 @@ defmodule Webapp.Accounts do
       [%Group{}, ...]
 
   """
-  def list_groups do
+  def list_groups(preloads \\ [:namespace]) do
     Repo.all(Group)
+    |> Repo.preload(preloads)
   end
 
   @doc """
@@ -131,7 +149,10 @@ defmodule Webapp.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_group!(id), do: Repo.get!(Group, id)
+  def get_group!(id, preloads \\ [:namespace]) do
+    Repo.get!(Group, id)
+    |> Repo.preload(preloads)
+  end
 
   @doc """
   Creates a group.
@@ -147,7 +168,7 @@ defmodule Webapp.Accounts do
   """
   def create_group(attrs \\ %{}) do
     %Group{}
-    |> Group.changeset(attrs)
+    |> Group.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -165,7 +186,7 @@ defmodule Webapp.Accounts do
   """
   def update_group(%Group{} = group, attrs) do
     group
-    |> Group.changeset(attrs)
+    |> Group.update_changeset(attrs)
     |> Repo.update()
   end
 

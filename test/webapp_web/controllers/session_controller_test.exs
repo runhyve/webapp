@@ -3,9 +3,13 @@ defmodule WebappWeb.SessionControllerTest do
 
   import WebappWeb.AuthCase
 
-  @create_attrs %{email: "robin@example.com", password: "reallyHard2gue$$", name: "robin"}
+  @create_attrs %{email: "robin@example.com", password: "reallyHard2gue$$", name: "robin", namespace: %{namespace: "robin"}}
   @invalid_attrs %{email: "robin@example.com", password: "cannotGue$$it"}
-  @unconfirmed_attrs %{email: "lancelot@example.com", password: "reallyHard2gue$$", name: "lancelot"}
+  @unconfirmed_attrs %{
+    email: "lancelot@example.com",
+    password: "reallyHard2gue$$",
+    name: "lancelot"
+  }
   @rem_attrs %{email: "robin@example.com", password: "reallyHard2gue$$", remember_me: "true"}
   @no_rem_attrs Map.merge(@rem_attrs, %{remember_me: "false"})
 

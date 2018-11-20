@@ -6,7 +6,9 @@ defmodule Webapp.Accounts.User do
   alias Webapp.{
     Sessions.Session,
     Accounts.User,
-    Accounts.Group
+    Accounts.Group,
+    Accounts.Namespace,
+    Types.UserRole
   }
 
   schema "users" do
@@ -16,6 +18,9 @@ defmodule Webapp.Accounts.User do
     field(:password_hash, :string)
     field(:confirmed_at, :utc_datetime)
     field(:reset_sent_at, :utc_datetime)
+    field(:role, UserRole, default: "User")
+
+    belongs_to(:namespace, Namespace)
     has_many(:sessions, Session, on_delete: :delete_all)
     many_to_many(:groups, Group, join_through: "groups_users")
 
@@ -27,7 +32,7 @@ defmodule Webapp.Accounts.User do
     |> cast(attrs, [:email, :name])
     |> validate_required([:email, :name])
     |> unique_constraint(:name)
-    |> unique_email
+    |> unique_email()
   end
 
   def create_changeset(%User{} = user, attrs) do
@@ -35,9 +40,21 @@ defmodule Webapp.Accounts.User do
     |> cast(attrs, [:email, :password, :name])
     |> validate_required([:email, :password, :name])
     |> unique_constraint(:name)
-    |> unique_email
+    |> unique_email()
     |> validate_password(:password)
-    |> put_pass_hash
+    |> put_pass_hash()
+    |> cast_assoc(:namespace, with: &Namespace.user_changeset/2, required: true)
+    |> assoc_constraint(:namespace)
+  end
+
+  def update_changeset(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:email, :name])
+    |> validate_required([:email, :name])
+    |> unique_constraint(:name)
+    |> unique_email()
+    |> cast_assoc(:namespace, with: &Namespace.user_changeset/2, required: true)
+    |> assoc_constraint(:namespace)
   end
 
   def confirm_changeset(user) do
