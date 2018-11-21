@@ -6,6 +6,7 @@ defmodule Webapp.Accounts.Namespace do
 
   schema "namespaces" do
     field(:namespace, :string)
+    field(:private, :boolean, default: false)
   end
 
   @doc false

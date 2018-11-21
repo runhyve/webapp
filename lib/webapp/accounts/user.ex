@@ -7,6 +7,7 @@ defmodule Webapp.Accounts.User do
     Sessions.Session,
     Accounts.User,
     Accounts.Group,
+    Accounts.GroupUser,
     Accounts.Namespace,
     Types.UserRole
   }
@@ -22,9 +23,15 @@ defmodule Webapp.Accounts.User do
 
     belongs_to(:namespace, Namespace)
     has_many(:sessions, Session, on_delete: :delete_all)
-    many_to_many(:groups, Group, join_through: "groups_users")
+    has_many(:groups, GroupUser, on_delete: :delete_all)
 
     timestamps()
+  end
+
+  defimpl Phoenix.Param, for: User do
+    def to_param(%User{id: _id, namespace: %Namespace{namespace: namespace}} = user) do
+      "#{namespace}"
+    end
   end
 
   def changeset(%User{} = user, attrs) do

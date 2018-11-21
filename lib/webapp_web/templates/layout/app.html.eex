@@ -25,6 +25,8 @@
           <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
               <%= link "Home", to: Routes.page_path(@conn, :index), class: "navbar-item" %>
+              <%= link "Users", to: Routes.user_path(@conn, :index), class: "navbar-item" %>
+              <%= link "Groups", to: Routes.group_path(@conn, :index), class: "navbar-item" %>
               <%= link "Plans", to: Routes.plan_path(@conn, :index), class: "navbar-item" %>
               <%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index), class: "navbar-item" %>
               <%= link "Machines", to: Routes.machine_path(@conn, :index), class: "navbar-item" %>
@@ -33,10 +35,10 @@
             <div class="navbar-end">
               <div class="navbar-item">
                 <div class="buttons">
+                <%= if @namespace do %>
+                  Namespace: <strong><%= @namespace.namespace %></strong>
+                <% end %>
                   <%= if @current_user do %>
-                    <a href="<%= Routes.user_path(@conn, :show, @current_user) %>"  class="button is-rounded is-primary">
-                      <%= @current_user.name %>
-                    </a>
                     <%= link "Logout", to: Routes.session_path(@conn, :delete, current_session(@conn)), method: :delete, class: "button is-rounded is-primary" %>
                   <% else %>
                     <a href="<%= Routes.user_path(@conn, :new) %>" class="button is-rounded is-primary">

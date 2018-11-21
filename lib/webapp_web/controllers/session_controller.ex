@@ -7,7 +7,7 @@ defmodule WebappWeb.SessionController do
   alias Webapp.Sessions
   alias WebappWeb.Auth.Login
 
-  plug :guest_check when action in [:new, :create]
+  plug :is_anonymous when action in [:new, :create]
 
   def new(conn, _) do
     render(conn, "new.html")

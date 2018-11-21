@@ -4,6 +4,8 @@ defmodule WebappWeb.PlanController do
   alias Webapp.Plans
   alias Webapp.Plans.Plan
 
+  plug :is_logged_in
+
   def index(conn, _params) do
     plans = Plans.list_plans()
     render(conn, "index.html", plans: plans)

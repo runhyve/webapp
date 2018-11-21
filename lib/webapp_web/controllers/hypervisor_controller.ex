@@ -4,6 +4,7 @@ defmodule WebappWeb.HypervisorController do
   alias Webapp.Hypervisors
   alias Webapp.Hypervisors.Hypervisor
 
+  plug :is_logged_in
   plug :load_hypervisor_types when action in [:new, :create, :edit, :update]
   plug :load_hypervisor when action not in [:index, :create, :new]
 

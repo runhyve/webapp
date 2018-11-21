@@ -3,8 +3,8 @@ defmodule Webapp.Accounts.Group do
   import Ecto.Changeset
 
   alias Webapp.{
-    Types.UserRole,
     Accounts.User,
+    Accounts.GroupUser,
     Accounts.Namespace
   }
 
@@ -12,7 +12,7 @@ defmodule Webapp.Accounts.Group do
     field(:name, :string)
 
     belongs_to(:namespace, Namespace)
-    many_to_many(:users, User, join_through: "groups_users")
+    has_many(:members, GroupUser, on_delete: :delete_all)
 
     timestamps()
   end
@@ -20,7 +20,7 @@ defmodule Webapp.Accounts.Group do
   @doc false
   def changeset(group, attrs) do
     group
-    |> cast(attrs, [:name,])
+    |> cast(attrs, [:name])
     |> validate_required([:name])
     |> unique_constraint(:name)
   end
@@ -28,11 +28,12 @@ defmodule Webapp.Accounts.Group do
   @doc false
   def create_changeset(group, attrs) do
     group
-    |> cast(attrs, [:name,])
+    |> cast(attrs, [:name])
     |> validate_required([:name])
     |> unique_constraint(:name)
     |> cast_assoc(:namespace, with: &Namespace.group_changeset/2, required: true)
     |> assoc_constraint(:namespace)
+    |> cast_assoc(:members, required: true)
   end
 
   @doc false

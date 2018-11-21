@@ -1,8 +1,9 @@
 defmodule WebappWeb.GroupController do
   use WebappWeb, :controller
 
-  alias Webapp.Accounts
-  alias Webapp.Accounts.Group
+  alias Webapp.{Accounts, Accounts.Group, Accounts.GroupUser}
+
+  plug :is_logged_in
 
   def index(conn, _params) do
     groups = Accounts.list_groups()
@@ -14,7 +15,8 @@ defmodule WebappWeb.GroupController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"group" => group_params}) do
+  def create(%Conn{assigns: %{current_user: user}} = conn, %{"group" => group_params}) do
+    group_params = Map.merge(group_params, %{"members" => [%{"user_id" => user.id, "role" => "Administrator"}]})
     case Accounts.create_group(group_params) do
       {:ok, group} ->
         conn
@@ -27,7 +29,7 @@ defmodule WebappWeb.GroupController do
   end
 
   def show(conn, %{"id" => id}) do
-    group = Accounts.get_group!(id)
+    group = Accounts.get_group!(id, [:namespace, members: [:user]])
     render(conn, "show.html", group: group)
   end
 

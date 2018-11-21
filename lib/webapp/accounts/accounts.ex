@@ -8,6 +8,8 @@ defmodule Webapp.Accounts do
   alias Webapp.{
     Repo,
     Accounts.User,
+    Accounts.Group,
+    Accounts.Namespace,
     Sessions,
     Sessions.Session
   }
@@ -15,7 +17,7 @@ defmodule Webapp.Accounts do
   @doc """
   Returns the list of users.
   """
-  def list_users(preloads \\ []) do
+  def list_users(preloads \\ [:namespace]) do
     Repo.all(User)
     |> Repo.preload(preloads)
   end
@@ -47,6 +49,13 @@ defmodule Webapp.Accounts do
 
   def get_by(%{"user_id" => user_id}, preloads) do
     Repo.get(User, user_id)
+    |> Repo.preload(preloads)
+  end
+
+  def get_by(%{"namespace" => namespace}, preloads) do
+    Repo.one(from u in User,
+             join: n in assoc(u, :namespace),
+             where: n.namespace == ^namespace)
     |> Repo.preload(preloads)
   end
 
@@ -119,7 +128,13 @@ defmodule Webapp.Accounts do
     |> Repo.update()
   end
 
-  alias Webapp.Accounts.Group
+  @doc """
+  Gets a namespace based on the params.
+  """
+  def get_namespace_by(%{"namespace" => name}, preloads \\ []) do
+    Repo.get_by(Namespace, namespace: name)
+    |> Repo.preload(preloads)
+  end
 
   @doc """
   Returns the list of groups.

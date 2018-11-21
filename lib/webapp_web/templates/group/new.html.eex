@@ -1,5 +1,20 @@
-<h1>New Group</h1>
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><%= link "Groups", to: Routes.group_path(@conn, :index) %></li>
+    <li class="is-active"><a>New Group</a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1>New Group</h1>
+  </div>
+
+  <div class="level-right">
+    <span><%= link "Back", to: Routes.group_path(@conn, :index), class: "button is-rounded" %></span>
+  </div>
+</div>
+
 
 <%= render "form.html", Map.put(assigns, :action, Routes.group_path(@conn, :create)) %>
-
-<span><%= link "Back", to: Routes.group_path(@conn, :index) %></span>

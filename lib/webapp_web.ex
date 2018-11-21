@@ -23,7 +23,10 @@ defmodule WebappWeb do
 
       import Plug.Conn
       import WebappWeb.Gettext
+      import Canary.Plugs
       alias WebappWeb.Router.Helpers, as: Routes
+      import WebappWeb.Authorize
+      alias Plug.Conn
     end
   end
 

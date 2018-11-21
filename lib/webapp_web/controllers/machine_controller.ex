@@ -9,6 +9,7 @@ defmodule WebappWeb.MachineController do
     Plans
   }
 
+  plug :is_logged_in
   plug :load_machine when action not in [:index, :create, :new]
   plug :load_hypervisor when action in [:new, :create]
   plug :load_references when action in [:new, :create, :edit, :update]

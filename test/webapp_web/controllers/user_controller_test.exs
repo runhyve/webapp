@@ -99,7 +99,7 @@ defmodule WebappWeb.UserControllerTest do
     @tag login: "reg@example.com"
     test "cannot delete other user", %{conn: conn, user: user, other: other} do
       conn = delete(conn, Routes.user_path(conn, :delete, other))
-      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+      assert redirected_to(conn) == Routes.page_path(conn, :index)
       assert Accounts.get_user(other.id)
     end
   end

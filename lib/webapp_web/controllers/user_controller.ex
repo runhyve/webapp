@@ -1,16 +1,17 @@
 defmodule WebappWeb.UserController do
   use WebappWeb, :controller
 
-  import WebappWeb.Authorize
-
   alias Phauxth.Log
   alias Webapp.{Accounts, Accounts.User, Accounts.Namespace}
   alias WebappWeb.{Auth.Token}
   alias WebappWeb.Emails.UserEmail, as: Email
 
   # the following plugs are defined in the controllers/authorize.ex file
-  plug :user_check when action in [:index, :show]
-  plug :id_check when action in [:edit, :update, :delete]
+  plug :is_logged_in when action in [:index, :show]
+  plug :is_current_user when action in [:edit, :update, :delete]
+
+  #plug :load_resource, model: User,
+
 
   def index(conn, _) do
     users = Accounts.list_users()
@@ -40,17 +41,17 @@ defmodule WebappWeb.UserController do
     end
   end
 
-  def show(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    user = if id == to_string(user.id), do: user, else: Accounts.get_user(id)
+  def show(%Conn{assigns: %{current_user: user}} = conn, %{"namespace" => namespace}) do
+    Accounts.get_by(%{"namespace" => namespace})
     render(conn, "show.html", user: user)
   end
 
-  def edit(%Plug.Conn{assigns: %{current_user: user}} = conn, _) do
+  def edit(%Conn{assigns: %{current_user: user}} = conn, _) do
     changeset = Accounts.change_user(user)
     render(conn, "edit.html", user: user, changeset: changeset)
   end
 
-  def update(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"user" => user_params}) do
+  def update(%Conn{assigns: %{current_user: user}} = conn, %{"user" => user_params}) do
     case Accounts.update_user(user, user_params) do
       {:ok, user} ->
         conn
@@ -62,7 +63,7 @@ defmodule WebappWeb.UserController do
     end
   end
 
-  def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, _) do
+  def delete(%Conn{assigns: %{current_user: user}} = conn, _) do
     {:ok, _user} = Accounts.delete_user(user)
 
     conn
