@@ -4,7 +4,8 @@ defmodule Webapp.MixProject do
   def project do
     [
       app: :webapp,
-      version: get_version(),
+      version: "0.1.0",
+      vcs_version: vcs_version(),
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -30,11 +31,6 @@ defmodule Webapp.MixProject do
       mod: {Webapp.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
-  end
-
-  # Current version
-  defp version do
-    "0.1.0"
   end
 
   # Specifies which paths to compile per environment.
@@ -80,14 +76,13 @@ defmodule Webapp.MixProject do
   end
 
   # Combines version with commit hash, environment etc.
-  defp get_version do
+  defp vcs_version do
     if Mix.env == :prod do
       {hash, _} = System.cmd "git", ~w(show -s --format=%h)
-      hash = String.trim(hash)
-
-      "#{version()}-#{hash}"
+      hash
+      |> String.trim(hash)
     else
-      "#{version()}-dev"
+      "dev"
     end
   end
 end
