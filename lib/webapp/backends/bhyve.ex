@@ -232,7 +232,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   defp webhook_trigger(token,endpoint) do
     Logger.debug("Bhyve webhook GET call: #{endpoint} without parameters")
 
-    case HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", token}]) do
+    case HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", token}], follow_redirect: true) do
       {:ok, %{body: body, status_code: 200}} ->
         Logger.debug("Bhyve webhook response: #{body}")
         webhook_process_response(body)
@@ -250,7 +250,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     json = Jason.encode!(payload)
     Logger.debug("Bhyve webhook POST call: #{endpoint} with #{json}")
 
-    case HTTPoison.post(endpoint, json, @headers ++ [{"X-RUNHYVE-TOKEN", token}]) do
+    case HTTPoison.post(endpoint, json, @headers ++ [{"X-RUNHYVE-TOKEN", token}], follow_redirect: true) do
       {:ok, %{body: body, status_code: 200}} ->
         Logger.debug("Bhyve webhook response: #{body}")
         webhook_process_response(body)
