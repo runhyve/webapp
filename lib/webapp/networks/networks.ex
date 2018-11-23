@@ -88,8 +88,6 @@ defmodule Webapp.Networks do
       %Network{}
       |> Network.changeset(attrs)
 
-    IO.inspect(changeset)
-
     if changeset.valid? do
       hypervisor =
         Ecto.Changeset.get_change(changeset, :hypervisor_id)

@@ -13,15 +13,13 @@
     <%= error_tag f, :name %>
   </div>
 
-  <%= inputs_for f, :namespace, fn nf -> %>
-    <div class="field">
-      <%= label nf, :namespace, class: "label" %>
-      <div class="control">
-        <%= text_input nf, :namespace, class: "input" %>
-      </div>
-      <%= error_tag nf, :namespace %>
+  <div class="field">
+    <%= label f, :namespace, class: "label" %>
+    <div class="control">
+      <%= text_input f, :namespace, class: "input" %>
     </div>
-  <% end %>
+    <%= error_tag f, :namespace %>
+  </div>
 
   <div class="field">
     <%= submit "Save", class: "button is-rounded is-primary" %>

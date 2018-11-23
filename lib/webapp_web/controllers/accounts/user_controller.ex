@@ -2,13 +2,14 @@ defmodule WebappWeb.UserController do
   use WebappWeb, :controller
 
   alias Phauxth.Log
-  alias Webapp.{Accounts, Accounts.User, Accounts.Namespace}
+  alias Webapp.{Accounts, Accounts.User, Accounts.Registration}
   alias WebappWeb.{Auth.Token}
   alias WebappWeb.Emails.UserEmail, as: Email
+  alias Ecto.Changeset
 
   # the following plugs are defined in the controllers/authorize.ex file
   plug :is_logged_in when action in [:index, :show]
-  plug :is_current_user when action in [:edit, :update, :delete]
+  #plug :is_current_user when action in [:edit, :update, :delete]
 
   #plug :load_resource, model: User,
 
@@ -19,30 +20,40 @@ defmodule WebappWeb.UserController do
   end
 
   def new(conn, _) do
-    changeset = Accounts.change_user(%User{namespace: %Namespace{}})
+    changeset = Accounts.change_registration(%Registration{})
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"user" => %{"email" => email} = user_params}) do
-    key = Token.sign(%{"email" => email})
+  def create(conn, %{"registration" => registration_params}) do
 
-    case Accounts.create_user(user_params) do
-      {:ok, user} ->
+    changeset = Registration.changeset(%Registration{}, registration_params)
+
+    case Accounts.register_user(registration_params) do
+      {:ok, %{user: user}} ->
+        key = Token.sign(%{"email" => user.email})
         Log.info(%Log{user: user.id, message: "user created"})
-
-        Email.confirm_request(email, key)
+        Email.confirm_request(user.email, key)
 
         conn
         |> put_flash(:info, "User created successfully.")
         |> redirect(to: Routes.session_path(conn, :new))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, :registration, multi_changeset, _changes} ->
+        changeset = %{changeset | errors: multi_changeset.errors, valid?: false, action: :insert}
         render(conn, "new.html", changeset: changeset)
+
+      {:error, :user, multi_changeset, _changes} ->
+        changeset = Registration.copy_changeset_errors(multi_changeset, changeset, "user")
+        render(conn, "new.html", changeset: %{changeset | action: :insert})
+
+      {:error, :team, multi_changeset, _changes} ->
+        changeset = Registration.copy_changeset_errors(multi_changeset, changeset, "team")
+        render(conn, "new.html", changeset: %{changeset | action: :insert})
     end
   end
 
-  def show(%Conn{assigns: %{current_user: user}} = conn, %{"namespace" => namespace}) do
-    Accounts.get_by(%{"namespace" => namespace})
+  def show(%Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
+    Accounts.get_by(%{"user_id" => id})
     render(conn, "show.html", user: user)
   end
 
@@ -70,5 +81,13 @@ defmodule WebappWeb.UserController do
     |> delete_session(:phauxth_session_id)
     |> put_flash(:info, "User deleted successfully.")
     |> redirect(to: Routes.session_path(conn, :new))
+  end
+
+  def teams(%Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
+    user = Accounts.get_by(%{"user_id" => id}, [:teams])
+
+    conn
+    |> put_view(WebappWeb.TeamView)
+    |> render("index.html", teams: user.teams, user: user)
   end
 end

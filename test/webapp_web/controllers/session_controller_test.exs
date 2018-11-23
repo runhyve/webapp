@@ -3,7 +3,12 @@ defmodule WebappWeb.SessionControllerTest do
 
   import WebappWeb.AuthCase
 
-  @create_attrs %{email: "robin@example.com", password: "reallyHard2gue$$", name: "robin", namespace: %{namespace: "robin"}}
+  @create_attrs %{
+    email: "robin@example.com",
+    password: "reallyHard2gue$$",
+    name: "robin",
+    namespace: %{namespace: "robin"}
+  }
   @invalid_attrs %{email: "robin@example.com", password: "cannotGue$$it"}
   @unconfirmed_attrs %{
     email: "lancelot@example.com",

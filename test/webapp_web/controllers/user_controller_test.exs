@@ -4,7 +4,12 @@ defmodule WebappWeb.UserControllerTest do
   import WebappWeb.AuthCase
   alias Webapp.Accounts
 
-  @valid_user %{email: "bill@example.com", password: "hard2guess", name: "bill", namespace: %{namespace: "bill"}}
+  @valid_user %{
+    email: "bill@example.com",
+    password: "hard2guess",
+    name: "bill",
+    namespace: %{namespace: "bill"}
+  }
   @update_attrs %{email: "william@example.com"}
   @invalid_user %{email: nil}
 

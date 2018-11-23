@@ -9,7 +9,7 @@ defmodule WebappWeb.Router do
     plug :put_secure_browser_headers
     plug Phauxth.Authenticate
     plug Phauxth.Remember
-    plug WebappWeb.HandleNamespace
+    plug WebappWeb.DefaultNamespace
   end
 
   pipeline :api do
@@ -21,14 +21,18 @@ defmodule WebappWeb.Router do
 
     get "/", PageController, :index
 
-    resources "/users", UserController, param: "namespace"
+    resources "/users", UserController
+    get "/users/:id/teams", UserController, :teams
+
     resources "/sessions", SessionController, only: [:new, :create, :delete]
     get "/user/confirm", ConfirmController, :index
     resources "/user/password_resets", PasswordResetController, only: [:new, :create]
     get "/user/password_resets/edit", PasswordResetController, :edit
     put "/user/password_resets/update", PasswordResetController, :update
 
-    resources "/groups", GroupController
+    resources "/teams", TeamController, except: [:delete] do
+      resources "/members", MemberController, except: [:index]
+    end
 
     resources "/hypervisors", HypervisorController do
       resources "/networks", NetworkController, only: [:new, :create, :index]

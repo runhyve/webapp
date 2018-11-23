@@ -7,11 +7,18 @@ defmodule WebappWeb.AuthCase do
   alias WebappWeb.Auth.Token
 
   def add_user(email) do
-    name = email
-           |> String.split("@")
-           |> hd()
+    name =
+      email
+      |> String.split("@")
+      |> hd()
 
-    user = %{email: email, password: "reallyHard2gue$$", name: name, namespace: %{namespace: name}}
+    user = %{
+      email: email,
+      password: "reallyHard2gue$$",
+      name: name,
+      namespace: %{namespace: name}
+    }
+
     {:ok, user} = Accounts.create_user(user)
     user
   end

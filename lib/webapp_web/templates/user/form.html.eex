@@ -6,6 +6,14 @@
   <% end %>
 
   <div class="field">
+    <%= label f, "Full name", class: "label" %>
+    <div class="control">
+      <%= text_input f, :name, class: "input" %>
+    </div>
+    <%= error_tag f, :name %>
+  </div>
+
+  <div class="field">
     <%= label f, :email, class: "label" %>
     <div class="control">
       <%= text_input f, :email, class: "input" %>
@@ -14,29 +22,32 @@
   </div>
 
   <div class="field">
-    <%= label f, :name, class: "label" %>
-    <div class="control">
-      <%= text_input f, :name, class: "input" %>
-    </div>
-    <%= error_tag f, :name %>
-  </div>
-
-  <%= inputs_for f, :namespace, fn nf -> %>
-    <div class="field">
-      <%= label nf, :namespace, class: "label" %>
-      <div class="control">
-        <%= text_input nf, :namespace, class: "input" %>
-      </div>
-      <%= error_tag nf, :namespace %>
-    </div>
-  <% end %>
-
-  <div class="field">
     <%= label f, :password, class: "label" %>
     <div class="control">
       <%= password_input f, :password, class: "input" %>
     </div>
     <%= error_tag f, :password %>
+  </div>
+
+  <hr />
+  <div class="notification">
+    Enter a name and namespace for your team even if you want to use Runhyve without other people.
+  </div>
+
+  <div class="field">
+    <%= label f, "Team name", class: "label" %>
+    <div class="control">
+      <%= text_input f, :team_name, class: "input" %>
+    </div>
+    <%= error_tag f, :team_name %>
+  </div>
+
+  <div class="field">
+    <%= label f, "Team namespace", class: "label" %>
+    <div class="control">
+      <%= text_input f, :team_namespace, class: "input" %>
+    </div>
+    <%= error_tag f, :team_namespace %>
   </div>
 
   <div class="level">

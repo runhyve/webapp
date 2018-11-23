@@ -1,0 +1,47 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <%= if @user do %>
+    <li><%= link @user.name, to: Routes.user_path(@conn, :show, @user) %></li>
+    <% end %>
+
+    <li class="is-active"><a>Teams</a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1>Listing Teams</h1>
+  </div>
+
+  <div class="level-right">
+    <span><%= link "New Team", to: Routes.team_path(@conn, :new), class: "button is-rounded is-primary" %></span>
+  </div>
+</div>
+
+
+<table class="table container">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Namespace</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for team <- @teams do %>
+    <tr>
+      <td><%= link team.name, to: Routes.team_path(@conn, :show, team) %></td>
+      <td><%= team.namespace %></td>
+
+      <td>
+        <%= link "Show", to: Routes.team_path(@conn, :show, team), class: "button is-rounded"  %>
+        <%= link "Edit", to: Routes.team_path(@conn, :edit, team),  class: "button is-rounded is-info"  %>
+      </td>
+    </tr>
+<% end %>
+<%= if Enum.empty?(@teams) do %>
+    <tr><td colspan="3">Empty here, add a team...</td></tr>
+<% end %>
+  </tbody>
+</table>

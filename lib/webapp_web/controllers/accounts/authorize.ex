@@ -19,18 +19,22 @@ defmodule WebappWeb.Authorize do
   def is_logged_in(%Plug.Conn{assigns: %{current_user: nil}} = conn, _opts) do
     need_login(conn)
   end
+
   def is_logged_in(conn, _opts), do: conn
 
   @doc """
   Plug to only allow authenticated admins to access the resource.
   """
-  def is_admin(%Plug.Conn{assigns: %{current_user: nil}} = conn, _opts) do
+  def is_admin?(%Plug.Conn{assigns: %{current_user: nil}} = conn, _opts) do
     need_login(conn)
   end
-  def is_admin(%Plug.Conn{assigns: %{current_user: %User{role: role}}} = conn, _opts) when role !== "Admin" do
+
+  def is_admin?(%Plug.Conn{assigns: %{current_user: %User{role: role}}} = conn, _opts)
+      when role !== "Admin" do
     unauthorized(conn)
   end
-  def is_admin(conn, _opts), do: conn
+
+  def is_admin?(conn, _opts), do: conn
 
   @doc """
   Plug to only allow unauthenticated users to access the resource.
@@ -38,7 +42,9 @@ defmodule WebappWeb.Authorize do
   See the session controller for an example.
   """
   def is_anonymous(%Plug.Conn{assigns: %{current_user: nil}} = conn, _opts), do: conn
-  def is_anonymous(%Plug.Conn{assigns: %{current_user: _current_user}} = conn, _opts), do: need_logout(conn)
+
+  def is_anonymous(%Plug.Conn{assigns: %{current_user: _current_user}} = conn, _opts),
+    do: need_logout(conn)
 
   @doc """
   Plug to only allow authenticated users with the correct id to access the resource.
@@ -50,10 +56,12 @@ defmodule WebappWeb.Authorize do
   end
 
   def is_current_user(
-        %Plug.Conn{params: %{"namespace" => namespace}, assigns: %{current_user: current_user}} = conn,
+        %Plug.Conn{params: %{"namespace" => namespace}, assigns: %{current_user: current_user}} =
+          conn,
         _opts
       ) do
     user = Accounts.get_by(%{"namespace" => namespace})
+
     if user.id == current_user.id do
       conn
     else

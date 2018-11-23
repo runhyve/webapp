@@ -7,8 +7,9 @@ defmodule Webapp.Accounts do
 
   alias Webapp.{
     Repo,
+    Accounts.Registration,
     Accounts.User,
-    Accounts.Group,
+    Accounts.Team,
     Accounts.Namespace,
     Sessions,
     Sessions.Session
@@ -17,7 +18,7 @@ defmodule Webapp.Accounts do
   @doc """
   Returns the list of users.
   """
-  def list_users(preloads \\ [:namespace]) do
+  def list_users(preloads \\ []) do
     Repo.all(User)
     |> Repo.preload(preloads)
   end
@@ -25,7 +26,7 @@ defmodule Webapp.Accounts do
   @doc """
   Gets a single user.
   """
-  def get_user(id, preloads \\ [:namespace]) do
+  def get_user(id, preloads \\ []) do
     Repo.get(User, id)
     |> Repo.preload(preloads)
   end
@@ -35,7 +36,7 @@ defmodule Webapp.Accounts do
 
   This is used by Phauxth to get user information.
   """
-  def get_by(_conditions, preloads \\ [:namespace])
+  def get_by(_conditions, preloads \\ [])
 
   def get_by(%{"session_id" => session_id}, preloads) do
     with %Session{user_id: user_id} <- Sessions.get_session(session_id),
@@ -53,9 +54,12 @@ defmodule Webapp.Accounts do
   end
 
   def get_by(%{"namespace" => namespace}, preloads) do
-    Repo.one(from u in User,
-             join: n in assoc(u, :namespace),
-             where: n.namespace == ^namespace)
+    Repo.one(
+      from(u in User,
+        join: n in assoc(u, :namespace),
+        where: n.namespace == ^namespace
+      )
+    )
     |> Repo.preload(preloads)
   end
 
@@ -73,6 +77,13 @@ defmodule Webapp.Accounts do
     %User{}
     |> User.create_changeset(attrs)
     |> Repo.insert()
+  end
+
+  def register_user(attrs) do
+    %Registration{}
+    |> Registration.changeset(attrs)
+    |> Registration.registration(attrs)
+    |> Repo.transaction()
   end
 
   @doc """
@@ -137,100 +148,119 @@ defmodule Webapp.Accounts do
   end
 
   @doc """
-  Returns the list of groups.
+  Returns an `%Ecto.Changeset{}` for tracking registration changes.
+  """
+  def change_registration(%Registration{} = registration) do
+    Registration.changeset(registration, %{})
+  end
+
+  def user_first_team(%User{}) do
+    
+  end
+
+  @doc """
+  Returns the list of teams.
 
   ## Examples
 
-      iex> list_groups()
-      [%Group{}, ...]
+      iex> list_teams()
+      [%Team{}, ...]
 
   """
-  def list_groups(preloads \\ [:namespace]) do
-    Repo.all(Group)
+  def list_teams(preloads \\ []) do
+    Repo.all(Team)
     |> Repo.preload(preloads)
   end
 
   @doc """
-  Gets a single group.
+  Returns the list of user's teams.
+  """
+  def list_user_teams(preloads \\ []) do
+    Repo.all(Team)
+    |> Repo.preload(preloads)
+  end
 
-  Raises `Ecto.NoResultsError` if the Group does not exist.
+  @doc """
+  Gets a single team.
+
+  Raises `Ecto.NoResultsError` if the Team does not exist.
 
   ## Examples
 
-      iex> get_group!(123)
-      %Group{}
+      iex> get_team!(123)
+      %Team{}
 
-      iex> get_group!(456)
+      iex> get_team!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_group!(id, preloads \\ [:namespace]) do
-    Repo.get!(Group, id)
+  def get_team!(id, preloads \\ []) do
+    Repo.get!(Team, id)
     |> Repo.preload(preloads)
   end
 
   @doc """
-  Creates a group.
+  Creates a team with first member.
 
   ## Examples
 
-      iex> create_group(%{field: value})
-      {:ok, %Group{}}
+      iex> create_team(%{field: value})
+      {:ok, %Team{}}
 
-      iex> create_group(%{field: bad_value})
+      iex> create_team(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_group(attrs \\ %{}) do
-    %Group{}
-    |> Group.create_changeset(attrs)
+  def create_team(attrs \\ %{}) do
+    %Team{}
+    |> Team.add_team_changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a group.
+  Updates a team.
 
   ## Examples
 
-      iex> update_group(group, %{field: new_value})
-      {:ok, %Group{}}
+      iex> update_team(team, %{field: new_value})
+      {:ok, %Team{}}
 
-      iex> update_group(group, %{field: bad_value})
+      iex> update_team(team, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_group(%Group{} = group, attrs) do
-    group
-    |> Group.update_changeset(attrs)
+  def update_team(%Team{} = team, attrs) do
+    team
+    |> Team.update_changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a Group.
+  Deletes a Team.
 
   ## Examples
 
-      iex> delete_group(group)
-      {:ok, %Group{}}
+      iex> delete_team(team)
+      {:ok, %Team{}}
 
-      iex> delete_group(group)
+      iex> delete_team(team)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_group(%Group{} = group) do
-    Repo.delete(group)
+  def delete_team(%Team{} = team) do
+    Repo.delete(team)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking group changes.
+  Returns an `%Ecto.Changeset{}` for tracking team changes.
 
   ## Examples
 
-      iex> change_group(group)
-      %Ecto.Changeset{source: %Group{}}
+      iex> change_team(team)
+      %Ecto.Changeset{source: %Team{}}
 
   """
-  def change_group(%Group{} = group) do
-    Group.changeset(group, %{})
+  def change_team(%Team{} = team) do
+    Team.changeset(team, %{})
   end
 end

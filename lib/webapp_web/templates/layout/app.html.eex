@@ -25,18 +25,25 @@
           <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
               <%= link "Home", to: Routes.page_path(@conn, :index), class: "navbar-item" %>
-              <%= link "Users", to: Routes.user_path(@conn, :index), class: "navbar-item" %>
-              <%= link "Groups", to: Routes.group_path(@conn, :index), class: "navbar-item" %>
-              <%= link "Plans", to: Routes.plan_path(@conn, :index), class: "navbar-item" %>
-              <%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index), class: "navbar-item" %>
-              <%= link "Machines", to: Routes.machine_path(@conn, :index), class: "navbar-item" %>
+
+              <%= if @current_user do %>
+                <%= link "My Teams", to: Routes.user_path(@conn, :teams, @current_user), class: "navbar-item" %>
+              <% end %>
+
+              <%= if false do %>
+               <%= link "Users", to: Routes.user_path(@conn, :index), class: "navbar-item" %>
+                <%= link "Teams", to: Routes.team_path(@conn, :index), class: "navbar-item" %>
+                <%= link "Plans", to: Routes.plan_path(@conn, :index), class: "navbar-item" %>
+                <%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index), class: "navbar-item" %>
+                <%= link "Machines", to: Routes.machine_path(@conn, :index), class: "navbar-item" %>
+              <% end %>
             </div>
 
             <div class="navbar-end">
               <div class="navbar-item">
                 <div class="buttons">
                 <%= if @namespace do %>
-                  Namespace: <strong><%= @namespace.namespace %></strong>
+                  Namespace: <strong><%= @namespace %></strong>
                 <% end %>
                   <%= if @current_user do %>
                     <%= link "Logout", to: Routes.session_path(@conn, :delete, current_session(@conn)), method: :delete, class: "button is-rounded is-primary" %>

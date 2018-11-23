@@ -63,6 +63,13 @@ defmodule WebappWeb do
     end
   end
 
+  def model do
+    quote do
+      use Ecto.Schema
+      import Ecto.Changeset
+    end
+  end
+
   @doc """
   When used, dispatch to the appropriate controller/view/etc.
   """

@@ -19,7 +19,7 @@ defmodule WebappWeb.SessionController do
         conn
         |> add_session(user, params)
         |> put_flash(:info, "User successfully logged in.")
-        |> redirect(to: get_session(conn, :request_path) || Routes.user_path(conn, :index))
+        |> redirect(to: get_session(conn, :request_path) || Routes.user_path(conn, :show, user))
 
       {:error, message} ->
         conn

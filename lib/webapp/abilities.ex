@@ -1,6 +1,6 @@
 alias Webapp.{
   Accounts.User,
-  Accounts.Group,
+  Accounts.Team,
   Plans.Plan,
   Hypervisors.Hypervisor,
   Hypervioors.Machine,

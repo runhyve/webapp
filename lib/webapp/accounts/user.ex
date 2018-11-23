@@ -1,14 +1,11 @@
 defmodule Webapp.Accounts.User do
-  use Ecto.Schema
-
-  import Ecto.Changeset
+  use WebappWeb, :model
 
   alias Webapp.{
     Sessions.Session,
     Accounts.User,
-    Accounts.Group,
-    Accounts.GroupUser,
-    Accounts.Namespace,
+    Accounts.Team,
+    Accounts.Member,
     Types.UserRole
   }
 
@@ -21,17 +18,11 @@ defmodule Webapp.Accounts.User do
     field(:reset_sent_at, :utc_datetime)
     field(:role, UserRole, default: "User")
 
-    belongs_to(:namespace, Namespace)
     has_many(:sessions, Session, on_delete: :delete_all)
-    has_many(:groups, GroupUser, on_delete: :delete_all)
+    has_many(:memberships, Member, on_delete: :delete_all)
+    has_many(:teams, through: [:memberships, :team])
 
     timestamps()
-  end
-
-  defimpl Phoenix.Param, for: User do
-    def to_param(%User{id: _id, namespace: %Namespace{namespace: namespace}} = user) do
-      "#{namespace}"
-    end
   end
 
   def changeset(%User{} = user, attrs) do
@@ -50,18 +41,14 @@ defmodule Webapp.Accounts.User do
     |> unique_email()
     |> validate_password(:password)
     |> put_pass_hash()
-    |> cast_assoc(:namespace, with: &Namespace.user_changeset/2, required: true)
-    |> assoc_constraint(:namespace)
   end
 
   def update_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:email, :name])
+    |> cast(attrs, [:email, :name, :role])
     |> validate_required([:email, :name])
     |> unique_constraint(:name)
     |> unique_email()
-    |> cast_assoc(:namespace, with: &Namespace.user_changeset/2, required: true)
-    |> assoc_constraint(:namespace)
   end
 
   def confirm_changeset(user) do

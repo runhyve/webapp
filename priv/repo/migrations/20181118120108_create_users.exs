@@ -12,17 +12,15 @@ defmodule Webapp.Repo.Migrations.CreateUsers do
     create table(:users) do
       add(:email, :string)
       add(:name, :string)
-      add(:namespace_id, references(:namespaces, on_delete: :delete_all), null: false)
       add(:password_hash, :string)
       add(:confirmed_at, :utc_datetime)
       add(:reset_sent_at, :utc_datetime)
+      add(:invited_at, :utc_datetime)
       add(:role, :user_role)
 
       timestamps()
     end
 
-    create(index(:users, [:namespace_id]))
     create(unique_index(:users, [:email]))
-    create(unique_index(:users, [:name]))
   end
 end
