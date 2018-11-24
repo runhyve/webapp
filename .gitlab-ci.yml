@@ -42,8 +42,6 @@ deploy_demo:
     url: https://demo.runhyve.app
   
   script:
-    - apt-get update && apt-get install -y python-pip git
-    - pip install gigalixir
-    - gigalixir login -e "$GIGALIXIR_EMAIL" -y -p "$GIGALIXIR_PASSWORD"
-    - gigalixir set_git_remote "$GIGALIXIR_APP_NAME"
+    - set -x
+    - git remote add gigalixir https://$GIGALIXIR_EMAIL:$GIGALIXIR_API_KEY@git.gigalixir.com/$GIGALIXIR_APP_NAME.git
     - git push -f gigalixir HEAD:refs/heads/master
