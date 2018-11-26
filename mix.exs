@@ -78,9 +78,11 @@ defmodule Webapp.MixProject do
   # Combines version with commit hash, environment etc.
   defp vcs_version do
     if Mix.env == :prod do
-      {hash, _} = System.cmd "git", ~w(show -s --format=%h)
-      hash
-      |> String.trim(hash)
+      with {:ok, hash} <- File.read(".vcs_version") do
+        String.trim(hash)
+      else
+        {:error, _} -> "prod"
+      end
     else
       "dev"
     end
