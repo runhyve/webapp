@@ -1,3 +1,4 @@
+git show -s --format=%h > .vcs_version
 npm run deploy
 cd $phoenix_dir
 mix "${phoenix_ex}.digest"
