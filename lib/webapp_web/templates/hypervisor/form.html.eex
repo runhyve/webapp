@@ -8,6 +8,7 @@
 
     <div class="field">
       <%= label f, :name, class: "label" %>
+      <div>Descriptive name for your hypervisor.</div>
       <div class="control">
         <%= text_input f, :name, class: "input" %>
       </div>
@@ -24,6 +25,7 @@
 
     <div class="field">
       <%= label f, :webhook_endpoint, class: "label" %>
+      <div>API endpoint on your hypervisor. For example <b><i>https://vm-webhook.192.168.0.235.xip.io/vm</i></b>.</div>
       <div class="control">
         <%= text_input f, :webhook_endpoint, class: "input" %>
       </div>
@@ -32,6 +34,7 @@
 
     <div class="field">
       <%= label f, :webhook_token, class: "label" %>
+      <div>This token is generated during hypervisor setup. You can get it from <b><i>/usr/local/etc/nginx/.runhyvetoken</i></b> on hypervisor.</div>
       <div class="control">
         <%= text_input f, :webhook_token, class: "input" %>
       </div>
