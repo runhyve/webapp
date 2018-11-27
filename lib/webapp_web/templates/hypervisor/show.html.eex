@@ -16,7 +16,7 @@
     </li>
 
     <li>
-      <strong>Ip address:</strong>
+      <strong>IP address:</strong>
       <%= @hypervisor.ip_address %>
     </li>
 

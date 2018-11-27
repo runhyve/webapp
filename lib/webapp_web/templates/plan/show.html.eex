@@ -30,16 +30,16 @@
 
     <li>
       <strong>Storage:</strong>
-      <%= @plan.storage %>
+      <%= @plan.storage %> GB
     </li>
 
     <li>
-      <strong>Ram:</strong>
-      <%= @plan.ram %>
+      <strong>Memory:</strong>
+      <%= @plan.ram %> MB
     </li>
 
     <li>
-      <strong>Cpu:</strong>
+      <strong>vCPUs:</strong>
       <%= @plan.cpu %>
     </li>
   </ul>
