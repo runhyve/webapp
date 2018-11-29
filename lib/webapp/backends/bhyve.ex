@@ -54,15 +54,26 @@ defmodule Webapp.Hypervisors.Bhyve do
           "xenial-server-cloudimg-amd64-uefi1.img"
       end
 
+    template =
+      case machine.template do
+        "freebsd" ->
+          "freebsd"
+
+        "ubuntu" ->
+          "linux"
+      end
+
     [network | _] = machine.networks
 
     # TODO: machine name should be prefixed with owner namespace.
     payload = %{
-      "plan" => machine.plan.name,
       "name" => machine.name,
-      "system" => system,
+      "template" => template,
       "image" => image,
-      "network" => network.name
+      "network" => network.name,
+      "cpu" => machine.plan.cpu,
+      "memory" => "#{machine.plan.ram}M",
+      "disk" => "#{machine.plan.storage}G"
     }
 
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/create"
@@ -232,7 +243,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   defp webhook_trigger(token, endpoint) do
     Logger.debug("Bhyve webhook GET call: #{endpoint} without parameters")
 
-    case HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", token}]) do
+    case HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", token}], follow_redirect: true) do
       {:ok, %{body: body, status_code: 200}} ->
         Logger.debug("Bhyve webhook response: #{body}")
         webhook_process_response(body)
@@ -250,7 +261,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     json = Jason.encode!(payload)
     Logger.debug("Bhyve webhook POST call: #{endpoint} with #{json}")
 
-    case HTTPoison.post(endpoint, json, @headers ++ [{"X-RUNHYVE-TOKEN", token}]) do
+    case HTTPoison.post(endpoint, json, @headers ++ [{"X-RUNHYVE-TOKEN", token}], follow_redirect: true, hackney: [force_redirect: true]) do
       {:ok, %{body: body, status_code: 200}} ->
         Logger.debug("Bhyve webhook response: #{body}")
         webhook_process_response(body)

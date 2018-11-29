@@ -26,7 +26,16 @@ defmodule Webapp.Hypervisors.Hypervisor do
       :webhook_endpoint,
       :webhook_token
     ])
+    |> cleanup_webhook_endpoint()
     |> assoc_constraint(:hypervisor_type)
     |> unique_constraint(:name)
+  end
+
+  defp cleanup_webhook_endpoint(changeset) do
+    case fetch_change(changeset, :webhook_endpoint) do
+      {:ok, endpoint} ->
+        put_change(changeset, :webhook_endpoint, String.trim_trailing(endpoint, "/"))
+      :error -> changeset
+    end
   end
 end

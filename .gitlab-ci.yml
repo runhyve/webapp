@@ -1,4 +1,9 @@
+stages:
+  - test
+  - deploy
+
 test:
+  stage: test
   image: elixir:latest
 
   services:
@@ -22,3 +27,22 @@ test:
   script:
     - mix test
     - mix coveralls
+
+deploy_demo:
+  stage: deploy
+  image: ubuntu:18.04
+  only:
+    - master
+
+  variables:
+    GIGALIXIR_APP_NAME: "welltodo-normal-hen"
+
+  environment:
+    name: demo
+    url: https://demo.runhyve.app
+  
+  script:
+    - set -x
+    - apt-get update && apt-get install -y git
+    - git remote add gigalixir https://$GIGALIXIR_EMAIL:$GIGALIXIR_API_KEY@git.gigalixir.com/$GIGALIXIR_APP_NAME.git
+    - git push -f gigalixir HEAD:refs/heads/master

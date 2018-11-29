@@ -81,7 +81,7 @@ defmodule Webapp.HypervisorsTest do
     #
     #    test "list_hypervisor/0 returns all hypervisor" do
     #      hypervisor = hypervisor_fixture()
-    #      assert Hypervisors.list_hypervisor() == [hypervisor]
+    #      assert Hypervisors.list_hypervisors() == [hypervisor]
     #    end
     #
     #    test "get_hypervisor!/1 returns the hypervisor with given id" do

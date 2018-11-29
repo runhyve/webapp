@@ -16,6 +16,7 @@
 
     <div class="field">
       <%= label f, :storage, class: "label" %>
+      <div>Storage in gigabytes.</div>
       <div class="control">
         <%= number_input f, :storage, class: "input" %>
       </div>
@@ -24,6 +25,7 @@
 
     <div class="field">
       <%= label f, :ram, class: "label" %>
+      <div>RAM in megabytes.</div>
       <div class="control">
         <%= number_input f, :ram, class: "input" %>
       </div>
@@ -32,6 +34,7 @@
 
     <div class="field">
       <%= label f, :cpu, class: "label" %>
+      <div>How many virtual CPUs?</div>
       <div class="control">
         <%= number_input f, :cpu, class: "input" %>
       </div>
