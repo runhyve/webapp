@@ -8,7 +8,7 @@ defmodule WebappWeb.HypervisorController do
   plug :load_hypervisor when action not in [:index, :create, :new]
 
   def index(conn, _params) do
-    hypervisor = Hypervisors.list_hypervisor()
+    hypervisor = Hypervisors.list_hypervisors()
     render(conn, "index.html", hypervisor: hypervisor)
   end
 

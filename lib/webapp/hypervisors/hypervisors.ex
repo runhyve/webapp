@@ -122,11 +122,11 @@ defmodule Webapp.Hypervisors do
 
   ## Examples
 
-      iex> list_hypervisor()
+      iex> list_hypervisors()
       [%Hypervisor{}, ...]
 
   """
-  def list_hypervisor do
+  def list_hypervisors do
     Repo.all(Hypervisor)
   end
 

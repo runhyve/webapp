@@ -25,7 +25,7 @@
 
     <div class="field">
       <%= label f, :webhook_endpoint, class: "label" %>
-      <div>API endpoint on your hypervisor. For example <b><i>https://vm-webhook.192.168.0.235.xip.io/vm</i></b>.</div>
+      <div>API endpoint on your hypervisor. For example <b><i>https://vm-webhook.192.168.0.235.xip.io</i></b>.</div>
       <div class="control">
         <%= text_input f, :webhook_endpoint, class: "input" %>
       </div>

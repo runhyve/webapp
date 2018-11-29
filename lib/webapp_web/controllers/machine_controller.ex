@@ -36,7 +36,9 @@ defmodule WebappWeb.MachineController do
 
   def index(conn, _params) do
     machines = Machines.list_machines([:hypervisor, :plan, :networks])
-    render(conn, "index.html", machines: machines, hypervisor: false)
+    hypervisors = Hypervisors.list_hypervisors()
+
+    render(conn, "index.html", machines: machines, hypervisor: false, hypervisors: hypervisors)
   end
 
   def new(conn, _params) do

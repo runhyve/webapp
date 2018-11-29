@@ -54,15 +54,26 @@ defmodule Webapp.Hypervisors.Bhyve do
           "xenial-server-cloudimg-amd64-uefi1.img"
       end
 
+    template =
+      case machine.template do
+        "freebsd" ->
+          "freebsd"
+
+        "ubuntu" ->
+          "linux"
+      end
+
     [network | _] = machine.networks
 
     # TODO: machine name should be prefixed with owner namespace.
     payload = %{
-      "plan" => machine.plan.name,
       "name" => machine.name,
-      "system" => system,
+      "template" => template,
       "image" => image,
-      "network" => network.name
+      "network" => network.name,
+      "cpu" => machine.plan.cpu,
+      "memory" => "#{machine.plan.ram}M",
+      "disk" => "#{machine.plan.storage}G"
     }
 
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/create"
