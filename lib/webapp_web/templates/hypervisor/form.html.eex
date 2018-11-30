@@ -36,7 +36,7 @@
       <%= label f, :webhook_token, class: "label" %>
       <div>This token is generated during hypervisor setup. You can get it from <b><i>/usr/local/etc/nginx/.runhyvetoken</i></b> on hypervisor.</div>
       <div class="control">
-        <%= text_input f, :webhook_token, class: "input" %>
+        <%= password_input f, :webhook_token, class: "input" %>
       </div>
       <%= error_tag f, :webhook_token %>
     </div>

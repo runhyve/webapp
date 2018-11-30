@@ -18,9 +18,6 @@ defmodule Webapp.Hypervisors do
     Networks.Network
   }
 
-  # Number of seconds after the create action is considered as failed.
-  @create_timeout 180
-
   @doc """
   Returns the list of hypervisor_types.
 
