@@ -9,7 +9,11 @@ defmodule Webapp.Repo.Migrations.CreateMachines do
       add(:plan_id, references(:plans, on_delete: :nothing))
       add(:last_status, :string, default: "")
       add(:created, :boolean)
+      add(:failed, :boolean)
       add(:job_id, :integer, null: true)
+
+      add(:created_at, :naive_datetime)
+      add(:failed_at, :naive_datetime)
 
       timestamps()
     end

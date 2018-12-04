@@ -17,6 +17,9 @@ defmodule Webapp.Machines do
     Networks.Network
   }
 
+  # Number of seconds after the create action is considered as failed.
+  @create_timeout 180
+
   @doc """
   Returns the list of machines.
 
@@ -129,7 +132,21 @@ defmodule Webapp.Machines do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_machine(%Machine{} = machine) do
+  def delete_machine(%Machine{failed: true} = machine) do
+    # Try to remove machine on server in silent mode.
+    module = get_hypervisor_module(machine)
+    try do
+      apply(module, :delete_machine, [%{machine: machine}])
+    rescue
+      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+    end
+
+    Multi.new()
+    |> Multi.delete(:machine, machine)
+    |> Repo.transaction()
+  end
+
+  def delete_machine(%Machine{created: true} = machine) do
     module = get_hypervisor_module(machine)
 
     try do
@@ -154,8 +171,14 @@ defmodule Webapp.Machines do
       |> Multi.update(:machine, changeset)
       |> Multi.run(:hypervisor, module, :update_machine_status, [])
       |> Multi.run(:status, fn _repo, %{hypervisor: status} ->
+        now =
+          NaiveDateTime.utc_now()
+          |> NaiveDateTime.truncate(:second)
+
+
         changeset
         |> Changeset.put_change(:last_status, status)
+        |> Changeset.put_change(:created_at, now)
         |> Changeset.put_change(:created, true)
         |> Repo.update()
       end)
@@ -169,41 +192,65 @@ defmodule Webapp.Machines do
   Checks machine status.
   Returns machine struct or error message.
   """
-  def check_status(%Machine{} = machine) do
-    # Machine is not created, we need to check job status before fetching machine status.
-    if !machine.created do
-      # TODO: Add failure notifications
-      case check_job_status(machine) do
-        # Job is finished, check machine status this will update created flag.
-        {:ok, %{"state" => "finished", "elevel" => 0}} ->
-          check_machine_status(machine)
+  def update_status(%Machine{failed: true} = machine), do: {:ok, machine}
 
-        {:ok, %{"state" => "finished", "elevel" => _elevel}} ->
-          {:error, "Machine was not created successfully"}
+  # Machine is already created, simply check and update machine status.
+  def update_status(%Machine{created: true} = machine) do
+    check_machine_status(machine)
+  end
 
-        {:ok, %{"state" => "blocked"}} ->
-          {:error, "Machine was not created successfully"}
+  #
+  def update_status(%Machine{failed: false, created: false, inserted_at: inserted_at} = machine)  do
+    cond do
+      NaiveDateTime.diff(NaiveDateTime.utc_now(), inserted_at) >= @create_timeout ->
+        mark_as_failed(machine)
+        {:error, "Something went wrong, your machine has been created for too long."}
 
-        {:ok, %{"state" => state}} ->
-          cond do
-            NaiveDateTime.diff(NaiveDateTime.utc_now(), machine.inserted_at) >= @create_timeout ->
-              {:error, "Something went wrong, your machine has been created for too long."}
-
-            true ->
-              {:ok, machine}
-          end
-
-        {:error, :hypervisor_not_found} ->
-          {:error, "Unable to check machine status"}
-
-        {:error, error} ->
-          {:error, error}
-      end
-
-      # Machine is already created, simply check and update status.
-    else
-      check_machine_status(machine)
+      true ->
+        check_job_status(machine)
     end
+  end
+
+  @doc """
+  Check machine's job status.
+  Returns machine struct or error message.
+  """
+  defp check_job_status(%Machine{} = machine) do
+    case update_job_status(machine) do
+      # Job is finished, check machine status this will update created flag.
+      {:ok, %{"state" => "finished", "elevel" => 0}} ->
+        check_machine_status(machine)
+
+      {:ok, %{"state" => "finished", "elevel" => _elevel}} ->
+        mark_as_failed(machine)
+        {:error, "Machine was not created successfully"}
+
+      {:ok, %{"state" => "blocked"}} ->
+        mark_as_failed(machine)
+        {:error, "Machine was not created successfully"}
+
+      # Job is queued or still running
+      {:ok, %{"state" => state}} ->
+        {:ok, machine}
+
+      {:error, :hypervisor_not_found} ->
+        {:error, "Unable to check machine status"}
+
+      {:error, error} ->
+        {:error, error}
+    end
+  end
+
+  defp mark_as_failed(%Machine{} = machine) do
+    now =
+      NaiveDateTime.utc_now()
+      |> NaiveDateTime.truncate(:second)
+
+    Machine.update_changeset(machine, %{})
+    |> Changeset.put_change(:last_status, "Failed")
+    |> Changeset.put_change(:failed_at, now)
+    |> Changeset.put_change(:failed, true)
+    |> Repo.update()
   end
 
   @doc """
@@ -252,7 +299,7 @@ defmodule Webapp.Machines do
   @doc """
   Checks status of job related with given machine.
   """
-  defp check_job_status(%Machine{} = machine) do
+  defp update_job_status(%Machine{} = machine) do
     module = get_hypervisor_module(machine)
 
     try do
@@ -330,15 +377,17 @@ defmodule Webapp.Machines do
   @doc """
   Returns bool for given machine and operation if it's allowed.
   """
+  def machine_can_do?(%Machine{failed: true} = machine, action), do: false
+  def machine_can_do?(%Machine{created: false} = machine, action), do: false
+
   def machine_can_do?(%Machine{} = machine, action) do
     case action do
       :console ->
         machine.last_status == "Running" || machine.last_status == "Bootloader"
 
       :start ->
-        machine.created &&
-          (machine.last_status != "Running" && machine.last_status != "Locked" &&
-             machine.last_status != "Bootloader")
+        machine.last_status != "Running" && machine.last_status != "Locked" &&
+          machine.last_status != "Bootloader"
 
       :stop ->
         machine.last_status == "Running"

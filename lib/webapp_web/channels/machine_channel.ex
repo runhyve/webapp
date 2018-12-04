@@ -29,7 +29,7 @@ defmodule WebappWeb.MachineChannel do
       |> Machines.get_machine!()
 
     response =
-      case Machines.check_status(machine) do
+      case Machines.update_status(machine) do
         {:ok, %Machine{} = machine} ->
           %{
             success: true,

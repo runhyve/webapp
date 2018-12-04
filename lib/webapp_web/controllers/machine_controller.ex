@@ -80,7 +80,7 @@ defmodule WebappWeb.MachineController do
   def show(conn, _params) do
     machine = conn.assigns[:machine]
 
-    case Machines.check_status(machine) do
+    case Machines.update_status(machine) do
       {:ok, %Machine{} = machine} ->
         conn
         |> render("show.html", machine: machine)

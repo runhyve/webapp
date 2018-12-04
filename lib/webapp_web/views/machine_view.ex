@@ -36,6 +36,7 @@ defmodule WebappWeb.MachineView do
       "Stopped" -> "is-dark"
       "Running" -> "is-success"
       "Bootloader" -> "is-success"
+      "Failed" -> "is-danger"
       _ -> "is-white"
     end
   end
@@ -46,6 +47,7 @@ defmodule WebappWeb.MachineView do
       "Stopped" -> "fas fa-square"
       "Running" -> "fas fa-play"
       "Bootloader" -> "fas fa-play"
+      "Failed" -> "fas fa-exclamation-circle"
       _ -> ""
     end
   end

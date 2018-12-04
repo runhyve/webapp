@@ -16,12 +16,15 @@ defmodule Webapp.Machines.Machine do
     field(:template, :string)
     field(:last_status, :string)
     field(:created, :boolean, default: false)
+    field(:failed, :boolean, default: false)
     field(:job_id, :integer)
 
     belongs_to(:hypervisor, Hypervisor)
     belongs_to(:plan, Plan)
     many_to_many(:networks, Network, join_through: "machines_networks")
 
+    field(:created_at, :naive_datetime)
+    field(:failed_at, :naive_datetime)
     timestamps()
   end
 
