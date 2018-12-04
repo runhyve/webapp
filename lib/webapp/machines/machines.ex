@@ -133,6 +133,14 @@ defmodule Webapp.Machines do
 
   """
   def delete_machine(%Machine{failed: true} = machine) do
+    # Try to remove machine on server in silent mode.
+    module = get_hypervisor_module(machine)
+    try do
+      apply(module, :delete_machine, [%{machine: machine}])
+    rescue
+      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+    end
+
     Multi.new()
     |> Multi.delete(:machine, machine)
     |> Repo.transaction()
