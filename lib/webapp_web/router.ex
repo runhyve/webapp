@@ -9,7 +9,7 @@ defmodule WebappWeb.Router do
     plug :put_secure_browser_headers
     plug WebappWeb.Authenticate
     plug Phauxth.Remember
-    plug WebappWeb.DefaultNamespace
+    plug WebappWeb.TeamContext
   end
 
   pipeline :api do

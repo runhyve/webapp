@@ -139,13 +139,6 @@ defmodule Webapp.Accounts do
     |> Repo.update()
   end
 
-  @doc """
-  Gets a namespace based on the params.
-  """
-  def get_namespace_by(%{"namespace" => name}, preloads \\ []) do
-    Repo.get_by(Namespace, namespace: name)
-    |> Repo.preload(preloads)
-  end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking registration changes.
@@ -203,6 +196,16 @@ defmodule Webapp.Accounts do
   """
   def get_team!(id, preloads \\ []) do
     Repo.get!(Team, id)
+    |> Repo.preload(preloads)
+  end
+
+  @doc """
+  Gets a team based on the params.
+  """
+  def get_team_by(conditions, preloads \\ [])
+
+  def get_team_by(%{"namespace" => name}, preloads) do
+    Repo.get_by(Team, namespace: name)
     |> Repo.preload(preloads)
   end
 

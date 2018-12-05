@@ -42,6 +42,6 @@ defmodule WebappWeb.Endpoint do
     key: "_webapp_key",
     signing_salt: "2mStGph6"
 
-  plug WebappWeb.TeamNamespace
+  plug WebappWeb.TeamPrefix
   plug WebappWeb.Router
 end

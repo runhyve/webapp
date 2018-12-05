@@ -1,4 +1,4 @@
-defmodule WebappWeb.DefaultNamespace do
+defmodule WebappWeb.TeamContext do
   import Plug.Conn
   import Phoenix.Controller
 
@@ -11,17 +11,17 @@ defmodule WebappWeb.DefaultNamespace do
   @doc """
   Set user namespace if there is no team namespace, based on current user.
   """
-  def call(%Plug.Conn{assigns: %{namespace: _namespace}} = conn, _opts), do: conn
+  def call(%Plug.Conn{assigns: %{team: %Team{} = team}} = conn, _opts), do: conn
 
   def call(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, _opts) do
     team = Accounts.user_first_team(user)
 
     conn
-    |> assign(:namespace, team.name)
+    |> assign(:team, team)
   end
 
   def call(%Plug.Conn{} = conn, _opts) do
     conn
-    |> assign(:namespace, nil)
+    |> assign(:team, nil)
   end
 end
