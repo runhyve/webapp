@@ -13,10 +13,11 @@ defmodule WebappWeb.DefaultNamespace do
   """
   def call(%Plug.Conn{assigns: %{namespace: _namespace}} = conn, _opts), do: conn
 
-  def call(%Plug.Conn{assigns: %{current_user: user}} = conn, _opts) do
-    Accounts.user_first_team(user)
+  def call(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, _opts) do
+    team = Accounts.user_first_team(user)
+
     conn
-    |> assign(:namespace, user.name)
+    |> assign(:namespace, team.name)
   end
 
   def call(%Plug.Conn{} = conn, _opts) do

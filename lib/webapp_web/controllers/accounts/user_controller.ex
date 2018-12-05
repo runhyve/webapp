@@ -9,10 +9,9 @@ defmodule WebappWeb.UserController do
 
   # the following plugs are defined in the controllers/authorize.ex file
   plug :is_logged_in when action in [:index, :show]
-  #plug :is_current_user when action in [:edit, :update, :delete]
+  # plug :is_current_user when action in [:edit, :update, :delete]
 
-  #plug :load_resource, model: User,
-
+  # plug :load_resource, model: User,
 
   def index(conn, _) do
     users = Accounts.list_users()
@@ -25,7 +24,6 @@ defmodule WebappWeb.UserController do
   end
 
   def create(conn, %{"registration" => registration_params}) do
-
     changeset = Registration.changeset(%Registration{}, registration_params)
 
     case Accounts.register_user(registration_params) do

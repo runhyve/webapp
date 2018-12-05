@@ -135,6 +135,7 @@ defmodule Webapp.Machines do
   def delete_machine(%Machine{failed: true} = machine) do
     # Try to remove machine on server in silent mode.
     module = get_hypervisor_module(machine)
+
     try do
       apply(module, :delete_machine, [%{machine: machine}])
     rescue
@@ -175,7 +176,6 @@ defmodule Webapp.Machines do
           NaiveDateTime.utc_now()
           |> NaiveDateTime.truncate(:second)
 
-
         changeset
         |> Changeset.put_change(:last_status, status)
         |> Changeset.put_change(:created_at, now)
@@ -200,7 +200,7 @@ defmodule Webapp.Machines do
   end
 
   #
-  def update_status(%Machine{failed: false, created: false, inserted_at: inserted_at} = machine)  do
+  def update_status(%Machine{failed: false, created: false, inserted_at: inserted_at} = machine) do
     cond do
       NaiveDateTime.diff(NaiveDateTime.utc_now(), inserted_at) >= @create_timeout ->
         mark_as_failed(machine)

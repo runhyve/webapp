@@ -35,7 +35,9 @@ defmodule Webapp.Hypervisors.Hypervisor do
     case fetch_change(changeset, :webhook_endpoint) do
       {:ok, endpoint} ->
         put_change(changeset, :webhook_endpoint, String.trim_trailing(endpoint, "/"))
-      :error -> changeset
+
+      :error ->
+        changeset
     end
   end
 end

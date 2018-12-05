@@ -10,7 +10,7 @@ defmodule Webapp.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       # TODO: Uncomment on real :prod!
-      #start_permanent: Mix.env() == :prod,
+      # start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
@@ -81,7 +81,7 @@ defmodule Webapp.MixProject do
 
   # Combines version with commit hash, environment etc.
   defp vcs_version do
-    if Mix.env == :prod do
+    if Mix.env() == :prod do
       with {:ok, hash} <- File.read(".vcs_version") do
         String.trim(hash)
       else

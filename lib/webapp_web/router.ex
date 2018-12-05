@@ -7,7 +7,7 @@ defmodule WebappWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Phauxth.Authenticate
+    plug WebappWeb.Authenticate
     plug Phauxth.Remember
     plug WebappWeb.DefaultNamespace
   end

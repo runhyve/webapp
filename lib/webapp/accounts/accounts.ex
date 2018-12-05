@@ -154,8 +154,15 @@ defmodule Webapp.Accounts do
     Registration.changeset(registration, %{})
   end
 
-  def user_first_team(%User{}) do
-    
+  def user_first_team(%User{} = user) do
+    Repo.one(
+      from(t in Team,
+        join: m in assoc(t, :members),
+        where: m.user_id == ^user.id,
+        limit: 1,
+        order_by: m.inserted_at
+      )
+    )
   end
 
   @doc """

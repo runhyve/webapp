@@ -14,22 +14,19 @@ defmodule WebappWeb.TeamNamespace do
   Sets a team-wide namespace based on url prefix.
   """
   def call(%Plug.Conn{} = conn, _opts) do
-    conn
-   # |> assign(:namespace, nil)
-#    case conn.path_info do
-#      [name | rest] when name not in @restricted_namespaces ->
-#        case Accounts.get_namespace_by(%{"namespace" => name}) do
-#          %Namespace{} = namespace ->
-#            conn
-#            |> assign(:namespace, namespace.namespace)
-#
-#          nil ->
-#            assign(conn, :namespace, nil)
-#        end
-#
-#      _ ->
-#        assign(conn, :namespace, nil)
-#    end
+    case conn.path_info do
+      [name | rest] when name not in @restricted_namespaces ->
+        case Accounts.get_namespace_by(%{"namespace" => name}) do
+          %Namespace{} = namespace ->
+            conn
+            |> assign(:namespace, namespace.namespace)
+          nil ->
+            assign(conn, :namespace, nil)
+        end
+
+      _ ->
+        assign(conn, :namespace, nil)
+    end
   end
 
   defp not_found(conn, name) do
