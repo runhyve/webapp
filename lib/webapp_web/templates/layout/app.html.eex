@@ -47,7 +47,7 @@
                     <%= if @team do %>
                     <div class="dropdown">
                       <div class="dropdown-trigger">
-                        <button class="button is-rounded is-primary" aria-haspopup="true" aria-controls="dropdown-menu">
+                        <button class="button is-rounded is-info" aria-haspopup="true" aria-controls="dropdown-menu">
                           <span><%= @team.name %></span>
                           <span class="icon is-small">
                             <i class="fas fa-angle-down" aria-hidden="true"></i>
@@ -57,7 +57,7 @@
                       <div class="dropdown-menu" id="dropdown-menu" role="menu">
                         <div class="dropdown-content">
                       <%= for team <- @current_user.teams do %>
-                            <%= link "#{team.name}", to: Routes.page_path(@conn, :index), class: "dropdown-item" %>
+                            <%= link "#{team.name}", to: switch_team_path(@conn, team), class: "dropdown-item" %>
                           <% end %>
                         </div>
                       </div>
