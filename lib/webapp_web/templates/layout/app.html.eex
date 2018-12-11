@@ -28,14 +28,30 @@
 
               <%= if @current_user do %>
                 <%= link "My Teams", to: Routes.user_path(@conn, :teams, @current_user), class: "navbar-item" %>
-              <% end %>
+                <%= link "My Machines", to: team_path(:machine_path, @conn, :index), class: "navbar-item" %>
 
-              <%= if false do %>
-               <%= link "Users", to: Routes.user_path(@conn, :index), class: "navbar-item" %>
-                <%= link "Teams", to: Routes.team_path(@conn, :index), class: "navbar-item" %>
-                <%= link "Plans", to: Routes.plan_path(@conn, :index), class: "navbar-item" %>
-                <%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index), class: "navbar-item" %>
-                <%= link "Machines", to: Routes.machine_path(@conn, :index), class: "navbar-item" %>
+                  <%= if @current_user.role == "Administrator" do %>
+                  <div class="navbar-item dropdown">
+                    <div class="dropdown-trigger">
+                      <button class="button is-rounded" aria-haspopup="true" aria-controls="dropdown-menu">
+                        <span>Admin</span>
+                        <span class="icon is-small">
+                          <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                      </button>
+                    </div>
+
+                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                      <div class="dropdown-content">
+                        <%= link "Plans", to: Routes.plan_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Machines", to: Routes.machine_path(@conn, :index), class: "navbar-item" %>
+                        <%= link "Users", to: Routes.user_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Teams", to: Routes.team_path(@conn, :index), class: "dropdown-item" %>
+                       </div>
+                    </div>
+                  </div>
+                  <% end %>
               <% end %>
             </div>
 

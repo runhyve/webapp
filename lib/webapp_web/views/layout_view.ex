@@ -14,4 +14,6 @@ defmodule WebappWeb.LayoutView do
   def switch_team_path(conn, %Team{} = team) do
     "/" <> team.namespace <> "/" <> Enum.join(conn.path_info, "/")
   end
+
+  def team_path(:helper, conn, )
 end

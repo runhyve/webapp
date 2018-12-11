@@ -4,7 +4,7 @@ defmodule WebappWeb.PlanController do
   alias Webapp.Plans
   alias Webapp.Plans.Plan
 
-  plug :is_logged_in
+  plug :is_admin?
 
   def index(conn, _params) do
     plans = Plans.list_plans()

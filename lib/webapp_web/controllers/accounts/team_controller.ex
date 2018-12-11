@@ -4,6 +4,7 @@ defmodule WebappWeb.TeamController do
   alias Webapp.{Accounts, Accounts.Team, Accounts.Member}
 
   plug :is_logged_in
+  plug :is_admin? when action in [:index, :delete]
 
   def index(conn, _params) do
     teams = Accounts.list_teams()

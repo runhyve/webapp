@@ -30,7 +30,7 @@ defmodule WebappWeb.Authorize do
   end
 
   def is_admin?(%Plug.Conn{assigns: %{current_user: %User{role: role}}} = conn, _opts)
-      when role !== "Admin" do
+      when role !== "Administrator" do
     unauthorized(conn)
   end
 
