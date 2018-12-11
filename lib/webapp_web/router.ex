@@ -34,6 +34,9 @@ defmodule WebappWeb.Router do
     resources "/plans", PlanController
 
     resources "/networks", NetworkController, except: [:new, :create, :index]
+
+    get "/dns", DNSController, :index
+    get "/dns/:id", DNSController, :show
   end
 
   # Other scopes may use custom stacks.

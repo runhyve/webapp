@@ -8,7 +8,7 @@
 use Mix.Config
 
 config :webapp,
-  ecto_repos: [Webapp.Repo]
+  ecto_repos: [Webapp.Repo, Webapp.RepoPanel]
 
 # Configures the endpoint
 config :webapp, WebappWeb.Endpoint,
@@ -30,6 +30,10 @@ config :phoenix_active_link, :defaults,
   wrap_tag: :li,
   class_active: "is-active",
   class_inactive: ""
+
+config :scrivener_html,
+       routes_helper: WebappWeb.Router.Helpers,
+       view_style: :bulma
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

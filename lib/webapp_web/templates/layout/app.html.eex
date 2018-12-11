@@ -28,6 +28,7 @@
               <%= link "Plans", to: Routes.plan_path(@conn, :index), class: "navbar-item" %>
               <%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index), class: "navbar-item" %>
               <%= link "Machines", to: Routes.machine_path(@conn, :index), class: "navbar-item" %>
+              <%= link "DNS", to: Routes.dns_path(@conn, :index), class: "navbar-item" %>
             </div>
 
             <div class="navbar-end">

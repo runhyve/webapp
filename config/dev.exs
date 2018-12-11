@@ -73,3 +73,10 @@ config :webapp, Webapp.Repo,
   password: System.get_env("POSTGRES_PASSWORD") || "postgres",
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   pool_size: 10
+
+config :webapp, Webapp.RepoPanel,
+       database: System.get_env("POSTGRES_PANEL_DB") || "dns",
+       username: System.get_env("POSTGRES_PANEL_USER") || "postgres",
+       password: System.get_env("POSTGRES_PANEL_PASSWORD") || "postgres",
+       hostname: System.get_env("POSTGRES_PANEL_HOST") || "localhost",
+       pool_size: 10

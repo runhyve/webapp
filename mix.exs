@@ -57,7 +57,9 @@ defmodule Webapp.MixProject do
       {:httpoison, "~> 1.0"},
       {:phoenix_active_link, "~> 0.1.1"},
       {:table_rex, "~> 2.0.0"},
-      {:ecto_network, "~> 1.0.0"}
+      {:ecto_network, "~> 1.0.0"},
+      {:scrivener_ecto, "~> 2.0"},
+      {:scrivener_html, git: "https://github.com/hlongvu/scrivener_html.git"}
     ]
   end
 
