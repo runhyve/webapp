@@ -45,6 +45,7 @@ defmodule WebappWeb do
       alias WebappWeb.Router.Helpers, as: Routes
 
       import PhoenixActiveLink
+      import WebappWeb.ViewHelpers
     end
   end
 

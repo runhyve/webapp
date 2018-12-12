@@ -2,8 +2,8 @@
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
     <%= if @hypervisor do %>
-      <li><%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index) %></li>
-      <li><%= link @hypervisor.name, to: Routes.hypervisor_path(@conn, :show, @hypervisor)  %></li>
+      <li><%= link "Hypervisors", to: team_path(:hypervisor_path, @conn, :index) %></li>
+      <li><%= link @hypervisor.name, to: team_path(:hypervisor_path, @conn, :show, @hypervisor)  %></li>
     <% end %>
 
     <li class="is-active"><a>Machines</a></li>
@@ -19,7 +19,7 @@
 
   <div class="level-right">
     <%= if @hypervisor do %>
-      <span><%= link "New Machine", to: Routes.hypervisor_machine_path(@conn, :new, @hypervisor), class: "button is-rounded is-primary" %></span>
+      <span><%= link "New Machine", to: team_path(:hypervisor_machine_path, @conn, :new, @hypervisor), class: "button is-rounded is-primary" %></span>
     <% else %>
 
     <div class="dropdown is-hoverable">
@@ -34,7 +34,7 @@
       <div class="dropdown-menu" id="dropdown-menu" role="menu">
         <div class="dropdown-content">
           <%= for hypervisor <- @hypervisors do %>
-            <%= link "#{hypervisor.name} hypervisor", to: Routes.hypervisor_machine_path(@conn, :new, hypervisor), class: "dropdown-item" %>
+            <%= link "#{hypervisor.name} hypervisor", to: team_path(:hypervisor_machine_path, @conn, :new, hypervisor), class: "dropdown-item" %>
           <% end %>
         </div>
       </div>

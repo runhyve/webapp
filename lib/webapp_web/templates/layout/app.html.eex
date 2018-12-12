@@ -24,10 +24,9 @@
 
           <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-              <%= link "Home", to: Routes.page_path(@conn, :index), class: "navbar-item" %>
+              <%= link "Home", to: team_path(:page_path, @conn, :index), class: "navbar-item" %>
 
               <%= if @current_user do %>
-                <%= link "My Teams", to: Routes.user_path(@conn, :teams, @current_user), class: "navbar-item" %>
                 <%= link "My Machines", to: team_path(:machine_path, @conn, :index), class: "navbar-item" %>
 
                   <%= if @current_user.role == "Administrator" do %>
@@ -72,15 +71,20 @@
                       </div>
                       <div class="dropdown-menu" id="dropdown-menu" role="menu">
                         <div class="dropdown-content">
-                      <%= for team <- @current_user.teams do %>
+                          <%= for team <- @current_user.teams do %>
                             <%= link "#{team.name}", to: switch_team_path(@conn, team), class: "dropdown-item" %>
                           <% end %>
+
+                          <hr class="dropdown-divider">
+                          <%= link "My Teams", to: Routes.user_path(@conn, :teams, @current_user), class: "dropdown-item" %>
+                          <%= link "My Profile", to: Routes.user_path(@conn, :show, @current_user), class: "dropdown-item" %>
+                          <hr class="dropdown-divider">
+                          <%= link "Logout", to: Routes.session_path(@conn, :delete, current_session(@conn)), method: :delete, class: "dropdown-item" %>
                         </div>
                       </div>
                     </div>
                     <% end %>
 
-                    <%= link "Logout", to: Routes.session_path(@conn, :delete, current_session(@conn)), method: :delete, class: "button is-rounded is-primary" %>
                   <% else %>
                     <a href="<%= Routes.user_path(@conn, :new) %>" class="button is-rounded is-primary">
                       <strong>Sign up</strong>
