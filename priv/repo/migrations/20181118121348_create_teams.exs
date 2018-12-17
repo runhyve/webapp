@@ -3,8 +3,8 @@ defmodule Webapp.Repo.Migrations.CreateTeams do
 
   def change do
     create table(:teams) do
-      add(:name, :string)
-      add(:namespace, :string)
+      add(:name, :citext)
+      add(:namespace, :citext)
 
       timestamps()
     end

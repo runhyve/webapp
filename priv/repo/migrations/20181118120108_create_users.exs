@@ -10,7 +10,7 @@ defmodule Webapp.Repo.Migrations.CreateUsers do
     """)
 
     create table(:users) do
-      add(:email, :string)
+      add(:email, :citext)
       add(:name, :string)
       add(:password_hash, :string)
       add(:confirmed_at, :utc_datetime)
