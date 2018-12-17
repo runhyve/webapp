@@ -1,0 +1,12 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><%= link "Hypervisors", to: Routes.admin_hypervisor_path(@conn, :index) %></li>
+    <li><%= link @hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, @hypervisor)  %></li>
+    <li class="is-active"><a>Edit</a></li>
+  </ul>
+</nav>
+
+<%= render "_menu.html",  Map.put(assigns, :hide_status, true) %>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.admin_hypervisor_path(@conn, :update, @hypervisor)) %>

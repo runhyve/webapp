@@ -30,7 +30,7 @@
                 <%= link "My Machines", to: team_path(:machine_path, @conn, :index), class: "navbar-item" %>
 
                   <%= if @current_user.role == "Administrator" do %>
-                  <div class="navbar-item dropdown">
+                  <div class="navbar-item dropdown is-hoverable">
                     <div class="dropdown-trigger">
                       <button class="button is-rounded" aria-haspopup="true" aria-controls="dropdown-menu">
                         <span>Admin</span>
@@ -42,11 +42,11 @@
 
                     <div class="dropdown-menu" id="dropdown-menu" role="menu">
                       <div class="dropdown-content">
-                        <%= link "Plans", to: Routes.plan_path(@conn, :index), class: "dropdown-item" %>
-                        <%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index), class: "dropdown-item" %>
-                        <%= link "Machines", to: Routes.machine_path(@conn, :index), class: "navbar-item" %>
-                        <%= link "Users", to: Routes.user_path(@conn, :index), class: "dropdown-item" %>
-                        <%= link "Teams", to: Routes.team_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Plans", to: Routes.admin_plan_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Hypervisors", to: Routes.admin_hypervisor_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Machines", to: Routes.admin_machine_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Users", to: Routes.admin_user_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Teams", to: Routes.admin_team_path(@conn, :index), class: "dropdown-item" %>
                        </div>
                     </div>
                   </div>
@@ -59,11 +59,11 @@
                 <div class="buttons">
                 <%= if @current_user do %>
 
-                    <%= if @team do %>
-                    <div class="dropdown">
+                    <%= if @current_team do %>
+                    <div class="dropdown is-hoverable">
                       <div class="dropdown-trigger">
                         <button class="button is-rounded is-info" aria-haspopup="true" aria-controls="dropdown-menu">
-                          <span><%= @team.name %></span>
+                          <span><%= @current_team.name %></span>
                           <span class="icon is-small">
                             <i class="fas fa-angle-down" aria-hidden="true"></i>
                           </span>

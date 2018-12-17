@@ -10,22 +10,23 @@
 <%= render "_menu.html", assigns %>
 
 
+  <%= if can?(@current_user, :new, Network) do %>
+    <div class="settings-item">
+      <div class="level">
+        <div class="level-left">
+          <h3>Add new network to machine</h3>
+        </div>
 
-  <div class="settings-item">
-    <div class="level">
-      <div class="level-left">
-        <h3>Add new network to machine</h3>
+        <div class="level-right">
+          <span><%= link "Add Network", to: Routes.admin_hypervisor_network_path(@conn, :new, @machine.hypervisor), class: "button is-rounded is-primary" %></span>
+        </div>
       </div>
-
-      <div class="level-right">
-        <span><%= link "Add Network", to: Routes.hypervisor_network_path(@conn, :new, @machine.hypervisor), class: "button is-rounded is-primary" %></span>
-      </div>
+      <%= render "settings/_networks.html", Map.put(assigns, :other_networks, @networks -- @machine.networks) %>
     </div>
 
-    <%= render "settings/_networks.html", Map.put(assigns, :other_networks, @networks -- @machine.networks) %>
-  </div>
-
   <div class="is-divider"></div>
+  <% end %>
+
   <div class="settings-item">
     <div class="level">
       <div class="level-left">
@@ -38,7 +39,7 @@
 
     <div class="box">
        <div class="notification is-danger">This operation cannot be undone. Would you like to proceed?</div>
-       <%= link "Delete", to: Routes.machine_path(@conn, :delete, @machine), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger"  %>
+       <%= link "Delete", to: team_path(:machine_path, @conn, :delete, @machine), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger"  %>
     </div>
 
   </div>

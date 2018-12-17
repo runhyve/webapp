@@ -19,14 +19,14 @@ defmodule WebappWeb.HypervisorControllerTest do
 
   describe "index" do
     test "lists all hypervisor", %{conn: conn} do
-      conn = get(conn, Routes.hypervisor_path(conn, :index))
+      conn = get(conn, Routes.admin_hypervisor_path(conn, :index))
       assert html_response(conn, 200) =~ "Listing Hypervisor"
     end
   end
 
   describe "new hypervisor" do
     test "renders form", %{conn: conn} do
-      conn = get(conn, Routes.hypervisor_path(conn, :new))
+      conn = get(conn, Routes.admin_hypervisor_path(conn, :new))
       assert html_response(conn, 200) =~ "New Hypervisor"
     end
   end
@@ -34,17 +34,17 @@ defmodule WebappWeb.HypervisorControllerTest do
   describe "create hypervisor" do
     test "redirects to show when data is valid", %{conn: conn} do
       hypervisor = prepare_struct()
-      conn = post(conn, Routes.hypervisor_path(conn, :create), hypervisor: hypervisor)
+      conn = post(conn, Routes.admin_hypervisor_path(conn, :create), hypervisor: hypervisor)
 
       assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == Routes.hypervisor_path(conn, :show, id)
+      assert redirected_to(conn) == Routes.admin_hypervisor_path(conn, :show, id)
 
-      conn = get(conn, Routes.hypervisor_path(conn, :show, id))
+      conn = get(conn, Routes.admin_hypervisor_path(conn, :show, id))
       assert html_response(conn, 200) =~ hypervisor.name
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.hypervisor_path(conn, :create), hypervisor: @invalid_attrs)
+      conn = post(conn, Routes.admin_hypervisor_path(conn, :create), hypervisor: @invalid_attrs)
       assert html_response(conn, 200) =~ "New Hypervisor"
     end
   end
@@ -53,7 +53,7 @@ defmodule WebappWeb.HypervisorControllerTest do
   #    setup [:create_hypervisor]
   #
   #    test "renders form for editing chosen hypervisor", %{conn: conn, hypervisor: hypervisor} do
-  #      conn = get(conn, Routes.hypervisor_path(conn, :edit, hypervisor))
+  #      conn = get(conn, Routes.admin_hypervisor_path(conn, :edit, hypervisor))
   #      assert html_response(conn, 200) =~ "Edit"
   #    end
   #  end
@@ -63,17 +63,17 @@ defmodule WebappWeb.HypervisorControllerTest do
   #
   #    test "redirects when data is valid", %{conn: conn, hypervisor: hypervisor} do
   #      conn =
-  #        put(conn, Routes.hypervisor_path(conn, :update, hypervisor), hypervisor: @update_attrs)
+  #        put(conn, Routes.admin_hypervisor_path(conn, :update, hypervisor), hypervisor: @update_attrs)
   #
-  #      assert redirected_to(conn) == Routes.hypervisor_path(conn, :show, hypervisor)
+  #      assert redirected_to(conn) == Routes.admin_hypervisor_path(conn, :show, hypervisor)
   #
-  #      conn = get(conn, Routes.hypervisor_path(conn, :show, hypervisor))
+  #      conn = get(conn, Routes.admin_hypervisor_path(conn, :show, hypervisor))
   #      assert html_response(conn, 200) =~ "some updated name"
   #    end
   #
   #    test "renders errors when data is invalid", %{conn: conn, hypervisor: hypervisor} do
   #      conn =
-  #        put(conn, Routes.hypervisor_path(conn, :update, hypervisor), hypervisor: @invalid_attrs)
+  #        put(conn, Routes.admin_hypervisor_path(conn, :update, hypervisor), hypervisor: @invalid_attrs)
   #
   #      assert html_response(conn, 200) =~ "Edit"
   #    end
@@ -84,10 +84,10 @@ defmodule WebappWeb.HypervisorControllerTest do
   #    setup [:create_hypervisor]
   #
   #    test "deletes chosen hypervisor", %{conn: conn, hypervisor: hypervisor} do
-  #      conn = delete(conn, Routes.hypervisor_path(conn, :delete, hypervisor))
-  #      assert redirected_to(conn) == Routes.hypervisor_path(conn, :index)
+  #      conn = delete(conn, Routes.admin_hypervisor_path(conn, :delete, hypervisor))
+  #      assert redirected_to(conn) == Routes.admin_hypervisor_path(conn, :index)
   #      assert_error_sent 404, fn ->
-  #        get(conn, Routes.hypervisor_path(conn, :show, hypervisor))
+  #        get(conn, Routes.admin_hypervisor_path(conn, :show, hypervisor))
   #      end
   #    end
   #  end

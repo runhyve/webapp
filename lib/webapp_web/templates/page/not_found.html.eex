@@ -1,0 +1,9 @@
+<section class="hero is-medium">
+  <div class="hero-body">
+    <div class="container">
+
+      <img src="<%= Routes.static_path(@conn, "/images/not_found.svg") %>" alt="Access Denied" />
+
+    </div>
+  </div>
+</section>

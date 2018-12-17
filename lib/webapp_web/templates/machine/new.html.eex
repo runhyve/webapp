@@ -21,7 +21,7 @@
 </div>
 
 <div class="box">
-  <%= form_for @changeset, Routes.hypervisor_machine_path(@conn, :create, @hypervisor), fn f -> %>
+  <%= form_for @changeset, team_path(:machine_path, @conn, :create, @hypervisor), fn f -> %>
     <%= if @changeset.action do %>
       <div class="notification is-danger">
         <p>Oops, something went wrong! Please check the errors below.</p>
@@ -68,6 +68,25 @@
       </div>
       <%= error_tag f, :networks %>
     </div>
+
+    <%= if @current_user.role == "Administrator" do %>
+    <div class="field">
+      <%= label f, :owner, class: "label" %>
+      <div class="select">
+        <%= select f, :team_id, team_select_options(@teams), prompt: "Select team", selected: @current_team.id %>
+      </div>
+      <%= error_tag f, :team_id %>
+    </div>
+    <% else %>
+      <div class="field">
+        <%= label f, :owner, class: "label" %>
+        <%= hidden_input f, :team_id, value: @current_team.id %>
+        <div class="item">
+          <%= @current_team.name %>
+        </div>
+        <%= error_tag f, :hypervisor_id %>
+      </div>
+    <% end %>
 
     <div class="field">
       <div class="control">

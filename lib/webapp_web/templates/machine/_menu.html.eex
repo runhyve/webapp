@@ -18,7 +18,7 @@
     <% else %>
       <div class="level-item is-hidden">
     <% end %>
-      <%= link "Start", to: Routes.machine_path(@conn, :start, @machine), method: :post, class: "button is-rounded action-start" %>
+      <%= link "Start", to: team_path(:machine_path, @conn, :start, @machine), method: :post, class: "button is-rounded action-start" %>
     </div>
 
     <%= if machine_can_do?(@machine, :stop) do %>
@@ -26,7 +26,7 @@
     <% else %>
       <div class="level-item is-hidden">
     <% end %>
-      <%= link "Stop", to: Routes.machine_path(@conn, :stop, @machine), method: :post, class: "button is-rounded is-danger action-stop" %>
+      <%= link "Stop", to: team_path(:machine_path, @conn, :stop, @machine), method: :post, class: "button is-rounded is-danger action-stop" %>
     </div>
 
     <%= if machine_can_do?(@machine, :poweroff) do %>
@@ -34,16 +34,16 @@
     <% else %>
       <div class="level-item is-hidden">
     <% end %>
-     <%= link "Poweroff", to: Routes.machine_path(@conn, :poweroff, @machine), method: :post, class: "button is-rounded is-dark action-poweroff"%>
+     <%= link "Poweroff", to: team_path(:machine_path, @conn, :poweroff, @machine), method: :post, class: "button is-rounded is-dark action-poweroff"%>
     </div>
   </div>
 </div>
 
 <div class="tabs">
   <ul>
-    <%= active_link(@conn, "Dashboard", to: Routes.machine_path(@conn, :show, @machine), active: :exact)  %>
-    <%= active_link(@conn, "Console", to: Routes.machine_path(@conn, :console, @machine), active: :exact)  %>
-    <%= active_link(@conn, "Settings", to: Routes.machine_path(@conn, :edit, @machine), active: :exact)  %>
+    <%= active_link(@conn, "Dashboard", to: team_path(:machine_path, @conn, :show, @machine), active: :exact)  %>
+    <%= active_link(@conn, "Console", to: team_path(:machine_path, @conn, :console, @machine), active: :exact)  %>
+    <%= active_link(@conn, "Settings", to: team_path(:machine_path, @conn, :edit, @machine), active: :exact)  %>
   </ul>
 </div>
 

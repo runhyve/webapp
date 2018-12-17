@@ -30,6 +30,12 @@ defmodule WebappWeb.MachineView do
     end
   end
 
+  def team_select_options(teams) do
+    for team <- teams do
+      {team.name, team.id}
+    end
+  end
+
   def map_status_to_css(status) do
     case status do
       "Creating" -> "is-light"

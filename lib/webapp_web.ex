@@ -27,6 +27,8 @@ defmodule WebappWeb do
       alias WebappWeb.Router.Helpers, as: Routes
       import WebappWeb.Authorize
       alias Plug.Conn
+
+      import WebappWeb.ViewHelpers, only: [team_path: 3, team_path: 4]
     end
   end
 
@@ -44,6 +46,7 @@ defmodule WebappWeb do
       import WebappWeb.Gettext
       alias WebappWeb.Router.Helpers, as: Routes
 
+      import Canada.Can, only: [can?: 3]
       import PhoenixActiveLink
       import WebappWeb.ViewHelpers
     end

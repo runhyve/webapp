@@ -2,8 +2,8 @@
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
     <%= if @hypervisor do %>
-      <li><%= link "Hypervisors", to: team_path(:hypervisor_path, @conn, :index) %></li>
-      <li><%= link @hypervisor.name, to: team_path(:hypervisor_path, @conn, :show, @hypervisor)  %></li>
+      <li><%= link "Hypervisors", to: team_path(:admin_hypervisor_path, @conn, :index) %></li>
+      <li><%= link @hypervisor.name, to: team_path(:admin_hypervisor_path, @conn, :show, @hypervisor)  %></li>
     <% end %>
 
     <li class="is-active"><a>Machines</a></li>
@@ -19,26 +19,27 @@
 
   <div class="level-right">
     <%= if @hypervisor do %>
-      <span><%= link "New Machine", to: team_path(:hypervisor_machine_path, @conn, :new, @hypervisor), class: "button is-rounded is-primary" %></span>
+      <span><%= link "New Machine", to: team_path(:machine_path, @conn, :new, @hypervisor), class: "button is-rounded is-primary" %></span>
     <% else %>
-
-    <div class="dropdown is-hoverable">
-      <div class="dropdown-trigger">
-        <button class="button is-rounded is-primary" aria-haspopup="true" aria-controls="dropdown-menu">
-          <span>New machine</span>
-          <span class="icon is-small">
-            <i class="fas fa-angle-down" aria-hidden="true"></i>
-          </span>
-        </button>
-      </div>
-      <div class="dropdown-menu" id="dropdown-menu" role="menu">
-        <div class="dropdown-content">
-          <%= for hypervisor <- @hypervisors do %>
-            <%= link "#{hypervisor.name} hypervisor", to: team_path(:hypervisor_machine_path, @conn, :new, hypervisor), class: "dropdown-item" %>
-          <% end %>
+      <%= if !Enum.empty?(@hypervisors) do %>
+      <div class="dropdown is-hoverable">
+        <div class="dropdown-trigger">
+          <button class="button is-rounded is-primary" aria-haspopup="true" aria-controls="dropdown-menu">
+            <span>New machine</span>
+            <span class="icon is-small">
+              <i class="fas fa-angle-down" aria-hidden="true"></i>
+            </span>
+          </button>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <%= for hypervisor <- @hypervisors do %>
+              <%= link "#{hypervisor.name} hypervisor", to: team_path(:machine_path, @conn, :new, hypervisor), class: "dropdown-item" %>
+            <% end %>
+          </div>
         </div>
       </div>
-    </div>
+      <% end %>
     <% end %>
   </div>
 </div>
@@ -57,7 +58,7 @@
   <tbody>
 <%= for machine <- @machines do %>
     <tr>
-      <td><%= link machine.name, to: Routes.machine_path(@conn, :show, machine) %></td>
+      <td><%= link machine.name, to: team_path(:machine_path, @conn, :show, machine) %></td>
       <td>
         <div class="tags has-addons">
           <span class="tag status status-icon <%= map_status_to_css(machine.last_status) %>" data-status="<%= map_status_to_css(machine.last_status) %>"><i class="<%= status_icon(machine.last_status) %>"></i></span>
@@ -65,12 +66,12 @@
         </div>
       </td>
       <td><%= machine.template %></td>
-      <td><%= link machine.hypervisor.name, to: Routes.hypervisor_path(@conn, :show, machine.hypervisor) %></td>
-      <td><%= link machine.plan.name, to: Routes.plan_path(@conn, :show, machine.plan) %></td>
+      <td><%= link machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, machine.hypervisor) %></td>
+      <td><%= link machine.plan.name, to: Routes.admin_plan_path(@conn, :show, machine.plan) %></td>
 
       <td><ul>
         <%= for network <- machine.networks do %>
-           <li><%= link "#{network.name} (#{network.network})", to: Routes.network_path(@conn, :show, network) %></li>
+           <li><%= link "#{network.name} (#{network.network})", to: Routes.admin_network_path(@conn, :show, network) %></li>
         <% end %>
       </ul></td>
     </tr>

@@ -5,7 +5,8 @@ defmodule Webapp.Accounts.Team do
   alias Webapp.{
     Accounts.User,
     Accounts.Member,
-    Accounts.Namespace
+    Accounts.Namespace,
+    Machines.Machine
   }
 
   schema "teams" do
@@ -13,6 +14,7 @@ defmodule Webapp.Accounts.Team do
     field(:namespace, :string)
     has_many(:members, Member, on_delete: :delete_all)
     has_many(:users, through: [:members, :user])
+    has_many(:machines, Machine, on_delete: :delete_all)
 
     timestamps()
   end

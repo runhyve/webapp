@@ -14,7 +14,8 @@ defmodule Webapp.Machines do
   alias Webapp.{
     Hypervisors,
     Machines.Machine,
-    Networks.Network
+    Networks.Network,
+    Accounts.Team
   }
 
   # Number of seconds after the create action is considered as failed.
@@ -31,6 +32,22 @@ defmodule Webapp.Machines do
   """
   def list_machines(preloads \\ [:hypervisor, :plan]) do
     Repo.all(Machine)
+    |> Repo.preload(preloads)
+  end
+
+  @doc """
+  Returns the list of team machines.
+
+  ## Examples
+
+      iex> list_team_machines(%Team{})
+      [%Machine{}, ...]
+
+  """
+  def list_team_machines(%Team{} = team, preloads \\ [:hypervisor, :plan]) do
+    team
+    |> Ecto.assoc(:machines)
+    |> Repo.all()
     |> Repo.preload(preloads)
   end
 
@@ -176,10 +193,12 @@ defmodule Webapp.Machines do
           NaiveDateTime.utc_now()
           |> NaiveDateTime.truncate(:second)
 
+        # TODO: created_at should be changed only when status is changed...
+        # Check changes in changeset and update created_at only when created status has changed.
         changeset
         |> Changeset.put_change(:last_status, status)
-        |> Changeset.put_change(:created_at, now)
         |> Changeset.put_change(:created, true)
+        |> Changeset.put_change(:created_at, now)
         |> Repo.update()
       end)
       |> Repo.transaction()

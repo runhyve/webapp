@@ -9,5 +9,4 @@ defmodule WebappWeb.Authenticate do
     user = user |> Repo.preload(:teams)
     assign(conn, :current_user, user)
   end
-
 end

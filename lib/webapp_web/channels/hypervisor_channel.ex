@@ -5,7 +5,7 @@ defmodule WebappWeb.HypervisorChannel do
     Hypervisors
   }
 
-  import WebappWeb.HypervisorView, only: [map_status_to_css: 1, status_icon: 1]
+  import WebappWeb.Admin.HypervisorView, only: [map_status_to_css: 1, status_icon: 1]
 
   def join("hypervisor:" <> hypervisor_id, payload, socket) do
     if authorized?(payload) do

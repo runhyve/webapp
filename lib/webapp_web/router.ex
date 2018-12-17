@@ -8,7 +8,7 @@ defmodule WebappWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug WebappWeb.Authenticate
-    plug Phauxth.Remember
+    plug Phauxth.Remember, create_session_func: &WebappWeb.Accounts.Utils.create_session/1
     plug WebappWeb.TeamContext
   end
 
@@ -34,20 +34,29 @@ defmodule WebappWeb.Router do
       resources "/members", MemberController, except: [:index]
     end
 
+    # Machine
+    resources "/machines", MachineController, except: [:new, :create]
+    get "/hypervisors/:hypervisor_id/machines/new", MachineController, :new
+    post "/hypervisors/:hypervisor_id/machines/create", MachineController, :create
+    get "/machines/:id/console", MachineController, :console
+    post "/machines/:id/start", MachineController, :start
+    post "/machines/:id/stop", MachineController, :stop
+    post "/machines/:id/poweroff", MachineController, :poweroff
+  end
+
+  scope "/admin", WebappWeb.Admin, as: :admin do
+    pipe_through :browser
+
     resources "/hypervisors", HypervisorController do
       resources "/networks", NetworkController, only: [:new, :create, :index]
       resources "/machines", MachineController, only: [:new, :create, :index]
     end
 
-    resources "/machines", MachineController, except: [:new, :create]
-    get "/machines/:id/console", MachineController, :console
-    post "/machines/:id/start", MachineController, :start
-    post "/machines/:id/stop", MachineController, :stop
-    post "/machines/:id/poweroff", MachineController, :poweroff
-
+    resources "/machines", MachineController, only: [:index]
     resources "/plans", PlanController
-
     resources "/networks", NetworkController, except: [:new, :create, :index]
+    resources "/users", UserController, only: [:index]
+    resources "/teams", TeamController, only: [:index]
   end
 
   scope "/" do

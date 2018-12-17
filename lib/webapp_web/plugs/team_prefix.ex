@@ -19,13 +19,14 @@ defmodule WebappWeb.TeamPrefix do
         case Accounts.get_team_by(%{"namespace" => name}) do
           %Team{} = team ->
             %{conn | path_info: rest}
-            |> assign(:team, team)
+            |> assign(:current_team, team)
+
           nil ->
-            assign(conn, :team, nil)
+            assign(conn, :current_team, nil)
         end
 
       _ ->
-        assign(conn, :team, nil)
+        assign(conn, :current_team, nil)
     end
   end
 end

@@ -1,0 +1,47 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><a>Admin</a></li>
+    <li class="is-active"><a>Hypervisors</a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1>Listing Hypervisors</h1>
+  </div>
+
+  <div class="level-right">
+    <span><%= link "New Hypervisor", to: Routes.admin_hypervisor_path(@conn, :new), class: "button is-rounded is-primary" %></span>
+  </div>
+</div>
+
+<table class="table container">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>IP address</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for hypervisor <- @hypervisors do %>
+    <tr>
+      <td><%= link hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, hypervisor) %></td>
+      <td><%= hypervisor.ip_address %></td>
+
+      <td class="has-text-right">
+        <%= link "Show", to: Routes.admin_hypervisor_path(@conn, :show, hypervisor), class: "button is-rounded"  %>
+        <%= link "Edit", to: Routes.admin_hypervisor_path(@conn, :edit, hypervisor), class: "button is-rounded is-info"  %>
+        <%= link "Delete", to: Routes.admin_hypervisor_path(@conn, :delete, hypervisor), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger"  %>
+      </td>
+    </tr>
+<% end %>
+
+<%= if Enum.empty?(@hypervisors) do %>
+    <tr><td colspan="3">Empty here, add a hypervisor...</td></tr>
+<% end %>
+
+  </tbody>
+</table>

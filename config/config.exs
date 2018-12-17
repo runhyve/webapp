@@ -26,6 +26,11 @@ config :phauxth,
 # Mailer configuration
 config :webapp, Webapp.Mailer, adapter: Bamboo.LocalAdapter
 
+config :canary,
+       repo: Webapp.Repo,
+       unauthorized_handler: {WebappWeb.Accounts.Utils, :handle_unauthorized},
+       not_found_handler: {WebappWeb.Accounts.Utils, :handle_not_found}
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

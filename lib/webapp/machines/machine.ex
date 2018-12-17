@@ -5,11 +5,11 @@ defmodule Webapp.Machines.Machine do
   alias Webapp.{
     Hypervisors,
     Hypervisors.Hypervisor,
+    Plans.Plan,
     Networks,
-    Networks.Network
+    Networks.Network,
+    Accounts.Team
   }
-
-  alias Webapp.Plans.Plan
 
   schema "machines" do
     field(:name, :string)
@@ -21,6 +21,7 @@ defmodule Webapp.Machines.Machine do
 
     belongs_to(:hypervisor, Hypervisor)
     belongs_to(:plan, Plan)
+    belongs_to(:team, Team)
     many_to_many(:networks, Network, join_through: "machines_networks")
 
     field(:created_at, :naive_datetime)
@@ -34,11 +35,12 @@ defmodule Webapp.Machines.Machine do
     networks = Networks.list_networks_by_id(network_ids)
 
     machine
-    |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id])
-    |> validate_required([:name, :template, :hypervisor_id, :plan_id])
+    |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id, :team_id])
+    |> validate_required([:name, :template, :hypervisor_id, :plan_id, :team_id])
     |> unique_constraint(:name)
     |> assoc_constraint(:hypervisor)
     |> assoc_constraint(:plan)
+    |> assoc_constraint(:team)
     |> put_assoc(:networks, networks)
     |> validate_length(:networks, min: 1)
   end

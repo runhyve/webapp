@@ -139,7 +139,6 @@ defmodule Webapp.Accounts do
     |> Repo.update()
   end
 
-
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking registration changes.
   """
