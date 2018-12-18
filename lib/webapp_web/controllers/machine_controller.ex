@@ -13,15 +13,15 @@ defmodule WebappWeb.MachineController do
   }
 
   plug :load_resource,
-       model: Machine,
-       non_id_actions: [:index, :create, :new],
-       preload: [:hypervisor, :plan, :networks]
+    model: Machine,
+    non_id_actions: [:index, :create, :new],
+    preload: [:hypervisor, :plan, :networks]
 
   plug :authorize_resource,
-       current_user: :current_member,
-       model: Machine,
-       non_id_actions: [:index, :create, :new],
-       preload: [:hypervisor, :plan, :networks]
+    current_user: :current_member,
+    model: Machine,
+    non_id_actions: [:index, :create, :new],
+    preload: [:hypervisor, :plan, :networks]
 
   plug :load_hypervisor when action in [:new, :create]
   plug :load_references when action in [:new, :create, :edit, :update]

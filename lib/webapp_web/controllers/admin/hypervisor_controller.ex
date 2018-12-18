@@ -7,9 +7,9 @@ defmodule WebappWeb.Admin.HypervisorController do
   }
 
   plug :load_and_authorize_resource,
-       model: Hypervisor,
-       non_id_actions: [:index, :create, :new],
-       preload: [:hypervisor_type]
+    model: Hypervisor,
+    non_id_actions: [:index, :create, :new],
+    preload: [:hypervisor_type]
 
   plug :load_hypervisor_types when action in [:new, :create, :edit, :update]
 

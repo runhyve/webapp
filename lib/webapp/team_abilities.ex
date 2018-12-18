@@ -10,7 +10,6 @@ alias Webapp.{
 }
 
 defimpl Canada.Can, for: Member do
-
   def can?(%Member{}, :index, _model), do: true
   def can?(%Member{}, :new, _model), do: true
   def can?(%Member{}, :create, _model), do: true
@@ -20,7 +19,7 @@ defimpl Canada.Can, for: Member do
   end
 
   def can?(%Member{} = member, :show, %Machine{} = machine) do
-      machine.team_id == member.team_id
+    machine.team_id == member.team_id
   end
 
   def can?(%Member{} = member, :console, %Machine{} = machine) do

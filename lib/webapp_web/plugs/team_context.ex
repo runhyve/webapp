@@ -18,6 +18,7 @@ defmodule WebappWeb.TeamContext do
     case Enum.find(user.teams, fn user_team -> team.id == user_team.id end) do
       team ->
         member = Enum.find(user.memberships, fn membership -> membership.team_id == team.id end)
+
         conn
         |> assign(:current_member, member)
 

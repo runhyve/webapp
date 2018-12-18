@@ -5,9 +5,9 @@ defmodule WebappWeb.Admin.PlanController do
   alias Webapp.Plans.Plan
 
   plug :load_and_authorize_resource,
-       model: Plan,
-       non_id_actions: [:index, :create, :new],
-       preload: []
+    model: Plan,
+    non_id_actions: [:index, :create, :new],
+    preload: []
 
   def index(conn, _params) do
     plans = Plans.list_plans()

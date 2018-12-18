@@ -88,7 +88,7 @@ defmodule Webapp.Machines do
     # Validate machine changeset
     changeset =
       %Machine{last_status: "Creating"}
-      |> Machine.changeset(attrs)
+      |> Machine.create_changeset(attrs)
 
     if changeset.valid? do
       hypervisor =

@@ -11,9 +11,9 @@ defmodule WebappWeb.Admin.NetworkController do
   plug :load_network when action not in [:index, :create, :new]
 
   plug :load_and_authorize_resource,
-       model: Network,
-       non_id_actions: [:index, :create, :new],
-       preload: []
+    model: Network,
+    non_id_actions: [:index, :create, :new],
+    preload: []
 
   def index(conn, _params) do
     hypervisor = conn.assigns[:hypervisor]

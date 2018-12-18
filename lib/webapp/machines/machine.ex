@@ -12,6 +12,7 @@ defmodule Webapp.Machines.Machine do
   }
 
   schema "machines" do
+    field(:uuid, Ecto.UUID, autogenerate: true)
     field(:name, :string)
     field(:template, :string)
     field(:last_status, :string)
@@ -38,6 +39,24 @@ defmodule Webapp.Machines.Machine do
     |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id, :team_id])
     |> validate_required([:name, :template, :hypervisor_id, :plan_id, :team_id])
     |> unique_constraint(:name)
+    |> assoc_constraint(:hypervisor)
+    |> assoc_constraint(:plan)
+    |> assoc_constraint(:team)
+    |> put_assoc(:networks, networks)
+    |> validate_length(:networks, min: 1)
+  end
+
+  def create_changeset(machine, attrs) do
+    network_ids = Map.get(attrs, "network_ids", [])
+    networks = Networks.list_networks_by_id(network_ids)
+    uuid = Ecto.UUID.generate()
+
+    machine
+    |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id, :team_id])
+    |> validate_required([:name, :template, :hypervisor_id, :plan_id, :team_id])
+    |> unique_constraint(:name)
+    |> put_change(:uuid, uuid)
+    |> unique_constraint(:uuid)
     |> assoc_constraint(:hypervisor)
     |> assoc_constraint(:plan)
     |> assoc_constraint(:team)
