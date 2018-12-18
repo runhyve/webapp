@@ -24,6 +24,24 @@ defmodule Webapp.Hypervisors.Hypervisor do
       :ip_address,
       :hypervisor_type_id,
       :webhook_endpoint,
+    ])
+    |> update_change(:webhook_token, fn
+      nil -> hypervisor.webhook_token
+      webhook_token -> webhook_token
+    end)
+    |> cleanup_webhook_endpoint()
+    |> assoc_constraint(:hypervisor_type)
+    |> unique_constraint(:name)
+  end
+
+  def create_changeset(hypervisor, attrs) do
+    hypervisor
+    |> cast(attrs, [:name, :ip_address, :hypervisor_type_id, :webhook_endpoint, :webhook_token])
+    |> validate_required([
+      :name,
+      :ip_address,
+      :hypervisor_type_id,
+      :webhook_endpoint,
       :webhook_token
     ])
     |> cleanup_webhook_endpoint()
