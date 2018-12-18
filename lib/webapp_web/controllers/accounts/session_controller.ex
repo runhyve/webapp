@@ -4,15 +4,17 @@ defmodule WebappWeb.SessionController do
   import WebappWeb.Authorize
 
   alias Phauxth.Remember
+
   alias Webapp.{
     Sessions,
     Sessions.Session
   }
+
   alias WebappWeb.Auth.Login
 
   plug :authorize_resource,
-       model: Session,
-       non_id_actions: [:create, :new]
+    model: Session,
+    non_id_actions: [:create, :new]
 
   def new(conn, _) do
     render(conn, "new.html")

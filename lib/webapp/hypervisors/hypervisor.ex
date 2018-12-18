@@ -23,7 +23,7 @@ defmodule Webapp.Hypervisors.Hypervisor do
       :name,
       :ip_address,
       :hypervisor_type_id,
-      :webhook_endpoint,
+      :webhook_endpoint
     ])
     |> update_change(:webhook_token, fn
       nil -> hypervisor.webhook_token

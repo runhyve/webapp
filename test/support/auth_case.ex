@@ -13,13 +13,14 @@ defmodule WebappWeb.AuthCase do
       |> hd()
 
     user = %{
-      email: email,
-      password: "reallyHard2gue$$",
-      name: name,
-      namespace: %{namespace: name}
+      user_name: name,
+      user_email: email,
+      user_password: "reallyHard2gue$$",
+      team_name: "team_" <> name,
+      team_namespace: "team_" <> name
     }
 
-    {:ok, user} = Accounts.create_user(user)
+    {:ok, %{user: user}} = Accounts.register_user(user)
     user
   end
 
@@ -29,6 +30,13 @@ defmodule WebappWeb.AuthCase do
     email
     |> add_user()
     |> change(%{confirmed_at: now()})
+    |> Repo.update!()
+  end
+
+  def add_admin(email) do
+    email
+    |> add_user()
+    |> change(%{role: "Administrator"})
     |> Repo.update!()
   end
 

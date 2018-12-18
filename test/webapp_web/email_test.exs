@@ -13,7 +13,7 @@ defmodule WebappWeb.Emails.UserEmailTest do
   test "sends confirmation request email", %{email: email, key: key} do
     sent_email = Email.confirm_request(email, key)
     assert sent_email.subject =~ "Confirm your account"
-    assert sent_email.html_body =~ "email here http://www.example.com/confirm?key="
+    assert sent_email.html_body =~ "user/confirm?key="
     assert_delivered_email(Email.confirm_request(email, key))
   end
 
@@ -25,7 +25,7 @@ defmodule WebappWeb.Emails.UserEmailTest do
   test "sends reset password request email", %{email: email, key: key} do
     sent_email = Email.reset_request(email, key)
     assert sent_email.subject =~ "Reset your password"
-    assert sent_email.html_body =~ "password at http://www.example.com/password_resets/edit?key="
+    assert sent_email.html_body =~ "user/password_resets/edit?key="
     assert_delivered_email(Email.reset_request(email, key))
   end
 

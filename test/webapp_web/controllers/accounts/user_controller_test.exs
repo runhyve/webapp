@@ -64,7 +64,6 @@ defmodule WebappWeb.UserControllerTest do
   describe "create user" do
     test "creates user when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), registration: @valid_user)
-      IO.inspect(conn)
       assert redirected_to(conn) == Routes.session_path(conn, :new)
     end
 
@@ -95,19 +94,19 @@ defmodule WebappWeb.UserControllerTest do
     end
   end
 
-#  describe "delete user" do
-#    @tag login: "reg@example.com"
-#    test "deletes chosen user", %{conn: conn, user: user} do
-#      conn = delete(conn, Routes.user_path(conn, :delete, user))
-#      assert redirected_to(conn) == Routes.session_path(conn, :new)
-#      refute Accounts.get_user(user.id)
-#    end
-#
-#    @tag login: "reg@example.com"
-#    test "cannot delete other user", %{conn: conn, user: user, other: other} do
-#      conn = delete(conn, Routes.user_path(conn, :delete, other))
-#      assert redirected_to(conn) == Routes.page_path(conn, :index)
-#      assert Accounts.get_user(other.id)
-#    end
-#  end
+  #  describe "delete user" do
+  #    @tag login: "reg@example.com"
+  #    test "deletes chosen user", %{conn: conn, user: user} do
+  #      conn = delete(conn, Routes.user_path(conn, :delete, user))
+  #      assert redirected_to(conn) == Routes.session_path(conn, :new)
+  #      refute Accounts.get_user(user.id)
+  #    end
+  #
+  #    @tag login: "reg@example.com"
+  #    test "cannot delete other user", %{conn: conn, user: user, other: other} do
+  #      conn = delete(conn, Routes.user_path(conn, :delete, other))
+  #      assert redirected_to(conn) == Routes.page_path(conn, :index)
+  #      assert Accounts.get_user(other.id)
+  #    end
+  #  end
 end

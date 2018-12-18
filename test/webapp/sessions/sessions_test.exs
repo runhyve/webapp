@@ -5,13 +5,14 @@ defmodule Webapp.SessionsTest do
 
   setup do
     attrs = %{
-      email: "fred@example.com",
-      password: "reallyHard2gue$$",
-      name: "fred",
-      namespace: %{namespace: "fred"}
+      user_email: "fred@example.com",
+      user_password: "reallyHard2gue$$",
+      user_name: "fred",
+      team_name: "company",
+      team_namespace: "fred-company"
     }
 
-    {:ok, user} = Accounts.create_user(attrs)
+    {:ok, %{user: user}} = Accounts.register_user(attrs)
     {:ok, user: user}
   end
 

@@ -1,5 +1,6 @@
 defmodule WebappWeb.Emails.UserEmail do
   use WebappWeb, :email
+
   @moduledoc """
   A module for sending emails to the user.
 
@@ -35,7 +36,7 @@ defmodule WebappWeb.Emails.UserEmail do
   An email with a confirmation link in it.
   """
   def confirm_request(address, key) do
-    confirm_url = Routes.user_url(Endpoint, :confirm, [key: key])
+    confirm_url = Routes.user_url(Endpoint, :confirm, key: key)
 
     prep_mail(address)
     |> subject("Confirm your account")
@@ -59,7 +60,7 @@ defmodule WebappWeb.Emails.UserEmail do
   end
 
   def reset_request(address, key) do
-    reset_url = Routes.password_reset_url(Endpoint, :edit, [key: key])
+    reset_url = Routes.password_reset_url(Endpoint, :edit, key: key)
 
     prep_mail(address)
     |> subject("Reset your password")

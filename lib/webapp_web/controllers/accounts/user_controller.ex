@@ -8,8 +8,8 @@ defmodule WebappWeb.UserController do
   alias Ecto.Changeset
 
   plug :authorize_resource,
-       model: User,
-       non_id_actions: [:index, :create, :new, :confirm]
+    model: User,
+    non_id_actions: [:index, :create, :new, :confirm]
 
   def new(conn, _) do
     changeset = Accounts.change_registration(%Registration{})

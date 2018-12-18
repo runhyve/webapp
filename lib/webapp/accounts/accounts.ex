@@ -73,12 +73,6 @@ defmodule Webapp.Accounts do
   @doc """
   Creates a user.
   """
-  def create_user(attrs) do
-    %User{}
-    |> User.create_changeset(attrs)
-    |> Repo.insert()
-  end
-
   def register_user(attrs) do
     %Registration{}
     |> Registration.changeset(attrs)

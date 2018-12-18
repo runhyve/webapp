@@ -37,12 +37,11 @@ defmodule Webapp.Networks.Network do
     |> cast(attrs, [:name, :network, :hypervisor_id])
     |> validate_required([:name, :network, :hypervisor_id])
     |> validate_format(:name, ~r/^[a-zA-Z0-9_-]+$/,
-         message: "Name must only contain letters and numbers and _ -"
-       )
+      message: "Name must only contain letters and numbers and _ -"
+    )
     |> unique_constraint(:name, name: :networks_name_hypervisor_id_index)
     |> assoc_constraint(:hypervisor)
     |> put_change(:uuid, uuid)
     |> unique_constraint(:uuid)
   end
-
 end

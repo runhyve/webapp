@@ -19,5 +19,5 @@ defimpl Canada.Can, for: Atom do
   def can?(nil, :new, Session), do: true
   def can?(nil, :create, Session), do: true
 
-  def can?(_, _action, _model),do: false
+  def can?(_, _action, _model), do: false
 end
