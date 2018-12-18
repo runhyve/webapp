@@ -1,4 +1,5 @@
 defmodule WebappWeb.Emails.UserEmail do
+  use WebappWeb, :email
   @moduledoc """
   A module for sending emails to the user.
 
@@ -30,17 +31,15 @@ defmodule WebappWeb.Emails.UserEmail do
 
   """
 
-  import Bamboo.Email
-  alias Webapp.Mailer
-  use Bamboo.Phoenix, view: WebappWeb.UserView
-
   @doc """
   An email with a confirmation link in it.
   """
   def confirm_request(address, key) do
+    confirm_url = Routes.user_url(Endpoint, :confirm, [key: key])
+
     prep_mail(address)
     |> subject("Confirm your account")
-    |> assign(:body, "Confirm your email here http://www.example.com/confirm?key=#{key}")
+    |> assign(:body, "Confirm your email here #{confirm_url}")
     |> render("email/default.html")
     |> Mailer.deliver_now()
   end
@@ -60,11 +59,13 @@ defmodule WebappWeb.Emails.UserEmail do
   end
 
   def reset_request(address, key) do
+    reset_url = Routes.password_reset_url(Endpoint, :edit, [key: key])
+
     prep_mail(address)
     |> subject("Reset your password")
     |> assign(
       :body,
-      "Reset your password at http://www.example.com/password_resets/edit?key=#{key}"
+      "Reset your password at #{reset_url}"
     )
     |> render("email/default.html")
     |> Mailer.deliver_now()

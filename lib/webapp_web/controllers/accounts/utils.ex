@@ -21,6 +21,7 @@ defmodule WebappWeb.Accounts.Utils do
     conn
     |> put_flash(:error, "You can't access that page!")
     |> put_view(WebappWeb.PageView)
+    |> put_status(403)
     |> render("access_denied.html")
     |> halt
   end
@@ -28,6 +29,7 @@ defmodule WebappWeb.Accounts.Utils do
   def handle_not_found(conn) do
     conn
     |> put_flash(:error, "Not found!")
+    |> put_status(404)
     |> put_view(WebappWeb.PageView)
     |> render("not_found.html")
     |> halt

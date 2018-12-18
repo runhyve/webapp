@@ -74,6 +74,17 @@ defmodule WebappWeb do
     end
   end
 
+  def email do
+    quote do
+      import Bamboo.Email
+      alias Webapp.Mailer
+      use Bamboo.Phoenix, view: WebappWeb.UserView
+
+      alias WebappWeb.Router.Helpers, as: Routes
+      alias WebappWeb.Endpoint
+    end
+  end
+
   @doc """
   When used, dispatch to the appropriate controller/view/etc.
   """

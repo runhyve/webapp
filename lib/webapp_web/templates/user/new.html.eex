@@ -49,7 +49,7 @@
       <div class="field">
         <%= label f, "Team namespace", class: "label" %>
         <div class="control">
-          <%= text_input f, :team_namespace, class: "input" %>
+          <%= text_input f, :team_namespace, class: "input", data_slugify: "registration[team_name]" %>
         </div>
         <%= error_tag f, :team_namespace %>
       </div>

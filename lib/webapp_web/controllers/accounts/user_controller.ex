@@ -1,16 +1,15 @@
 defmodule WebappWeb.UserController do
   use WebappWeb, :controller
 
-  alias Phauxth.Log
+  alias Phauxth.{Log, Confirm}
   alias Webapp.{Accounts, Accounts.User, Accounts.Registration}
   alias WebappWeb.{Auth.Token}
   alias WebappWeb.Emails.UserEmail, as: Email
   alias Ecto.Changeset
 
-  # the following plugs are defined in the controllers/authorize.ex file
-  plug :is_logged_in when action in [:index, :show]
-  # plug :is_current_user when action in [:edit, :update, :delete]
-  # plug :load_resource, model: User,
+  plug :authorize_resource,
+       model: User,
+       non_id_actions: [:index, :create, :new, :confirm]
 
   def new(conn, _) do
     changeset = Accounts.change_registration(%Registration{})
@@ -41,6 +40,23 @@ defmodule WebappWeb.UserController do
       {:error, :team, multi_changeset, _changes} ->
         changeset = Registration.copy_changeset_errors(multi_changeset, changeset, "team")
         render(conn, "new.html", changeset: %{changeset | action: :insert})
+    end
+  end
+
+  def confirm(conn, params) do
+    case Confirm.verify(params) do
+      {:ok, user} ->
+        Accounts.confirm_user(user)
+        Email.confirm_success(user.email)
+
+        conn
+        |> put_flash(:info, "Your account has been confirmed")
+        |> redirect(to: Routes.session_path(conn, :new))
+
+      {:error, message} ->
+        conn
+        |> put_flash(:error, message)
+        |> redirect(to: Routes.session_path(conn, :new))
     end
   end
 

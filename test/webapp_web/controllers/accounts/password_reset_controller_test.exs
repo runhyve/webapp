@@ -37,7 +37,7 @@ defmodule WebappWeb.PasswordResetControllerTest do
       assert reset_conn.private.phoenix_flash["info"] =~ "password has been reset"
       assert redirected_to(reset_conn) == Routes.session_path(conn, :new)
       conn = post(conn, Routes.session_path(conn, :create), session: @update_attrs)
-      assert redirected_to(conn) == Routes.user_path(conn, :index)
+      assert redirected_to(conn) == Routes.page_path(conn, :index)
     end
 
     test "reset password fails for incorrect key", %{conn: conn} do

@@ -42,7 +42,3 @@ defimpl Canada.Can, for: Member do
 
   def can?(_member, _action, _model), do: false
 end
-
-defimpl Canada.Can, for: Atom do
-  def can?(_member, _action, _model), do: false
-end

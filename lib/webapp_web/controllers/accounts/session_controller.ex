@@ -4,10 +4,15 @@ defmodule WebappWeb.SessionController do
   import WebappWeb.Authorize
 
   alias Phauxth.Remember
-  alias Webapp.Sessions
+  alias Webapp.{
+    Sessions,
+    Sessions.Session
+  }
   alias WebappWeb.Auth.Login
 
-  plug :is_anonymous when action in [:new, :create]
+  plug :authorize_resource,
+       model: Session,
+       non_id_actions: [:create, :new]
 
   def new(conn, _) do
     render(conn, "new.html")
@@ -19,7 +24,7 @@ defmodule WebappWeb.SessionController do
         conn
         |> add_session(user, params)
         |> put_flash(:info, "User successfully logged in.")
-        |> redirect(to: get_session(conn, :request_path) || Routes.user_path(conn, :show, user))
+        |> redirect(to: get_session(conn, :request_path) || Routes.page_path(conn, :index))
 
       {:error, message} ->
         conn

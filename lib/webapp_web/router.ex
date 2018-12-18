@@ -25,7 +25,7 @@ defmodule WebappWeb.Router do
     get "/users/:id/teams", UserController, :teams
 
     resources "/sessions", SessionController, only: [:new, :create, :delete]
-    get "/user/confirm", ConfirmController, :index
+    get "/user/confirm", UserController, :confirm
     resources "/user/password_resets", PasswordResetController, only: [:new, :create]
     get "/user/password_resets/edit", PasswordResetController, :edit
     put "/user/password_resets/update", PasswordResetController, :update

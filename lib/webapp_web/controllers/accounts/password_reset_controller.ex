@@ -2,12 +2,22 @@ defmodule WebappWeb.PasswordResetController do
   use WebappWeb, :controller
 
   alias Phauxth.Confirm.PassReset
-  alias Webapp.Accounts
+  alias Webapp.{Accounts, Accounts.User}
   alias WebappWeb.{Auth.Token}
   alias WebappWeb.Emails.UserEmail, as: Email
 
+  def new(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, _params) do
+    render(conn, "change.html")
+  end
+
   def new(conn, _params) do
-    render(conn, "new.html")
+    render(conn, "reset.html")
+  end
+
+  def create(conn, %{"password_reset" => %{"email" => ""}}) do
+    conn
+    |> put_flash(:error, "Enter email address.")
+    |> redirect(to: Routes.password_reset_path(conn, :new))
   end
 
   def create(conn, %{"password_reset" => %{"email" => email}}) do
