@@ -21,7 +21,7 @@ defmodule WebappWeb.Router do
 
     get "/", PageController, :index
 
-    resources "/users", UserController
+    resources "/users", UserController, except: [:delete]
     get "/users/:id/teams", UserController, :teams
 
     resources "/sessions", SessionController, only: [:new, :create, :delete]
