@@ -3,6 +3,7 @@ defmodule Webapp.Repo.Migrations.CreateMachines do
 
   def change do
     create table(:machines) do
+      add(:uuid, :uuid)
       add(:name, :string)
       add(:template, :string)
       add(:hypervisor_id, references(:hypervisors, on_delete: :delete_all), null: false)
@@ -19,6 +20,6 @@ defmodule Webapp.Repo.Migrations.CreateMachines do
     end
 
     create(index(:machines, [:hypervisor_id]))
-    create(unique_index(:machines, [:name, :hypervisor_id]))
+    create(unique_index(:machines, [:uuid]))
   end
 end

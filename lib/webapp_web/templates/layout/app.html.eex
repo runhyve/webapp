@@ -24,21 +24,75 @@
 
           <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-              <%= link "Home", to: Routes.page_path(@conn, :index), class: "navbar-item" %>
-              <%= link "Plans", to: Routes.plan_path(@conn, :index), class: "navbar-item" %>
-              <%= link "Hypervisors", to: Routes.hypervisor_path(@conn, :index), class: "navbar-item" %>
-              <%= link "Machines", to: Routes.machine_path(@conn, :index), class: "navbar-item" %>
+              <%= link "Home", to: team_path(:page_path, @conn, :index), class: "navbar-item" %>
+
+              <%= if @current_user do %>
+                <%= link "My Machines", to: team_path(:machine_path, @conn, :index), class: "navbar-item" %>
+
+                  <%= if @current_user.role == "Administrator" do %>
+                  <div class="navbar-item dropdown is-hoverable">
+                    <div class="dropdown-trigger">
+                      <button class="button is-rounded" aria-haspopup="true" aria-controls="dropdown-menu">
+                        <span>Admin</span>
+                        <span class="icon is-small">
+                          <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                      </button>
+                    </div>
+
+                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                      <div class="dropdown-content">
+                        <%= link "Plans", to: Routes.admin_plan_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Hypervisors", to: Routes.admin_hypervisor_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Machines", to: Routes.admin_machine_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Users", to: Routes.admin_user_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "Teams", to: Routes.admin_team_path(@conn, :index), class: "dropdown-item" %>
+                       </div>
+                    </div>
+                  </div>
+                  <% end %>
+              <% end %>
             </div>
 
             <div class="navbar-end">
               <div class="navbar-item">
                 <div class="buttons">
-                  <a class="button is-rounded is-primary is-disabled">
-                    <strong>Sign up</strong>
-                  </a>
-                  <a class="button is-rounded is-light is-disabled">
-                    Log in
-                  </a>
+                <%= if @current_user do %>
+
+                    <%= if @current_team do %>
+                    <div class="dropdown is-hoverable">
+                      <div class="dropdown-trigger">
+                        <button class="button is-rounded is-info" aria-haspopup="true" aria-controls="dropdown-menu">
+                          <span><%= @current_team.name %></span>
+                          <span class="icon is-small">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+                          <%= for team <- @current_user.teams do %>
+                            <%= link "#{team.name}", to: switch_team_path(@conn, team), class: "dropdown-item" %>
+                          <% end %>
+
+                          <hr class="dropdown-divider">
+                          <%= link "My Teams", to: Routes.user_path(@conn, :teams, @current_user), class: "dropdown-item" %>
+                          <%= link "My Profile", to: Routes.user_path(@conn, :show, @current_user), class: "dropdown-item" %>
+                          <hr class="dropdown-divider">
+                          <%= link "Logout", to: Routes.session_path(@conn, :delete, current_session(@conn)), method: :delete, class: "dropdown-item" %>
+                        </div>
+                      </div>
+                    </div>
+                    <% end %>
+
+                  <% else %>
+                    <a href="<%= Routes.user_path(@conn, :new) %>" class="button is-rounded is-primary">
+                      <strong>Sign up</strong>
+                    </a>
+                    <a href="<%= Routes.session_path(@conn, :new) %>" class="button is-rounded is-light">
+                      Log in
+                    </a>
+                  <% end %>
                 </div>
               </div>
             </div>

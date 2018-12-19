@@ -1,0 +1,5 @@
+<h1>Edit Team</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.team_path(@conn, :update, @team)) %>
+
+<span><%= link "Back", to: Routes.team_path(@conn, :index) %></span>

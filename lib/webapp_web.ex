@@ -23,15 +23,18 @@ defmodule WebappWeb do
 
       import Plug.Conn
       import WebappWeb.Gettext
+      import Canary.Plugs
       alias WebappWeb.Router.Helpers, as: Routes
+      import WebappWeb.Authorize
+      alias Plug.Conn
+
+      import WebappWeb.ViewHelpers, only: [team_path: 3, team_path: 4]
     end
   end
 
   def view do
     quote do
-      use Phoenix.View,
-        root: "lib/webapp_web/templates", pattern: "**/*",
-        namespace: WebappWeb
+      use Phoenix.View, root: "lib/webapp_web/templates", pattern: "**/*", namespace: WebappWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
@@ -43,7 +46,9 @@ defmodule WebappWeb do
       import WebappWeb.Gettext
       alias WebappWeb.Router.Helpers, as: Routes
 
+      import Canada.Can, only: [can?: 3]
       import PhoenixActiveLink
+      import WebappWeb.ViewHelpers
     end
   end
 
@@ -59,6 +64,24 @@ defmodule WebappWeb do
     quote do
       use Phoenix.Channel
       import WebappWeb.Gettext
+    end
+  end
+
+  def model do
+    quote do
+      use Ecto.Schema
+      import Ecto.Changeset
+    end
+  end
+
+  def email do
+    quote do
+      import Bamboo.Email
+      alias Webapp.Mailer
+      use Bamboo.Phoenix, view: WebappWeb.UserView
+
+      alias WebappWeb.Router.Helpers, as: Routes
+      alias WebappWeb.Endpoint
     end
   end
 

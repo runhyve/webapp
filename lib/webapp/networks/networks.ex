@@ -9,13 +9,13 @@ defmodule Webapp.Networks do
   alias Ecto.{
     Multi,
     Changeset
-    }
+  }
 
   alias Webapp.{
     Hypervisors,
     Machines.Machine,
     Networks.Network
-    }
+  }
 
   @doc """
   Returns the list of networks.
@@ -41,12 +41,14 @@ defmodule Webapp.Networks do
 
   """
   def list_networks_by_id(network_ids, preloads \\ [])
+
   def list_networks_by_id(network_ids, preloads) when is_binary(network_ids) do
-    Repo.all(from n in Network, where: n.id == ^network_ids)
+    Repo.all(from(n in Network, where: n.id == ^network_ids))
     |> Repo.preload(preloads)
   end
+
   def list_networks_by_id(network_ids, preloads) when is_list(network_ids) do
-    Repo.all(from n in Network, where: n.id in ^network_ids)
+    Repo.all(from(n in Network, where: n.id in ^network_ids))
     |> Repo.preload(preloads)
   end
 
@@ -86,12 +88,10 @@ defmodule Webapp.Networks do
       %Network{}
       |> Network.changeset(attrs)
 
-    IO.inspect(changeset)
-
     if changeset.valid? do
       hypervisor =
         Ecto.Changeset.get_change(changeset, :hypervisor_id)
-        |> Hypervisors.get_hypervisor!
+        |> Hypervisors.get_hypervisor!()
 
       module =
         ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))

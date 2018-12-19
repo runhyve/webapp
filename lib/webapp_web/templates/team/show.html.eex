@@ -1,0 +1,60 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><%= link "Teams", to: Routes.team_path(@conn, :index) %></li>
+    <li class="is-active"><a><%= @team.name %></a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1><%= @team.name %></h1>
+  </div>
+
+  <div class="level-right">
+    <span>
+      <%= link "Edit",
+            to: Routes.team_path(@conn, :edit, @team),
+            class: "button is-rounded is-info" %>
+    </span>
+  </div>
+</div>
+<div class="box">
+  <ul>
+    <li>
+      <strong>Name:</strong>
+      <%= @team.name %>
+    </li>
+    <li>
+      <strong>Namespace:</strong>
+      <%= @team.namespace %>
+    </li>
+
+    <li>
+      <strong>Member:</strong>
+      <%= link "Add Member", to: Routes.team_member_path(@conn, :new, @team),  class: "button is-rounded is-primary"  %>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+      <%= for member <- @team.members do %>
+        <tr>
+          <td><%= member.user.name %></td>
+          <td><%= member.role %></td>
+          <td>
+            <%= link "Edit", to: Routes.team_member_path(@conn, :edit, @team, member),  class: "button is-rounded is-info"  %>
+            <%= link "Delete", to: Routes.team_member_path(@conn, :delete, @team, member), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger"  %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+      </table>
+    </li>
+  </ul>
+</div>

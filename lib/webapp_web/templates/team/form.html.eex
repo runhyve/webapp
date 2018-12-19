@@ -1,0 +1,27 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="notification is-danger">
+      <p>Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= label f, :name, class: "label" %>
+    <div class="control">
+      <%= text_input f, :name, class: "input" %>
+    </div>
+    <%= error_tag f, :name %>
+  </div>
+
+  <div class="field">
+    <%= label f, :namespace, class: "label" %>
+    <div class="control">
+      <%= text_input f, :namespace, class: "input" %>
+    </div>
+    <%= error_tag f, :namespace %>
+  </div>
+
+  <div class="field">
+    <%= submit "Save", class: "button is-rounded is-primary" %>
+  </div>
+<% end %>

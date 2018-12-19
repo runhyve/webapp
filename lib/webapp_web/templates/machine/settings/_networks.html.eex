@@ -1,6 +1,6 @@
 <div class="box">
   <%= if Enum.count(@other_networks) > 0 do %>
-    <%= form_for @changeset, Routes.machine_path(@conn, :update, @machine), fn f -> %>
+    <%= form_for @changeset, team_path(:machine_path, @conn, :update, @machine), fn f -> %>
       <%= if @changeset.action do %>
         <div class="notification is-danger">
           <p>Oops, something went wrong! Please check the errors below.</p>

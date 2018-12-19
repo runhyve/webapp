@@ -2,40 +2,66 @@ defmodule WebappWeb.MachineController do
   use WebappWeb, :controller
 
   alias Webapp.{
-      Machines,
-      Machines.Machine,
-      Hypervisors,
-      Networks,
-      Plans
-    }
-  plug :load_machine when action not in [:index, :create, :new]
+    Machines,
+    Machines.Machine,
+    Hypervisors,
+    Networks,
+    Plans,
+    Accounts,
+    Accounts.User,
+    Accounts.Team
+  }
+
+  plug :load_resource,
+    model: Machine,
+    non_id_actions: [:index, :create, :new],
+    preload: [:hypervisor, :plan, :networks]
+
+  plug :authorize_resource,
+    current_user: :current_member,
+    model: Machine,
+    non_id_actions: [:index, :create, :new],
+    preload: [:hypervisor, :plan, :networks]
+
   plug :load_hypervisor when action in [:new, :create]
   plug :load_references when action in [:new, :create, :edit, :update]
 
-  def index(conn, %{"hypervisor_id" => hypervisor_id} = params) do
-    conn = load_hypervisor(conn, params)
-    hypervisor = conn.assigns[:hypervisor]
-    machines = Hypervisors.list_hypervisor_machines(hypervisor, [:hypervisor, :plan, :networks])
+  #  def index(conn, %{"hypervisor_id" => hypervisor_id} = params) do
+  #    conn = load_hypervisor(conn, params)
+  #    hypervisor = conn.assigns[:hypervisor]
+  #    machines = Hypervisors.list_hypervisor_machines(hypervisor, [:hypervisor, :plan, :networks])
+  #
+  #    # @TODO: Refactor this
+  #    status =
+  #      case Hypervisors.update_hypervisor_status(hypervisor) do
+  #        {:ok, status} -> status
+  #        {:error, _} -> "unreachable"
+  #      end
+  #
+  #    conn =
+  #      if status == "unreachable" do
+  #        put_flash(conn, :error, "Failed to fetch hypervisor status")
+  #      else
+  #        conn
+  #      end
+  #
+  #    render(conn, "index.html", machines: machines, hypervisor: hypervisor, status: status)
+  #  end
 
-    # @TODO: Refactor this
-    status =
-      case Hypervisors.update_hypervisor_status(hypervisor) do
-        {:ok, status} -> status
-        {:error, _} -> "unreachable"
-      end
+  def admin_index(%Conn{assigns: %{current_user: %User{role: "Administrator"}}} = conn, _params) do
+    machines = Machines.list_team_machines([:hypervisor, :plan, :networks])
+    hypervisors = Hypervisors.list_hypervisors()
 
-    conn =
-      if status == "unreachable" do
-        put_flash(conn, :error, "Failed to fetch hypervisor status")
-      else
-        conn
-      end
-
-    render(conn, "index.html", machines: machines, hypervisor: hypervisor, status: status)
+    render(conn, "admin/index.html",
+      machines: machines,
+      hypervisor: false,
+      hypervisors: hypervisors
+    )
   end
 
-  def index(conn, _params) do
-    machines = Machines.list_machines([:hypervisor, :plan, :networks])
+  # My machines
+  def index(%Conn{assigns: %{current_team: %Team{} = team}} = conn, _params) do
+    machines = Machines.list_team_machines(team, [:hypervisor, :plan, :networks])
     hypervisors = Hypervisors.list_hypervisors()
 
     render(conn, "index.html", machines: machines, hypervisor: false, hypervisors: hypervisors)
@@ -51,7 +77,7 @@ defmodule WebappWeb.MachineController do
       {:ok, %{machine: machine}} ->
         conn
         |> put_flash(:info, "Machine created successfully.")
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -97,7 +123,6 @@ defmodule WebappWeb.MachineController do
     render(conn, "settings.html", machine: machine, changeset: changeset)
   end
 
-
   # Add network
   def update(conn, %{"machine" => %{"network_ids" => network_id}}) do
     machine = conn.assigns[:machine]
@@ -107,31 +132,30 @@ defmodule WebappWeb.MachineController do
       {:ok, %{machine: machine}} ->
         conn
         |> put_flash(:info, "Network added to Machine successfully.")
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       # Errors from changeset should be displayed!
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_flash(:error, "Network was not added to Machine successfully.")
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       # Errors from changeset should be displayed!
       {:error, :machine, %Ecto.Changeset{} = changeset, _} ->
         conn
         |> put_flash(:error, "Network was not added to Machine successfully.")
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, :hypervisor, error, _} ->
         conn
         |> put_flash(:error, error)
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, :hypervisor_not_found} ->
         conn
         |> put_flash(:error, "Machine was not created successfully.")
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
     end
-
   end
 
   # Change machine name
@@ -140,7 +164,7 @@ defmodule WebappWeb.MachineController do
 
     conn
     |> put_flash(:error, "Not implemented yet.")
-    |> redirect(to: Routes.machine_path(conn, :show, machine))
+    |> redirect(to: team_path(:machine_path, conn, :show, machine))
   end
 
   def delete(conn, _params) do
@@ -150,17 +174,17 @@ defmodule WebappWeb.MachineController do
       {:ok, _machine} ->
         conn
         |> put_flash(:info, "Machine deleted successfully.")
-        |> redirect(to: Routes.hypervisor_machine_path(conn, :index, machine.hypervisor))
+        |> redirect(to: team_path(:machine_path, conn, :index))
 
       {:error, :hypervisor, error, changes} ->
         conn
         |> put_flash(:error, error)
-        |> redirect(to: Routes.hypervisor_machine_path(conn, :index, machine.hypervisor))
+        |> redirect(to: team_path(:machine_path, conn, :index))
 
       {:error, :hypervisor_not_found, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_flash(:error, "Machine was not deleted successfully.")
-        |> redirect(to: Routes.hypervisor_machine_path(conn, :index, machine.hypervisor))
+        |> redirect(to: team_path(:machine_path, conn, :index))
     end
   end
 
@@ -171,12 +195,12 @@ defmodule WebappWeb.MachineController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Machine is starting")
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, error} ->
         conn
         |> put_flash(:error, error)
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
     end
   end
 
@@ -187,12 +211,12 @@ defmodule WebappWeb.MachineController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Machine is stopping")
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, error} ->
         conn
         |> put_flash(:error, error)
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
     end
   end
 
@@ -203,12 +227,12 @@ defmodule WebappWeb.MachineController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Machine is being powered off")
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, error} ->
         conn
         |> put_flash(:error, error)
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
     end
   end
 
@@ -222,7 +246,7 @@ defmodule WebappWeb.MachineController do
       {:error, error} ->
         conn
         |> put_flash(:error, error)
-        |> redirect(to: Routes.machine_path(conn, :show, machine))
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
     end
   end
 
@@ -237,7 +261,7 @@ defmodule WebappWeb.MachineController do
       e ->
         conn
         |> put_flash(:error, "Machine was not found.")
-        |> redirect(to: Routes.machine_path(conn, :index))
+        |> redirect(to: team_path(:machine_path, conn, :index))
     end
   end
 
@@ -245,14 +269,16 @@ defmodule WebappWeb.MachineController do
     # The :index, :create and :new are under /hypervisors resource
     # for them, we use load_hypervisor which puts assign with hypervisor.
     # For other methods we're loading hypervisor from machine.
-    hypervisor = case Map.has_key?(conn.assigns, :hypervisor) do
-      true -> conn.assigns[:hypervisor]
-      _ -> conn.assigns[:machine].hypervisor
-    end
+    hypervisor =
+      case Map.has_key?(conn.assigns, :hypervisor) do
+        true -> conn.assigns[:hypervisor]
+        _ -> conn.assigns[:machine].hypervisor
+      end
 
     conn
     |> assign(:networks, Hypervisors.list_hypervisor_networks(hypervisor))
     |> assign(:plans, Plans.list_plans())
+    |> assign(:teams, Accounts.list_teams())
   end
 
   defp load_hypervisor(conn, _) do
@@ -266,7 +292,7 @@ defmodule WebappWeb.MachineController do
       _ ->
         conn
         |> put_flash(:error, "Hypervisor was not found.")
-        |> redirect(to: Routes.hypervisor_path(conn, :index))
+        |> redirect(to: team_path(:page_path, conn, :index))
     end
   end
 end

@@ -1,0 +1,45 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li class="is-active"><a>Users</a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1>Listing Users</h1>
+  </div>
+
+  <div class="level-right">
+    <span><%= link "New User", to: Routes.user_path(@conn, :new), class: "button is-rounded is-primary" %></span>
+  </div>
+</div>
+
+
+<table class="table container">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Created</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for user <- @users do %>
+    <tr>
+      <td><%= link user.name, to: Routes.user_path(@conn, :show, user) %></td>
+      <td><%= user.inserted_at %></td>
+
+      <td>
+        <%= link "Show", to: Routes.user_path(@conn, :show, user), class: "button is-rounded" %>
+        <%= link "Edit", to: Routes.user_path(@conn, :edit, user), class: "button is-rounded is-info" %>
+        <%= link "Delete", to: Routes.user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger" %>
+      </td>
+    </tr>
+<% end %>
+<%= if Enum.empty?(@users) do %>
+    <tr><td colspan="3">Empty here, add a user...</td></tr>
+<% end %>
+  </tbody>
+</table>
+

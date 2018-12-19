@@ -17,6 +17,20 @@ config :webapp, WebappWeb.Endpoint,
   render_errors: [view: WebappWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Webapp.PubSub, adapter: Phoenix.PubSub.PG2]
 
+# Phauxth authentication configuration
+config :phauxth,
+  user_context: Webapp.Accounts,
+  crypto_module: Comeonin.Argon2,
+  token_module: WebappWeb.Auth.Token
+
+# Mailer configuration
+config :webapp, Webapp.Mailer, adapter: Bamboo.LocalAdapter
+
+config :canary,
+  repo: Webapp.Repo,
+  unauthorized_handler: {WebappWeb.Accounts.Utils, :handle_unauthorized},
+  not_found_handler: {WebappWeb.Accounts.Utils, :handle_not_found}
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

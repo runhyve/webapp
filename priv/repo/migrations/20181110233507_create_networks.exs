@@ -3,6 +3,7 @@ defmodule Webapp.Repo.Migrations.CreateNetworks do
 
   def change do
     create table(:networks) do
+      add(:uuid, :uuid)
       add(:name, :string)
       add(:network, :cidr)
       add(:hypervisor_id, references(:hypervisors, on_delete: :delete_all), null: false)
@@ -12,5 +13,6 @@ defmodule Webapp.Repo.Migrations.CreateNetworks do
 
     create(index(:networks, [:hypervisor_id]))
     create(unique_index(:networks, [:name, :hypervisor_id]))
+    create(unique_index(:networks, [:uuid]))
   end
 end

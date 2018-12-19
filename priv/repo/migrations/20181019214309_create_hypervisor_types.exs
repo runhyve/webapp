@@ -7,5 +7,7 @@ defmodule Webapp.Repo.Migrations.CreateHypervisorTypes do
 
       timestamps()
     end
+
+    execute("CREATE EXTENSION citext", "DROP EXTENSION citext")
   end
 end

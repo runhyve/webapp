@@ -1,0 +1,62 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="notification is-danger">
+      <p>Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= label f, "Full name", class: "label" %>
+    <div class="control">
+      <%= text_input f, :name, class: "input" %>
+    </div>
+    <%= error_tag f, :name %>
+  </div>
+
+  <div class="field">
+    <%= label f, :email, class: "label" %>
+    <div class="control">
+      <%= text_input f, :email, class: "input" %>
+    </div>
+    <%= error_tag f, :email %>
+  </div>
+
+  <div class="field">
+    <%= label f, :password, class: "label" %>
+    <div class="control">
+      <%= password_input f, :password, class: "input" %>
+    </div>
+    <%= error_tag f, :password %>
+  </div>
+
+  <hr />
+  <div class="notification">
+    Enter a name and namespace for your team even if you want to use Runhyve without other people.
+  </div>
+
+  <div class="field">
+    <%= label f, "Team name", class: "label" %>
+    <div class="control">
+      <%= text_input f, :team_name, class: "input" %>
+    </div>
+    <%= error_tag f, :team_name %>
+  </div>
+
+  <div class="field">
+    <%= label f, "Team namespace", class: "label" %>
+    <div class="control">
+      <%= text_input f, :team_namespace, class: "input" %>
+    </div>
+    <%= error_tag f, :team_namespace %>
+  </div>
+
+  <div class="level">
+    <div class="level-left">
+      <%= submit "Sign up", class: "button is-rounded is-primary" %>
+    </div>
+
+    <div class="level-right">
+      <%= link "Forgot password", to: Routes.password_reset_path(@conn, :new) %>
+    </div>
+  </div>
+<% end %>

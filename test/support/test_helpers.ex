@@ -2,7 +2,7 @@ defmodule Webapp.TestHelpers do
   alias Webapp.{Hypervisors, Plans}
 
   def fixture_hypervisor(hypervisor) do
-    {:ok, hypervisor} = Hypervisors.create_hypervisor(hypervisor)
+    {:ok, %{hypervisor: hypervisor}} = Hypervisors.create_hypervisor(hypervisor)
     hypervisor
   end
 

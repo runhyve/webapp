@@ -9,6 +9,21 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+accounts = [
+  %{
+    user_email: "admin@runateam.com",
+    user_name: "Runhyve Admin",
+    user_password: "aeja9aif9oNg",
+    team_name: "Runateam",
+    team_namespace: "runateam"
+  }
+]
+
+for account <- accounts do
+  {:ok, %{user: user}} = Webapp.Accounts.register_user(account)
+  Webapp.Accounts.confirm_user(user)
+  Webapp.Accounts.update_user(user, %{role: "Administrator"})
+end
 
 Webapp.Repo.insert!(%Webapp.Hypervisors.Type{name: "bhyve"})
 

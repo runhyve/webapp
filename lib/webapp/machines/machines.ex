@@ -9,13 +9,14 @@ defmodule Webapp.Machines do
   alias Ecto.{
     Multi,
     Changeset
-    }
+  }
 
   alias Webapp.{
     Hypervisors,
     Machines.Machine,
-    Networks.Network
-    }
+    Networks.Network,
+    Accounts.Team
+  }
 
   # Number of seconds after the create action is considered as failed.
   @create_timeout 180
@@ -31,6 +32,22 @@ defmodule Webapp.Machines do
   """
   def list_machines(preloads \\ [:hypervisor, :plan]) do
     Repo.all(Machine)
+    |> Repo.preload(preloads)
+  end
+
+  @doc """
+  Returns the list of team machines.
+
+  ## Examples
+
+      iex> list_team_machines(%Team{})
+      [%Machine{}, ...]
+
+  """
+  def list_team_machines(%Team{} = team, preloads \\ [:hypervisor, :plan]) do
+    team
+    |> Ecto.assoc(:machines)
+    |> Repo.all()
     |> Repo.preload(preloads)
   end
 
@@ -71,12 +88,12 @@ defmodule Webapp.Machines do
     # Validate machine changeset
     changeset =
       %Machine{last_status: "Creating"}
-      |> Machine.changeset(attrs)
+      |> Machine.create_changeset(attrs)
 
     if changeset.valid? do
       hypervisor =
         Ecto.Changeset.get_change(changeset, :hypervisor_id)
-        |> Hypervisors.get_hypervisor!
+        |> Hypervisors.get_hypervisor!()
 
       module =
         ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
@@ -135,6 +152,7 @@ defmodule Webapp.Machines do
   def delete_machine(%Machine{failed: true} = machine) do
     # Try to remove machine on server in silent mode.
     module = get_hypervisor_module(machine)
+
     try do
       apply(module, :delete_machine, [%{machine: machine}])
     rescue
@@ -175,11 +193,12 @@ defmodule Webapp.Machines do
           NaiveDateTime.utc_now()
           |> NaiveDateTime.truncate(:second)
 
-
+        # TODO: created_at should be changed only when status is changed...
+        # Check changes in changeset and update created_at only when created status has changed.
         changeset
         |> Changeset.put_change(:last_status, status)
-        |> Changeset.put_change(:created_at, now)
         |> Changeset.put_change(:created, true)
+        |> Changeset.put_change(:created_at, now)
         |> Repo.update()
       end)
       |> Repo.transaction()
@@ -200,7 +219,7 @@ defmodule Webapp.Machines do
   end
 
   #
-  def update_status(%Machine{failed: false, created: false, inserted_at: inserted_at} = machine)  do
+  def update_status(%Machine{failed: false, created: false, inserted_at: inserted_at} = machine) do
     cond do
       NaiveDateTime.diff(NaiveDateTime.utc_now(), inserted_at) >= @create_timeout ->
         mark_as_failed(machine)
@@ -410,5 +429,4 @@ defmodule Webapp.Machines do
       ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
       |> String.to_atom()
   end
-
 end

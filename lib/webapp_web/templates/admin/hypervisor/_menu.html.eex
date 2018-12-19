@@ -1,0 +1,32 @@
+<div class="level">
+  <div class="level-left">
+     <div class="level-item">
+       <h1><%= @hypervisor.name %></h1>
+     </div>
+
+    <div class="level-left">
+      <%= unless @hide_status do %>
+       <div class="tags has-addons">
+         <span class="tag status status-icon <%= map_status_to_css(@status) %>" data-status="<%= map_status_to_css(@status) %>"><i class="<%= status_icon(@status) %>"></i></span>
+         <span class="tag status <%= map_status_to_css(@status) %>" data-status="<%= map_status_to_css(@status) %>"><%= @status %></span>
+       </div>
+       <% end %>
+     </div>
+  </div>
+
+  <div class="level-right">
+  </div>
+</div>
+
+<div class="tabs">
+  <ul>
+    <%= active_link(@conn, "Dashboard", to: Routes.admin_hypervisor_path(@conn, :show, @hypervisor), active: :exact)  %>
+    <%= active_link(@conn, "Networks", to: Routes.admin_hypervisor_network_path(@conn, :index, @hypervisor), active: :exact)  %>
+    <%= active_link(@conn, "Machines", to: Routes.admin_hypervisor_machine_path(@conn, :index, @hypervisor), active: :exact)  %>
+
+    <li><a>Images</a></li>
+    <li><a>Console</a></li>
+    <%= active_link(@conn, "Settings", to: Routes.admin_hypervisor_path(@conn, :edit, @hypervisor), active: :exact)  %>
+
+  </ul>
+</div>

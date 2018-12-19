@@ -206,13 +206,13 @@ defmodule Webapp.Hypervisors do
   def create_hypervisor(attrs \\ %{}) do
     hyperviosr =
       %Hypervisor{}
-      |> Hypervisor.changeset(attrs)
+      |> Hypervisor.create_changeset(attrs)
 
     Multi.new()
     |> Multi.insert(:hypervisor, hyperviosr)
     |> Multi.run(:network, fn _repo, %{hypervisor: hypervisor} ->
       %Network{}
-      |> Network.changeset(%{
+      |> Network.create_changeset(%{
         name: "public",
         network: "0.0.0.0/32",
         hypervisor_id: hypervisor.id

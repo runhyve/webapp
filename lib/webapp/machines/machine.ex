@@ -5,13 +5,14 @@ defmodule Webapp.Machines.Machine do
   alias Webapp.{
     Hypervisors,
     Hypervisors.Hypervisor,
+    Plans.Plan,
     Networks,
-    Networks.Network
-    }
-
-  alias Webapp.Plans.Plan
+    Networks.Network,
+    Accounts.Team
+  }
 
   schema "machines" do
+    field(:uuid, Ecto.UUID, autogenerate: true)
     field(:name, :string)
     field(:template, :string)
     field(:last_status, :string)
@@ -21,6 +22,7 @@ defmodule Webapp.Machines.Machine do
 
     belongs_to(:hypervisor, Hypervisor)
     belongs_to(:plan, Plan)
+    belongs_to(:team, Team)
     many_to_many(:networks, Network, join_through: "machines_networks")
 
     field(:created_at, :naive_datetime)
@@ -34,11 +36,30 @@ defmodule Webapp.Machines.Machine do
     networks = Networks.list_networks_by_id(network_ids)
 
     machine
-    |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id])
-    |> validate_required([:name, :template, :hypervisor_id, :plan_id])
+    |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id, :team_id])
+    |> validate_required([:name, :template, :hypervisor_id, :plan_id, :team_id])
     |> unique_constraint(:name)
     |> assoc_constraint(:hypervisor)
     |> assoc_constraint(:plan)
+    |> assoc_constraint(:team)
+    |> put_assoc(:networks, networks)
+    |> validate_length(:networks, min: 1)
+  end
+
+  def create_changeset(machine, attrs) do
+    network_ids = Map.get(attrs, "network_ids", [])
+    networks = Networks.list_networks_by_id(network_ids)
+    uuid = Ecto.UUID.generate()
+
+    machine
+    |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id, :team_id])
+    |> validate_required([:name, :template, :hypervisor_id, :plan_id, :team_id])
+    |> unique_constraint(:name)
+    |> put_change(:uuid, uuid)
+    |> unique_constraint(:uuid)
+    |> assoc_constraint(:hypervisor)
+    |> assoc_constraint(:plan)
+    |> assoc_constraint(:team)
     |> put_assoc(:networks, networks)
     |> validate_length(:networks, min: 1)
   end
