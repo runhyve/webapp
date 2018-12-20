@@ -27,6 +27,7 @@ test:
   script:
     - mix test
     - mix coveralls
+    - mix credo suggest --mute-exit-status
 
 deploy_demo:
   stage: deploy
