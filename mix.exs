@@ -54,6 +54,7 @@ defmodule Webapp.MixProject do
       {:phauxth, "~> 2.0.0-rc"},
       {:argon2_elixir, "~> 1.3"},
       {:bamboo, "~> 1.1"},
+      {:bamboo_smtp, "~> 1.6.0"},
       {:canary, "~> 1.1.1"},
       {:plug_cowboy, "~> 2.0"},
       {:plug, "~> 1.7"},

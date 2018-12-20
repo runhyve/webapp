@@ -77,3 +77,14 @@ config :webapp, Webapp.Repo,
   ssl: true,
   # Free tier db only allows 4 connections. Rolling deploys need pool_size*(n+1) connections.
   pool_size: 2
+
+config :webapp, Webapp.Mailer,
+       adapter: Bamboo.SMTPAdapter,
+       port: 465,
+       server: "mail.panic.pl",
+       hostname: "panic.pl",
+       username: System.get_env("MAILER_USERNAME"),
+       password: System.get_env("MAILER_PASSWORD"),
+       tls: :always,
+       retries: 1,
+       auth: :always

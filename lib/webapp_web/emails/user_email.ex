@@ -42,7 +42,7 @@ defmodule WebappWeb.Emails.UserEmail do
     |> subject("Confirm your account")
     |> assign(:body, "Confirm your email here #{confirm_url}")
     |> render("email/default.html")
-    |> Mailer.deliver_now()
+    |> Mailer.deliver_later()
   end
 
   @doc """
@@ -56,12 +56,13 @@ defmodule WebappWeb.Emails.UserEmail do
       "You requested a password reset, but no user is associated with the email you provided."
     )
     |> render("email/default.html")
-    |> Mailer.deliver_now()
+    |> Mailer.deliver_later()
   end
 
   def reset_request(address, key) do
     reset_url = Routes.password_reset_url(Endpoint, :edit, key: key)
 
+    try do
     prep_mail(address)
     |> subject("Reset your password")
     |> assign(
@@ -69,7 +70,7 @@ defmodule WebappWeb.Emails.UserEmail do
       "Reset your password at #{reset_url}"
     )
     |> render("email/default.html")
-    |> Mailer.deliver_now()
+    |> Mailer.deliver_later()
   end
 
   @doc """
@@ -80,7 +81,7 @@ defmodule WebappWeb.Emails.UserEmail do
     |> subject("Confirmed account")
     |> assign(:body, "Your account has been confirmed.")
     |> render("email/default.html")
-    |> Mailer.deliver_now()
+    |> Mailer.deliver_later()
   end
 
   @doc """
@@ -91,13 +92,13 @@ defmodule WebappWeb.Emails.UserEmail do
     |> subject("Password reset")
     |> assign(:body, "Your password has been reset.")
     |> render("email/default.html")
-    |> Mailer.deliver_now()
+    |> Mailer.deliver_later()
   end
 
   defp prep_mail(address) do
     new_email()
     |> to(address)
-    |> from("admin@example.com")
+    |> from("noreply-runhyve@panic.pl")
     |> put_html_layout({WebappWeb.LayoutView, "email.html"})
   end
 end
