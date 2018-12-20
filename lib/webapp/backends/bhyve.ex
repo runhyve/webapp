@@ -6,6 +6,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   alias Webapp.Repo
 
   alias Webapp.{
+    Machines,
     Machines.Machine,
     Networks.Network
   }
@@ -67,7 +68,7 @@ defmodule Webapp.Hypervisors.Bhyve do
 
     # TODO: machine name should be prefixed with owner namespace.
     payload = %{
-      "name" => machine.uuid,
+      "name" => Machines.get_machine_hid(machine),
       "template" => template,
       "image" => image,
       # TODO: replace to network.uuid
@@ -96,7 +97,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   def delete_machine(_repo, %{machine: machine}) do
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/destroy"
     token = machine.hypervisor.webhook_token
-    payload = %{name: machine.uuid}
+    payload = %{name: Machines.get_machine_hid(machine)}
 
     try do
       case webhook_trigger(token, endpoint, payload) do
@@ -114,7 +115,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   def update_machine_status(_repo, %{machine: machine}) do
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/status"
     token = machine.hypervisor.webhook_token
-    payload = %{name: machine.uuid}
+    payload = %{name: Machines.get_machine_hid(machine)}
 
     try do
       # TODO: Map statuses to unified format.
@@ -136,7 +137,7 @@ defmodule Webapp.Hypervisors.Bhyve do
 
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/add-network"
     token = machine.hypervisor.webhook_token
-    payload = %{machine: machine.uuid, network: network.name}
+    payload = %{machine: Machines.get_machine_hid(machine), network: network.name}
 
     try do
       webhook_trigger(token, endpoint, payload)
@@ -151,7 +152,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   def start_machine(%{machine: machine}) do
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/start"
     token = machine.hypervisor.webhook_token
-    payload = %{name: machine.uuid}
+    payload = %{name: Machines.get_machine_hid(machine)}
 
     try do
       webhook_trigger(token, endpoint, payload)
@@ -166,7 +167,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   def stop_machine(%{machine: machine}) do
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/stop"
     token = machine.hypervisor.webhook_token
-    payload = %{name: machine.uuid}
+    payload = %{name: Machines.get_machine_hid(machine)}
 
     try do
       webhook_trigger(token, endpoint, payload)
@@ -181,7 +182,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   def poweroff_machine(%{machine: machine}) do
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/poweroff"
     token = machine.hypervisor.webhook_token
-    payload = %{name: machine.uuid}
+    payload = %{name: Machines.get_machine_hid(machine)}
 
     try do
       webhook_trigger(token, endpoint, payload)
@@ -196,7 +197,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   def console_machine(%{machine: machine}) do
     endpoint = machine.hypervisor.webhook_endpoint <> "/vm/console"
     token = machine.hypervisor.webhook_token
-    payload = %{name: machine.uuid}
+    payload = %{name: Machines.get_machine_hid(machine)}
 
     try do
       webhook_trigger(token, endpoint, payload)

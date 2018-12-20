@@ -38,7 +38,7 @@ defmodule Webapp.Machines.Machine do
     machine
     |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id, :team_id])
     |> validate_required([:name, :template, :hypervisor_id, :plan_id, :team_id])
-    |> unique_constraint(:name)
+    |> unique_constraint(:name, name: :machines_name_team_id_index)
     |> assoc_constraint(:hypervisor)
     |> assoc_constraint(:plan)
     |> assoc_constraint(:team)
@@ -54,7 +54,7 @@ defmodule Webapp.Machines.Machine do
     machine
     |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id, :team_id])
     |> validate_required([:name, :template, :hypervisor_id, :plan_id, :team_id])
-    |> unique_constraint(:name)
+    |> unique_constraint(:name, name: :machines_name_team_id_index)
     |> put_change(:uuid, uuid)
     |> unique_constraint(:uuid)
     |> assoc_constraint(:hypervisor)

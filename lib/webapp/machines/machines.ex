@@ -19,7 +19,7 @@ defmodule Webapp.Machines do
   }
 
   # Number of seconds after the create action is considered as failed.
-  @create_timeout 180
+  @create_timeout 300
 
   @doc """
   Returns the list of machines.
@@ -68,6 +68,14 @@ defmodule Webapp.Machines do
   def get_machine!(id, preloads \\ [:hypervisor, :plan]) do
     Repo.get!(Machine, id)
     |> Repo.preload(preloads)
+  end
+
+  @doc """
+  Returns unique id for hypervisor.
+  """
+  def get_machine_hid(%Machine{} = machine) do
+    # TODO: replace to machine.uuid once bhyve will support more than 31 characters.
+    "#{machine.team_id}_#{machine.name}"
   end
 
   @doc """
