@@ -62,7 +62,6 @@ defmodule WebappWeb.Emails.UserEmail do
   def reset_request(address, key) do
     reset_url = Routes.password_reset_url(Endpoint, :edit, key: key)
 
-    try do
     prep_mail(address)
     |> subject("Reset your password")
     |> assign(

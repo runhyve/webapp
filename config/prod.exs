@@ -80,11 +80,9 @@ config :webapp, Webapp.Repo,
 
 config :webapp, Webapp.Mailer,
        adapter: Bamboo.SMTPAdapter,
-       port: 465,
-       server: "mail.panic.pl",
-       hostname: "panic.pl",
-       username: System.get_env("MAILER_USERNAME"),
-       password: System.get_env("MAILER_PASSWORD"),
-       tls: :always,
-       retries: 1,
-       auth: :always
+       server: System.get_env("SMTP_SERVER"),
+       port: System.get_env("SMTP_PORT"),
+       username: System.get_env("SMTP_USERNAME"),
+       password: System.get_env("SMTP_PASSWORD"),
+       ssl: true,
+       retries: 1
