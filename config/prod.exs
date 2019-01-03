@@ -79,10 +79,10 @@ config :webapp, Webapp.Repo,
   pool_size: 2
 
 config :webapp, Webapp.Mailer,
-       adapter: Bamboo.SMTPAdapter,
-       server: System.get_env("SMTP_SERVER"),
-       port: System.get_env("SMTP_PORT"),
-       username: System.get_env("SMTP_USERNAME"),
-       password: System.get_env("SMTP_PASSWORD"),
-       ssl: true,
-       retries: 1
+  adapter: Bamboo.SMTPAdapter,
+  server: System.get_env("SMTP_SERVER"),
+  port: System.get_env("SMTP_PORT"),
+  username: System.get_env("SMTP_USERNAME"),
+  password: System.get_env("SMTP_PASSWORD"),
+  ssl: true,
+  retries: 1

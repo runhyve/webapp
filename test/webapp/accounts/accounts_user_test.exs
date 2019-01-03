@@ -68,6 +68,7 @@ defmodule Webapp.AccountsUserTest do
 
     test "register_user/1 returns error if team already exists" do
       user = fixture(:user)
+
       new_user = %{
         user_email: "fred1@example.com",
         user_password: "reallyHard2gue$$",

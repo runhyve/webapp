@@ -3,13 +3,13 @@ defmodule Webapp.Repo.Migrations.CreateTeams do
 
   def change do
     create table(:teams) do
-      add(:name, :citext)
-      add(:namespace, :citext)
+      add(:name, :string)
+      add(:namespace, :string)
 
       timestamps()
     end
 
-    create(unique_index(:teams, [:name]))
-    create(unique_index(:teams, [:namespace]))
+    create(unique_index(:teams, ["lower(name)"], name: :teams_name_index))
+    create(unique_index(:teams, ["lower(namespace)"], name: :teams_namespace_index))
   end
 end

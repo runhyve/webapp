@@ -7,9 +7,16 @@ defmodule WebappWeb.ViewHelpers do
 
   def team_path(
         helper,
-        %Plug.Conn{assigns: %{current_team: %Team{} = team}} = conn,
+        conn,
         action,
         opts \\ []
+      )
+
+  def team_path(
+        helper,
+        %Plug.Conn{assigns: %{current_team: %Team{} = team}} = conn,
+        action,
+        opts
       ) do
     path = apply(Routes, helper, [conn, action, opts])
     "/" <> team.namespace <> path

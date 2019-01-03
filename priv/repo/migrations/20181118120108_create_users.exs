@@ -10,7 +10,7 @@ defmodule Webapp.Repo.Migrations.CreateUsers do
     """)
 
     create table(:users) do
-      add(:email, :citext)
+      add(:email, :string)
       add(:name, :string)
       add(:password_hash, :string)
       add(:confirmed_at, :utc_datetime)
@@ -21,6 +21,6 @@ defmodule Webapp.Repo.Migrations.CreateUsers do
       timestamps()
     end
 
-    create(unique_index(:users, [:email]))
+    create(unique_index(:users, ["lower(email)"], name: :users_email_index))
   end
 end
