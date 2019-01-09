@@ -7,9 +7,9 @@ RUN mix archive.install https://github.com/phoenixframework/archives/raw/master/
 
 RUN apt-get update && apt-get install -y -q inotify-tools curl software-properties-common && curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt install -y nodejs && node -v && npm -v
 
-RUN mkdir -p /usr/locla/runhyve/webapp
-ADD . /usr/locla/runhyve/webapp
-WORKDIR /usr/locla/runhyve/webapp
-RUN mix deps.get && mix compile && cd assets && \
-    npm install && webpack --mode production && \
-    cd .. && mix phx.digest
+RUN mkdir -p /usr/local/runhyve/webapp
+ADD . /usr/local/runhyve/webapp
+WORKDIR /usr/local/runhyve/webapp/assets
+RUN npm install && webpack --mode production
+WORKDIR /usr/local/runhyve/webapp
+RUN mix deps.get && mix compile && mix phx.digest
