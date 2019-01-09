@@ -33,11 +33,18 @@ test:
 build_docker_image:
   stage: build
   image: docker:latest
+  variables:
+    DOCKER_HOST: tcpd://docker:2375/
+    DOCKER_DRIVER: overlay2
+    REGISTRY_PATH: registry.gitlab.com/runhyve/webapp
+    IMAGE_TAG: "$REGISTRY_PATH:$CI_COMMIT_REF_NAME"
+  services:
+  - docker:dind
   before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY_PATH
   script:
-  - docker build -t registry.gitlab.com/runhyve/webapp:$CI_COMMIT_REF_NAME .
-  - docker push registry.gitlab.com/runhyve/webapp:$CI_COMMIT_REF_NAME .
+  - docker build -t $IMAGE_TAG .
+  - docker push $IMAGE_TAG .
 
 deploy_demo:
   stage: deploy
