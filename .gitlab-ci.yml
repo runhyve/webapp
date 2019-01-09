@@ -1,5 +1,6 @@
 stages:
   - test
+  - build
   - deploy
 
 test:
@@ -29,6 +30,15 @@ test:
     - mix coveralls
     - mix credo suggest --mute-exit-status
 
+build_docker_image:
+  stage: build
+  image: docker:latest
+  before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  script:
+  - docker build -t registry.gitlab.com/runhyve/webapp:$CI_COMMIT_REF_NAME .
+  - docker push registry.gitlab.com/runhyve/webapp:$CI_COMMIT_REF_NAME .
+
 deploy_demo:
   stage: deploy
   image: ubuntu:18.04
@@ -47,3 +57,4 @@ deploy_demo:
     - apt-get update && apt-get install -y git
     - git remote add gigalixir https://$GIGALIXIR_EMAIL:$GIGALIXIR_API_KEY@git.gigalixir.com/$GIGALIXIR_APP_NAME.git
     - git push -f gigalixir HEAD:refs/heads/master
+
