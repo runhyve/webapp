@@ -43,7 +43,7 @@ build_docker_image:
   before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY_PATH
   script:
-  - docker build -t $IMAGE_TAG .
+  - docker build -t $IMAGE_TAG --build-arg $SECRET_KEY_BASE -f Dockerfile.prod .
   - docker push $IMAGE_TAG
 
 deploy_demo:
