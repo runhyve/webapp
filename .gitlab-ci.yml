@@ -65,3 +65,17 @@ deploy_demo:
     - git remote add gigalixir https://$GIGALIXIR_EMAIL:$GIGALIXIR_API_KEY@git.gigalixir.com/$GIGALIXIR_APP_NAME.git
     - git push -f gigalixir HEAD:refs/heads/master
 
+deploy-production:
+  image: ubuntu:18.04
+  stage: deploy
+  environment: 
+    name: production
+    url: https://panel.vps.serveraptor.com
+  only:
+  - master
+  script:
+  - mkdir -p ~/.ssh
+  - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+  - echo "$MASTER_DEPLOYMENT_IDENTITY" > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - ssh -i ~/.ssh/id_rsa webapp@panel.vps.serveraptor.com ./deploy_webapp.sh
