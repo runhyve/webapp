@@ -10,4 +10,6 @@ RUN apt-get update && apt-get install -y -q inotify-tools curl software-properti
 RUN mkdir -p /usr/locla/runhyve/webapp
 ADD . /usr/locla/runhyve/webapp
 WORKDIR /usr/locla/runhyve/webapp
-RUN mix deps.get && cd assets && npm install && cd ..
+RUN mix deps.get && mix compile && cd assets && \
+    npm install && webpack --mode production && \
+    cd .. && mix phx.digest
