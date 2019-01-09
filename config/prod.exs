@@ -74,7 +74,7 @@ config :logger, level: :info
 config :webapp, Webapp.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: System.get_env("DATABASE_URL"),
-  ssl: true,
+  ssl: System.get_env("DATABASE_SSL") || true,
   # Free tier db only allows 4 connections. Rolling deploys need pool_size*(n+1) connections.
   pool_size: 2
 
