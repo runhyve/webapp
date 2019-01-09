@@ -44,7 +44,7 @@ build_docker_image:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY_PATH
   script:
   - docker build -t $IMAGE_TAG .
-  - docker push $IMAGE_TAG .
+  - docker push $IMAGE_TAG
 
 deploy_demo:
   stage: deploy
