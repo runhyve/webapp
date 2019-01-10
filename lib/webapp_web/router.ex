@@ -7,6 +7,14 @@ defmodule WebappWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+  end
+
+  pipeline :browser_auth do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_flash
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
     plug WebappWeb.Authenticate
     plug Phauxth.Remember, create_session_func: &WebappWeb.Accounts.Utils.create_session/1
     plug WebappWeb.TeamContext
@@ -18,6 +26,12 @@ defmodule WebappWeb.Router do
 
   scope "/", WebappWeb do
     pipe_through :browser
+
+    get "/health", PageController, :health
+  end
+  
+  scope "/", WebappWeb do
+    pipe_through :browser_auth
 
     get "/", PageController, :index
 

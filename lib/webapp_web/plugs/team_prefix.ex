@@ -6,7 +6,7 @@ defmodule WebappWeb.TeamPrefix do
   alias Webapp.{Accounts, Accounts.Team}
   alias Plug.Conn
 
-  @restricted_namespaces ~w(dev admin hypervisors machines plans users user teams sessions)
+  @restricted_namespaces ~w(health dev admin hypervisors machines plans users user teams sessions)
 
   def init(opts), do: opts
 

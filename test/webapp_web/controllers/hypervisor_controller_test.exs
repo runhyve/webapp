@@ -5,7 +5,6 @@ defmodule WebappWeb.HypervisorControllerTest do
   alias Webapp.Hypervisors
 
   @create_attrs %{
-    ip_address: "127.0.0.1",
     name: "some name",
     hypervisor_type_id: 0,
     fqdn: "http://127.0.0.1.xip.io:9090",
@@ -13,7 +12,6 @@ defmodule WebappWeb.HypervisorControllerTest do
     webhook_token: "123qweASD"
   }
   @update_attrs %{
-    ip_address: "127.0.0.1",
     name: "some updated name",
     fqdn: "http://127.0.0.1:9090",
     tls: true
