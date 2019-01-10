@@ -2,11 +2,11 @@ defmodule WebappWeb.MachineView do
   use WebappWeb, :view
 
   import Webapp.Machines, only: [machine_can_do?: 2]
+  import Webapp.Hypervisors, only: [get_hypervisor_url: 3]
 
   def hypervisors_select_options(hypervisors) do
     for hypervisor <- hypervisors do
-      label = "#{hypervisor.name} (#{hypervisor.ip_address})"
-      {label, hypervisor.id}
+      {hypervisor.name, hypervisor.id}
     end
   end
 
