@@ -17,15 +17,15 @@
     </li>
 
     <li>
-      <strong>IP address:</strong>
-      <%= @hypervisor.ip_address %>
+      <strong>FQDN:</strong>
+      <%= @hypervisor.fqdn %>
     </li>
 
     <li>
-      <strong>Webhook endpoint:</strong>
-      <%= @hypervisor.webhook_endpoint %>
+      <strong>TLS:</strong>
+      <%= @hypervisor.tls %>
     </li>
-
+    
     <li>
       <strong>Type:</strong>
       <%= @hypervisor.hypervisor_type.name %>
@@ -42,8 +42,8 @@
 <script type="text/javascript">
 var hypervisor = {
   id: <%= @hypervisor.id %>,
-  webhook_endpoint: "<%= @hypervisor.webhook_endpoint %>",
-  metrics_endpoint: "http://netdata.<%= @hypervisor.ip_address %>.xip.io"
+  webhook_endpoint: "<%= get_hypervisor_url(@hypervisor, :webhook) %>",
+  metrics_endpoint: "<%= get_hypervisor_url(@hypervisor, :netdata) %>"
 }
 
 </script>

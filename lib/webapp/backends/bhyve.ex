@@ -6,6 +6,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   alias Webapp.Repo
 
   alias Webapp.{
+    Hypervisors,
     Machines,
     Machines.Machine,
     Networks.Network
@@ -17,7 +18,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   Checks hypervisor status.
   """
   def hypervisor_status(hypervisor) do
-    endpoint = hypervisor.webhook_endpoint <> "/vm/health"
+    endpoint = Hypervisors.get_hypervisor_url(hypervisor, :webhook) <> "/vm/health"
     token = hypervisor.webhook_token
 
     try do
@@ -78,7 +79,7 @@ defmodule Webapp.Hypervisors.Bhyve do
       "disk" => "#{machine.plan.storage}G"
     }
 
-    endpoint = machine.hypervisor.webhook_endpoint <> "/vm/create"
+    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/create"
     token = machine.hypervisor.webhook_token
 
     try do
@@ -95,7 +96,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   Deletes a machine on bhyve hypervisor.
   """
   def delete_machine(_repo, %{machine: machine}) do
-    endpoint = machine.hypervisor.webhook_endpoint <> "/vm/destroy"
+    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/destroy"
     token = machine.hypervisor.webhook_token
     payload = %{name: Machines.get_machine_hid(machine)}
 
@@ -113,7 +114,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   Updates a machine status.
   """
   def update_machine_status(_repo, %{machine: machine}) do
-    endpoint = machine.hypervisor.webhook_endpoint <> "/vm/status"
+    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/status"
     token = machine.hypervisor.webhook_token
     payload = %{name: Machines.get_machine_hid(machine)}
 
@@ -135,7 +136,7 @@ defmodule Webapp.Hypervisors.Bhyve do
     # Since we are adding network to machine, last one is the new one.
     [network] = tl(machine.networks)
 
-    endpoint = machine.hypervisor.webhook_endpoint <> "/vm/add-network"
+    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/add-network"
     token = machine.hypervisor.webhook_token
     payload = %{machine: Machines.get_machine_hid(machine), network: network.name}
 
@@ -150,7 +151,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   Starts a machine.
   """
   def start_machine(%{machine: machine}) do
-    endpoint = machine.hypervisor.webhook_endpoint <> "/vm/start"
+    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/start"
     token = machine.hypervisor.webhook_token
     payload = %{name: Machines.get_machine_hid(machine)}
 
@@ -165,7 +166,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   Stops a machine.
   """
   def stop_machine(%{machine: machine}) do
-    endpoint = machine.hypervisor.webhook_endpoint <> "/vm/stop"
+    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/stop"
     token = machine.hypervisor.webhook_token
     payload = %{name: Machines.get_machine_hid(machine)}
 
@@ -180,7 +181,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   Performs hard stop of virtual Machine.
   """
   def poweroff_machine(%{machine: machine}) do
-    endpoint = machine.hypervisor.webhook_endpoint <> "/vm/poweroff"
+    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/poweroff"
     token = machine.hypervisor.webhook_token
     payload = %{name: Machines.get_machine_hid(machine)}
 
@@ -195,7 +196,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   Opens a remote console for machine.
   """
   def console_machine(%{machine: machine}) do
-    endpoint = machine.hypervisor.webhook_endpoint <> "/vm/console"
+    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/console"
     token = machine.hypervisor.webhook_token
     payload = %{name: Machines.get_machine_hid(machine)}
 
@@ -210,7 +211,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   Checks a job status.
   """
   def job_status(hypervisor, task_id) do
-    endpoint = hypervisor.webhook_endpoint <> "/vm/ts-get-task"
+    endpoint = Hypervisors.get_hypervisor_url(hypervisor, :webhook) <> "/vm/ts-get-task"
     token = hypervisor.webhook_token
     payload = %{taskid: task_id}
 
@@ -227,7 +228,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   def create_network(_repo, _multi_changes, %Network{} = network) do
     network = Repo.preload(network, [:hypervisor])
 
-    endpoint = network.hypervisor.webhook_endpoint <> "/vm/net-create"
+    endpoint = Hypervisors.get_hypervisor_url(network.hypervisor, :webhook) <> "/vm/net-create"
     token = network.hypervisor.webhook_token
 
     payload = %{

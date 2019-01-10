@@ -20,8 +20,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>IP address</th>
-
+      <th>FQDN</th>
       <th></th>
     </tr>
   </thead>
@@ -29,7 +28,7 @@
 <%= for hypervisor <- @hypervisors do %>
     <tr>
       <td><%= link hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, hypervisor) %></td>
-      <td><%= hypervisor.ip_address %></td>
+      <td><%= hypervisor.fqdn %></td>
 
       <td class="has-text-right">
         <%= link "Show", to: Routes.admin_hypervisor_path(@conn, :show, hypervisor), class: "button is-rounded"  %>

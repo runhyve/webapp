@@ -16,20 +16,18 @@
     </div>
 
     <div class="field">
-      <%= label f, :ip_address, class: "label" %>
+      <%= label f, "FQDN", class: "label" %>
+      <div>Fully Qualified Domain Name.</div>
       <div class="control">
-        <%= text_input f, :ip_address, class: "input" %>
+        <%= text_input f, :fqdn, class: "input" %>
       </div>
-      <%= error_tag f, :ip_address %>
+      <%= error_tag f, :fqdn %>
     </div>
 
     <div class="field">
-      <%= label f, :webhook_endpoint, class: "label" %>
-      <div>API endpoint on your hypervisor. For example <b><i>https://vm-webhook.192.168.0.235.xip.io</i></b>.</div>
-      <div class="control">
-        <%= text_input f, :webhook_endpoint, class: "input" %>
-      </div>
-      <%= error_tag f, :webhook_endpoint %>
+      <%= checkbox f, :tls, class: "checkbox" %>
+      <%= label f, "Enable TLS", class: "checkbox" %>
+      <%= error_tag f, :tls %>
     </div>
 
     <div class="field">
@@ -44,7 +42,7 @@
     <div class="field">
       <%= label f, :hypervisor_type_id, class: "label" %>
       <div class="select">
-        <%= select f, :hypervisor_type_id, hypervisor_types_select_options(@hypervisor_types), prompt: "Hypervisor type" %>
+        <%= select f, :hypervisor_type_id, hypervisor_types_select_options(@hypervisor_types) %>
       </div>
       <%= error_tag f, :hypervisor_type_id %>
     </div>

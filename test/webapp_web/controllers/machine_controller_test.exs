@@ -87,7 +87,7 @@ defmodule WebappWeb.MachineControllerTest do
         name: "standard",
         ip_address: "192.168.199.254",
         hypervisor_type_id: hypervisor_type.id,
-        webhook_endpoint: "http://127.0.0.1:9090"
+        fqdn: "http://127.0.0.1:9090"
       })
 
     # Update hypervisor_type id with correct one.

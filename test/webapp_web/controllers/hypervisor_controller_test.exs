@@ -8,15 +8,17 @@ defmodule WebappWeb.HypervisorControllerTest do
     ip_address: "127.0.0.1",
     name: "some name",
     hypervisor_type_id: 0,
-    webhook_endpoint: "http://127.0.0.1:9090",
+    fqdn: "http://127.0.0.1.xip.io:9090",
+    tls: true,
     webhook_token: "123qweASD"
   }
   @update_attrs %{
     ip_address: "127.0.0.1",
     name: "some updated name",
-    webhook_endpoint: "http://127.0.0.1:9090"
+    fqdn: "http://127.0.0.1:9090",
+    tls: true
   }
-  @invalid_attrs %{ip_address: nil, name: nil, hypervisor_type_id: nil, webhook_endpoint: nil}
+  @invalid_attrs %{ip_address: nil, name: nil, hypervisor_type_id: nil, fqdn: nil}
 
   setup do
     conn = build_conn() |> bypass_through(WebappWeb.Router, [:browser]) |> get("/")

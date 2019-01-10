@@ -277,4 +277,30 @@ defmodule Webapp.Hypervisors do
       ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
       |> String.to_atom()
   end
+
+  @doc """
+  Returns hypervisor url for different services.
+  """
+  def get_hypervisor_url(%Hypervisor{} = hypervisor) do
+    get_hypervisor_schema(hypervisor) <> hypervisor.fqdn
+  end
+
+  def get_hypervisor_url(%Hypervisor{} = hypervisor, :webhook) do
+    get_hypervisor_schema(hypervisor) <> "vm-webhook." <> hypervisor.fqdn
+  end
+
+  def get_hypervisor_url(%Hypervisor{} = hypervisor, :netdata) do
+    get_hypervisor_schema(hypervisor) <> "netdata." <> hypervisor.fqdn
+  end
+
+  def get_hypervisor_url(%Hypervisor{} = hypervisor, _) do
+    get_hypervisor_schema(hypervisor) <> hypervisor.fqdn
+  end
+
+  def get_hypervisor_url(%Hypervisor{} = hypervisor, :gotty, port) do
+    get_hypervisor_schema(hypervisor) <> port <> hypervisor.fqdn
+  end
+
+  defp get_hypervisor_schema(%Hypervisor{tls: true}), do: "https://"
+  defp get_hypervisor_schema(%Hypervisor{}), do: "http://"
 end
