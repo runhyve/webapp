@@ -46,8 +46,11 @@ defmodule WebappWeb.Admin.MachineController do
         conn
       end
 
+    machines = hypervisor.machines
+               |> Webapp.Repo.preload([:networks, :hypervisor, :plan])
+
     render(conn, "index.html",
-      machines: hypervisor.machines,
+      machines: machines,
       hypervisor: hypervisor,
       status: status
     )
