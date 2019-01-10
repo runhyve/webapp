@@ -59,7 +59,7 @@ defmodule WebappWeb.Router do
   end
 
   scope "/admin", WebappWeb.Admin, as: :admin do
-    pipe_through :browser
+    pipe_through :browser_auth
 
     resources "/hypervisors", HypervisorController do
       resources "/networks", NetworkController, only: [:new, :create, :index]
