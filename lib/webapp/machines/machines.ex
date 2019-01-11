@@ -201,13 +201,19 @@ defmodule Webapp.Machines do
           NaiveDateTime.utc_now()
           |> NaiveDateTime.truncate(:second)
 
-        # TODO: created_at should be changed only when status is changed...
-        # Check changes in changeset and update created_at only when created status has changed.
-        changeset
-        |> Changeset.put_change(:last_status, status)
-        |> Changeset.put_change(:created, true)
-        |> Changeset.put_change(:created_at, now)
-        |> Repo.update()
+        changeset =
+          Changeset.put_change(changeset, :last_status, status)
+          |> Changeset.put_change(:created, true)
+          |> Changeset.put_change(:updated_at, now)
+
+        changeset =
+          if Changeset.get_change(changeset, :created, false) do
+            Changeset.put_change(changeset, :created_at, now)
+          else
+            changeset
+          end
+
+        Repo.update(changeset)
       end)
       |> Repo.transaction()
     rescue

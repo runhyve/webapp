@@ -29,7 +29,7 @@ defmodule WebappWeb.Router do
 
     get "/health", PageController, :health
   end
-  
+
   scope "/", WebappWeb do
     pipe_through :browser_auth
 
