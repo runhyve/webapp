@@ -298,7 +298,7 @@ defmodule Webapp.Hypervisors do
   end
 
   def get_hypervisor_url(%Hypervisor{} = hypervisor, :gotty, port) do
-    get_hypervisor_schema(hypervisor) <> "#{port}." <> hypervisor.fqdn
+    get_hypervisor_schema(hypervisor) <> "port#{port}." <> hypervisor.fqdn
   end
 
   defp get_hypervisor_schema(%Hypervisor{tls: true}), do: "https://"
