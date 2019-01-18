@@ -57,7 +57,7 @@
   </thead>
   <tbody>
 <%= for machine <- @machines do %>
-    <tr>
+    <tr id="machine-<%= machine.id %>">
       <td><%= link machine.name, to: team_path(:machine_path, @conn, :show, machine) %></td>
       <td>
         <div class="tags has-addons">
@@ -81,3 +81,11 @@
 <% end %>
   </tbody>
 </table>
+
+<script type="text/javascript">
+var team = {
+  id: <%= @current_team.id %>
+}
+</script>
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/team.js") %>"></script>
+

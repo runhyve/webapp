@@ -57,4 +57,11 @@ defmodule WebappWeb.MachineView do
       _ -> ""
     end
   end
+
+  def extract_ids(machines) do
+    Enum.map(machines, fn machine ->
+      machine.id
+    end)
+    |> Enum.join(",")
+  end
 end

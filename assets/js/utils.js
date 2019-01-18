@@ -41,8 +41,8 @@ export function clear_flash(key) {
  *
  * @param payload
  */
-export function update_status(payload) {
-  document.querySelectorAll('span.status').forEach((item) => {
+export function update_status(payload, context) {
+  context.querySelectorAll('span.status').forEach((item) => {
     if (item.classList.contains('status-icon')) {
       item.childNodes.item(0).className = payload.icon
     }
@@ -61,10 +61,10 @@ export function update_status(payload) {
  *
  * @param actions
  */
-export function update_actions(actions) {
+export function update_actions(actions, context) {
   for (var action in actions) {
     if (actions.hasOwnProperty(action)) {
-      document.querySelectorAll("a.action-" + action).forEach((item) => {
+      context.querySelectorAll("a.action-" + action).forEach((item) => {
         if (actions[action] === true) {
           item.parentElement.classList.remove('is-hidden')
         }

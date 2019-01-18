@@ -22,9 +22,10 @@ defmodule Webapp.Guard.MachineGuard do
   end
 
   def check_status() do
-    for machine <- Machines.list_machines do
+    for machine <- Machines.list_machines() do
       Machines.update_status(machine)
     end
+
     schedule()
   end
 end

@@ -144,5 +144,5 @@ window.setInterval(() => {
 }, 10000)
 
 channel.on("status", payload => {
-  update_status(payload)
+  update_status(payload, document)
 })

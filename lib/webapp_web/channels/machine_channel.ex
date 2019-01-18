@@ -3,7 +3,8 @@ defmodule WebappWeb.MachineChannel do
 
   alias Webapp.{
     Machines,
-    Machines.Machine
+    Machines.Machine,
+    Accounts
   }
 
   import WebappWeb.MachineView, only: [map_status_to_css: 1, status_icon: 1]
@@ -11,6 +12,17 @@ defmodule WebappWeb.MachineChannel do
   def join("machine:" <> machine_id, payload, socket) do
     if authorized?(payload) do
       socket = assign(socket, :machine_id, machine_id)
+      {:ok, socket}
+    else
+      {:error, %{reason: "unauthorized"}}
+    end
+  end
+
+  def join("team:" <> team_id, payload, socket) do
+    if authorized?(payload) do
+      team = Accounts.get_team!(team_id)
+
+      socket = assign(socket, :team, team)
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
@@ -28,22 +40,38 @@ defmodule WebappWeb.MachineChannel do
       socket.assigns[:machine_id]
       |> Machines.get_machine!()
 
-    response =
-      case Machines.update_status(machine) do
-        {:ok, %Machine{} = machine} ->
-          %{
-            success: true,
-            status_css: map_status_to_css(machine.last_status),
-            icon: status_icon(machine.last_status),
-            status: machine.last_status,
-            actions: machine_actions(machine)
-          }
-
-        {:error, message} ->
-          %{success: false, error: message, actions: machine_actions(machine)}
-      end
+    response = %{
+      id: machine.id,
+      success: true,
+      status_css: map_status_to_css(machine.last_status),
+      icon: status_icon(machine.last_status),
+      status: machine.last_status,
+      actions: machine_actions(machine)
+    }
 
     broadcast(socket, "status", response)
+    {:noreply, socket}
+  end
+
+  def handle_in("status_team", payload, socket) do
+    machines =
+      Machines.list_team_machines(socket.assigns[:team], [:hypervisor, :plan, :networks])
+      |> Enum.map(fn machine ->
+        %{
+          id: machine.id,
+          status_css: map_status_to_css(machine.last_status),
+          icon: status_icon(machine.last_status),
+          status: machine.last_status,
+          actions: machine_actions(machine)
+        }
+      end)
+
+    response = %{
+      success: true,
+      machines: machines
+    }
+
+    broadcast(socket, "status_team", response)
     {:noreply, socket}
   end
 
