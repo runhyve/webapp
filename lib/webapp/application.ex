@@ -11,9 +11,10 @@ defmodule Webapp.Application do
       # Start the Ecto repository
       Webapp.Repo,
       # Start the endpoint when the application starts
-      WebappWeb.Endpoint
+      WebappWeb.Endpoint,
       # Starts a worker by calling: Webapp.Worker.start_link(arg)
       # {Webapp.Worker, arg},
+      Webapp.GuardSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
