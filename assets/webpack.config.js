@@ -17,6 +17,7 @@ module.exports = (env, options) => ({
       './hypervisor.js': ['./js/hypervisor.js'].concat(glob.sync('./vendor/**/*.js')),
       './machine.js': ['./js/machine.js'].concat(glob.sync('./vendor/**/*.js')),
       './team.js': ['./js/team.js'].concat(glob.sync('./vendor/**/*.js')),
+      './admin.js': ['./js/admin.js'].concat(glob.sync('./vendor/**/*.js')),
   },
   output: {
     filename: '[name]',
