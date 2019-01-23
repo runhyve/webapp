@@ -1,11 +1,32 @@
 defmodule WebappWeb.MachineControllerTest do
   use WebappWeb.ConnCase
 
+  import WebappWeb.AuthCase
   alias Webapp.Hypervisors
 
   @create_attrs %{name: "some name", template: "some template"}
   @update_attrs %{name: "some updated name", template: "some updated template"}
   @invalid_attrs %{name: nil, template: nil}
+
+
+  # setup do
+  #   conn = build_conn() |> bypass_through(WebappWeb.Router, [:browser]) |> get("/")
+
+  #   user = add_user("user@example.com")
+
+  #   conn_user =
+  #     conn
+  #     |> add_session(user)
+  #     |> send_resp(:ok, "/")
+
+  #   admin = add_admin("admin@example.com")
+
+  #   conn_anon =
+  #     conn
+  #     |> send_resp(:ok, "/")
+
+  #   {:ok, conn: conn, conn_anon: conn_anon}
+  # end
 
   #  describe "index" do
   #    test "lists all machines", %{conn: conn} do

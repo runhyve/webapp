@@ -22,6 +22,7 @@ defmodule WebappWeb.ConnCase do
       alias WebappWeb.Router.Helpers, as: Routes
 
       import Webapp.TestHelpers
+      import WebappWeb.ViewHelpers
 
       # The default endpoint for testing
       @endpoint WebappWeb.Endpoint

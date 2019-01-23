@@ -16,7 +16,7 @@ defmodule WebappWeb.TeamContext do
         _opts
       ) do
     case Enum.find(user.teams, fn user_team -> team.id == user_team.id end) do
-      team ->
+      %Team{} = team ->
         member = Enum.find(user.memberships, fn membership -> membership.team_id == team.id end)
 
         conn
@@ -26,6 +26,7 @@ defmodule WebappWeb.TeamContext do
         conn
         |> put_flash(:error, "You are not authorized to view this page")
         |> redirect(to: build_path(conn.path_info))
+        |> halt()
     end
   end
 

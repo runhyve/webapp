@@ -20,7 +20,7 @@ defmodule WebappWeb.AuthCase do
       team_namespace: "team_" <> name
     }
 
-    {:ok, %{user: user}} = Accounts.register_user(user)
+    {:ok, %{user: user, team: team}} = Accounts.register_user(user)
     user
   end
 
