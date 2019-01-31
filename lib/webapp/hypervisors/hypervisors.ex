@@ -139,6 +139,7 @@ defmodule Webapp.Hypervisors do
   def list_hypervisor_networks(hypervisor, preloads \\ []) do
     hypervisor
     |> Ecto.assoc(:networks)
+    |> order_by(asc: :name)
     |> Repo.all()
     |> Repo.preload(preloads)
   end
