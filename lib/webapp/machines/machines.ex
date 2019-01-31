@@ -31,7 +31,9 @@ defmodule Webapp.Machines do
 
   """
   def list_machines(preloads \\ [:hypervisor, :plan]) do
-    Repo.all(Machine)
+    Machine
+    |> order_by(asc: :name)
+    |> Repo.all
     |> Repo.preload(preloads)
   end
 
@@ -47,6 +49,7 @@ defmodule Webapp.Machines do
   def list_team_machines(%Team{} = team, preloads \\ [:hypervisor, :plan]) do
     team
     |> Ecto.assoc(:machines)
+    |> order_by(asc: :name)
     |> Repo.all()
     |> Repo.preload(preloads)
   end
