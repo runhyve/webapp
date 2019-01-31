@@ -12,7 +12,7 @@
         <div class="container">
           <div class="navbar-brand">
             <a class="navbar-item" href="/">
-               Runhyve
+               <img src="/images/runhyve-logo.svg">
             </a>
 
             <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -24,8 +24,6 @@
 
           <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-              <%= link "Home", to: team_path(:page_path, @conn, :index), class: "navbar-item" %>
-
               <%= if @current_user do %>
                 <%= link "My Machines", to: team_path(:machine_path, @conn, :index), class: "navbar-item" %>
 
@@ -117,9 +115,9 @@
     <footer class="footer">
       <div class="content has-text-centered">
         <p>
-          <strong>Runhyve</strong> made with <i class="has-text-danger fa fa-heart"></i> in Poland.
+          Powered by <strong><a href="https://runhyve.app">Runhyve</a></strong> <%= version() %>.<br />
+          Made with <i class="has-text-danger fa fa-heart"></i> in Poland.
         </p>
-        <p><%= version() %></p>
       </div>
     </footer>
 

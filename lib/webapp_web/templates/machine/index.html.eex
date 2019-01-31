@@ -43,7 +43,6 @@
     <% end %>
   </div>
 </div>
-
 <table class="table container">
   <thead>
     <tr>
@@ -76,9 +75,17 @@
       </ul></td>
     </tr>
 <% end %>
-<%= if Enum.empty?(@machines) do %>
+<%= if Enum.empty?(@hypervisors) do %>
+    <%= if @current_user.role == "Administrator" do %>
+      <tr><td colspan="3">No hypervisors available. You should <%= link "add one", to: Routes.admin_hypervisor_path(@conn, :new) %> first</td></tr>
+    <%= else %>
+      <tr><td colspan="3">No hypervisors available. Administrator should add one first.</td></tr>
+    <%= end %>
+<%= else %>
+  <%= if Enum.empty?(@machines) do %>
     <tr><td colspan="3">Empty here, add a machine...</td></tr>
-<% end %>
+  <% end %>
+<%= end %>
   </tbody>
 </table>
 

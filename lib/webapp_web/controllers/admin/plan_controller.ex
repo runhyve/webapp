@@ -23,7 +23,7 @@ defmodule WebappWeb.Admin.PlanController do
     case Plans.create_plan(plan_params) do
       {:ok, plan} ->
         conn
-        |> put_flash(:info, "Plan created successfully.")
+        |> put_flash(:info, "Plan #{plan.name} saved.")
         |> redirect(to: Routes.admin_plan_path(conn, :show, plan))
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -48,7 +48,7 @@ defmodule WebappWeb.Admin.PlanController do
     case Plans.update_plan(plan, plan_params) do
       {:ok, plan} ->
         conn
-        |> put_flash(:info, "Plan updated successfully.")
+        |> put_flash(:info, "Plan #{plan.name} saved.")
         |> redirect(to: Routes.admin_plan_path(conn, :show, plan))
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -61,7 +61,7 @@ defmodule WebappWeb.Admin.PlanController do
     {:ok, _plan} = Plans.delete_plan(plan)
 
     conn
-    |> put_flash(:info, "Plan deleted successfully.")
+    |> put_flash(:info, "Plan #{plan.name} deleted.")
     |> redirect(to: Routes.admin_plan_path(conn, :index))
   end
 end

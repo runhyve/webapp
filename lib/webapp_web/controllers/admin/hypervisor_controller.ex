@@ -33,7 +33,7 @@ defmodule WebappWeb.Admin.HypervisorController do
     case Hypervisors.create_hypervisor(hypervisor_params) do
       {:ok, %{hypervisor: hypervisor}} ->
         conn
-        |> put_flash(:info, "Hypervisor created successfully.")
+        |> put_flash(:info, "Added hypervisor #{hypervisor.name}.")
         |> redirect(to: Routes.admin_hypervisor_path(conn, :show, hypervisor))
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -62,7 +62,7 @@ defmodule WebappWeb.Admin.HypervisorController do
 
     conn =
       if status == "unreachable" do
-        put_flash(conn, :error, "Failed to fetch hypervisor status")
+        put_flash(conn, :error, "Hypervisor #{hypervisor.name} unreachable.")
       else
         conn
       end
@@ -82,7 +82,7 @@ defmodule WebappWeb.Admin.HypervisorController do
     case Hypervisors.update_hypervisor(hypervisor, hypervisor_params) do
       {:ok, hypervisor} ->
         conn
-        |> put_flash(:info, "Hypervisor updated successfully.")
+        |> put_flash(:info, "Hypervisor #{hypervisor.name} updated.")
         |> redirect(to: Routes.admin_hypervisor_path(conn, :show, hypervisor))
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -98,7 +98,7 @@ defmodule WebappWeb.Admin.HypervisorController do
         {:ok, _hypervisor} = Hypervisors.delete_hypervisor(hypervisor)
 
         conn
-        |> put_flash(:info, "Hypervisor deleted successfully.")
+        |> put_flash(:info, "Hypervisor #{hypervisor.name} deleted.")
         |> redirect(to: Routes.admin_hypervisor_path(conn, :index))
 
       _ ->

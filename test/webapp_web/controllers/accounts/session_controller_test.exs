@@ -2,6 +2,7 @@ defmodule WebappWeb.SessionControllerTest do
   use WebappWeb.ConnCase
 
   import WebappWeb.AuthCase
+  import WebappWeb.ViewHelpers, only: [team_path: 3, team_path: 4]
 
   @create_attrs %{
     email: "robin@example.com",
@@ -39,7 +40,7 @@ defmodule WebappWeb.SessionControllerTest do
   describe "create session" do
     test "login succeeds", %{conn: conn} do
       conn = post(conn, Routes.session_path(conn, :create), session: @create_attrs)
-      assert redirected_to(conn) == Routes.page_path(conn, :index)
+      assert redirected_to(conn) == team_path(:machine_path, conn, :index)
     end
 
     test "login fails for user that is not yet confirmed", %{conn: conn} do
