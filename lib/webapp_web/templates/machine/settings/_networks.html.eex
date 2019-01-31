@@ -18,11 +18,12 @@
 
       <div class="field">
         <div class="control">
-          <%= submit "Add network to machine", class: "button is-rounded is-primary" %>
+          <%= submit "Connect", class: "button is-rounded is-primary" %>
+          <span><%= link "Create New Network", to: Routes.admin_hypervisor_network_path(@conn, :new, @machine.hypervisor), class: "button is-rounded is-primary" %></span>
         </div>
       </div>
     <% end %>
   <% else %>
-    <div class="notification">There is no other network available... Add Network first!</div>
+    <div class="notification">No networks available... Add a network first!</div>
   <% end %>
 </div>

@@ -1,8 +1,8 @@
 <section class="hero is-medium">
   <div class="hero-body">
-    <div class="container">
+    <div class="container" align="center">
       <h1 class="title">
-        Runhyve
+        <img src="./images/runhyve-logo-square.svg"/>
       </h1>
       <h2 class="subtitle">
         The Virtual Machines Manager for Bhyve

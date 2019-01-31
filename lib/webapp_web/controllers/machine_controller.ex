@@ -76,7 +76,6 @@ defmodule WebappWeb.MachineController do
     case Machines.create_machine(machine_params) do
       {:ok, %{machine: machine}} ->
         conn
-        |> put_flash(:info, "Machine created successfully.")
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -96,7 +95,7 @@ defmodule WebappWeb.MachineController do
 
       {:error, :hypervisor_not_found, %Ecto.Changeset{} = changeset} ->
         conn
-        |> put_flash(:error, "Machine was not created successfully.")
+        |> put_flash(:error, "Couldn't spawn new machine.")
         |> render("new.html", changeset: changeset)
     end
   end
@@ -131,19 +130,19 @@ defmodule WebappWeb.MachineController do
     case Machines.add_network_to_machine(machine, network) do
       {:ok, %{machine: machine}} ->
         conn
-        |> put_flash(:info, "Network added to Machine successfully.")
+        |> put_flash(:info, "Machine #{machine.name} is now connected to network #{network.name}")
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       # Errors from changeset should be displayed!
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
-        |> put_flash(:error, "Network was not added to Machine successfully.")
+        |> put_flash(:error, "Couldn't connect machine #{machine.name} to network #{network.name}")
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       # Errors from changeset should be displayed!
       {:error, :machine, %Ecto.Changeset{} = changeset, _} ->
         conn
-        |> put_flash(:error, "Network was not added to Machine successfully.")
+        |> put_flash(:error, "Couldn't connect machine #{machine.name} to network #{network.name}")
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, :hypervisor, error, _} ->
@@ -153,7 +152,7 @@ defmodule WebappWeb.MachineController do
 
       {:error, :hypervisor_not_found} ->
         conn
-        |> put_flash(:error, "Machine was not created successfully.")
+        |> put_flash(:error, "Couldn't create virtual machine")
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
     end
   end
@@ -173,7 +172,7 @@ defmodule WebappWeb.MachineController do
     case Machines.delete_machine(machine) do
       {:ok, _machine} ->
         conn
-        |> put_flash(:info, "Machine deleted successfully.")
+        |> put_flash(:info, "Machine #{machine.name} has been deleted")
         |> redirect(to: team_path(:machine_path, conn, :index))
 
       {:error, :hypervisor, error, changes} ->
@@ -183,7 +182,7 @@ defmodule WebappWeb.MachineController do
 
       {:error, :hypervisor_not_found, %Ecto.Changeset{} = changeset} ->
         conn
-        |> put_flash(:error, "Machine was not deleted successfully.")
+        |> put_flash(:error, "Coulnd't delete machine #{machine.name}")
         |> redirect(to: team_path(:machine_path, conn, :index))
     end
   end
@@ -194,7 +193,7 @@ defmodule WebappWeb.MachineController do
     case Machines.start_machine(machine) do
       {:ok, _} ->
         conn
-        |> put_flash(:info, "Machine is starting")
+        |> put_flash(:info, "Machine #{machine.name} is being started")
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, error} ->
@@ -210,7 +209,7 @@ defmodule WebappWeb.MachineController do
     case Machines.stop_machine(machine) do
       {:ok, _} ->
         conn
-        |> put_flash(:info, "Machine is stopping")
+        |> put_flash(:info, "Machine #{machine.name} is being stopped")
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, error} ->
@@ -226,7 +225,7 @@ defmodule WebappWeb.MachineController do
     case Machines.poweroff_machine(machine) do
       {:ok, _} ->
         conn
-        |> put_flash(:info, "Machine is being powered off")
+        |> put_flash(:info, "Machine #{machine.name} is being powered off")
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, error} ->

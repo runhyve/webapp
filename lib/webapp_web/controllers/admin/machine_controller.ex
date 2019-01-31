@@ -41,7 +41,7 @@ defmodule WebappWeb.Admin.MachineController do
 
     conn =
       if status == "unreachable" do
-        put_flash(conn, :error, "Failed to fetch hypervisor status")
+        put_flash(conn, :error, "Hypervisor #{hypervisor.name} unreachable.")
       else
         conn
       end

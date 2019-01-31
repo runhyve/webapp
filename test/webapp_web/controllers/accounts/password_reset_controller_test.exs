@@ -2,6 +2,7 @@ defmodule WebappWeb.PasswordResetControllerTest do
   use WebappWeb.ConnCase
 
   import WebappWeb.AuthCase
+  import WebappWeb.ViewHelpers, only: [team_path: 3, team_path: 4]
 
   @update_attrs %{email: "gladys@example.com", password: "^hEsdg*F899", name: "gladys"}
 
@@ -37,7 +38,7 @@ defmodule WebappWeb.PasswordResetControllerTest do
       assert reset_conn.private.phoenix_flash["info"] =~ "password has been reset"
       assert redirected_to(reset_conn) == Routes.session_path(conn, :new)
       conn = post(conn, Routes.session_path(conn, :create), session: @update_attrs)
-      assert redirected_to(conn) == Routes.page_path(conn, :index)
+      assert redirected_to(conn) == team_path(:machine_path, conn, :index)
     end
 
     test "reset password fails for incorrect key", %{conn: conn} do

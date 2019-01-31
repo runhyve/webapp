@@ -14,11 +14,7 @@
     <div class="settings-item">
       <div class="level">
         <div class="level-left">
-          <h3>Add new network to machine</h3>
-        </div>
-
-        <div class="level-right">
-          <span><%= link "Add Network", to: Routes.admin_hypervisor_network_path(@conn, :new, @machine.hypervisor), class: "button is-rounded is-primary" %></span>
+          <h3>Connect machine to networks</h3>
         </div>
       </div>
       <%= render "settings/_networks.html", Map.put(assigns, :other_networks, @networks -- @machine.networks) %>
@@ -38,7 +34,7 @@
     </div>
 
     <div class="box">
-       <div class="notification is-danger">This operation cannot be undone. Would you like to proceed?</div>
+       <div class="notification is-danger">This operation cannot be reverted. Would you like to proceed?</div>
        <%= link "Delete", to: team_path(:machine_path, @conn, :delete, @machine), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger"  %>
     </div>
 

@@ -2,6 +2,7 @@ defmodule WebappWeb.SessionController do
   use WebappWeb, :controller
 
   import WebappWeb.Authorize
+  import WebappWeb.ViewHelpers, only: [team_path: 3, team_path: 4]
 
   alias Phauxth.Remember
 
@@ -25,8 +26,7 @@ defmodule WebappWeb.SessionController do
       {:ok, user} ->
         conn
         |> add_session(user, params)
-        |> put_flash(:info, "User successfully logged in.")
-        |> redirect(to: get_session(conn, :request_path) || Routes.page_path(conn, :index))
+        |> redirect(to: get_session(conn, :request_path) || team_path(:machine_path, conn, :index))
 
       {:error, message} ->
         conn
@@ -41,7 +41,7 @@ defmodule WebappWeb.SessionController do
         conn
         |> delete_session(:phauxth_session_id)
         |> Remember.delete_rem_cookie()
-        |> put_flash(:info, "User successfully logged out.")
+        |> put_flash(:info, "You have been logged out")
         |> redirect(to: Routes.page_path(conn, :index))
 
       _ ->
