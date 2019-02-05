@@ -29,7 +29,7 @@
     <% end %>
 
     <div class="field">
-      <%= label f, :hypervisor_id, class: "label" %>
+      <%= label f, "Region", class: "label" %>
       <%= hidden_input f, :hypervisor_id, value: @hypervisor.id %>
       <div class="item">
         <%= @hypervisor.name %>
@@ -46,28 +46,90 @@
     </div>
 
     <div class="field">
-    <%= label f, :plan_id, class: "label" %>
-    <div class="select">
-      <%= select f, :plan_id, plans_select_options(@plans), prompt: "Plan" %>
-    </div>
+      <%= label f, :plan_id, class: "label" %>
+      <div class="columns is-multiline is-centered is-stretched radio-boxes">
+
+        <%= for plan <- @plans do %>
+          
+          <div class="column is-one-third">
+            <%= radio_button(f, :plan_id, plan.id, id: "plan-#{plan.id}", class: "is-hidden") %>
+
+            <label class="box" for="plan-<%= plan.id %>">
+              <span class="card-image">
+                <span class="plans <%= String.downcase(plan.name) %>" />
+              </span>
+              <span class="title is-5 has-text-centered">
+                <%= plan.name %>
+              </span>
+
+              <span class="details">
+                <span>
+                  <strong>Storage:</strong>
+                  <%= plan.storage %> GB
+                </span>
+
+                <span>
+                  <strong>Memory:</strong>
+                  <%= plan.ram %> MB
+                </span>
+
+                <span>
+                  <strong>vCPUs:</strong>
+                  <%= plan.cpu %>
+                </span>
+
+                <span>
+                  <strong>Price:</strong>
+                  $999
+                </span>
+              </span>
+            </label>
+          </div>
+
+        <% end %>
+      </div>
     <%= error_tag f, :plan_id %>
     </div>
 
     <div class="field">
       <%= label f, :template, class: "label" %>
-      <div class="select">
-        <%= select f, :template, ["freebsd": "freebsd", "ubuntu": "ubuntu"], prompt: "Template" %>
+      <div class="columns radio-boxes">
+
+        <%= for {template,name} <- ["freebsd": "FreeBSD 12.0", "ubuntu": "Ubuntu 18.04.01 LTS", "openbsd": "OpenBSD 6.4"] do %>
+          
+          <div class="column">
+            <%= radio_button(f, :template, template, id: "template-#{template}", class: "is-hidden") %>
+
+            <label class="box" for="template-<%= template %>">
+              <span class="card-image">
+                <span class="distributions <%= template %>" />
+              </span>
+              <span class="title is-5 has-text-centered">
+                <%= name %>
+              </span>
+            </label>
+          </div>
+
+        <% end %>
       </div>
+
       <%= error_tag f, :template %>
     </div>
 
-    <div class="field">
+    <%= if @current_user.role == "Administrator" do %>
+      <div class="field">
+    <% else %>
+      <div class="field is-hidden">
+    <% end %>
+
       <%= label f, :network, class: "label" %>
       <div class="select">
         <%= select f, :network_ids, networks_select_options(@networks) %>
       </div>
       <%= error_tag f, :networks %>
     </div>
+  
+
 
     <%= if @current_user.role == "Administrator" do %>
     <div class="field">
@@ -78,7 +140,7 @@
       <%= error_tag f, :team_id %>
     </div>
     <% else %>
-      <div class="field">
+      <div class="field is-hidden">
         <%= label f, :owner, class: "label" %>
         <%= hidden_input f, :team_id, value: @current_team.id %>
         <div class="item">

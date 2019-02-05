@@ -21,22 +21,13 @@
     </li>
 
     <li>
-      <strong>Hypervisor:</strong>
-      <%= link @machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, @machine.hypervisor) %>
+      <strong>Region:</strong>
+      <%= @machine.hypervisor.name %>
     </li>
 
     <li>
       <strong>Plan:</strong>
-      <%= link @machine.plan.name, to: Routes.admin_plan_path(@conn, :show, @machine.plan) %>
-    </li>
-
-    <li>
-      <strong>Networks:</strong>
-      <ul>
-        <%= for network <- @machine.networks do %>
-          <li><%= link "#{network.name} (#{network.network})", to: Routes.admin_network_path(@conn, :show, network) %></li>
-        <% end %>
-      </ul>
+      <%= @machine.plan.name %>
     </li>
   </ul>
 </div>

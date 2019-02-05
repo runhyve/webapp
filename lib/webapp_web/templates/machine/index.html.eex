@@ -34,7 +34,7 @@
         <div class="dropdown-menu" id="dropdown-menu" role="menu">
           <div class="dropdown-content">
             <%= for hypervisor <- @hypervisors do %>
-              <%= link "#{hypervisor.name} hypervisor", to: team_path(:machine_path, @conn, :new, hypervisor), class: "dropdown-item" %>
+              <%= link "#{hypervisor.name}", to: team_path(:machine_path, @conn, :new, hypervisor), class: "dropdown-item" %>
             <% end %>
           </div>
         </div>
@@ -49,9 +49,8 @@
       <th>Name</th>
       <th></th>
       <th>Template</th>
-      <th>Hypervisor</th>
+      <th>Region</th>
       <th>Plan</th>
-      <th>Networks</th>
     </tr>
   </thead>
   <tbody>
@@ -65,14 +64,9 @@
         </div>
       </td>
       <td><%= machine.template %></td>
-      <td><%= link machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, machine.hypervisor) %></td>
-      <td><%= link machine.plan.name, to: Routes.admin_plan_path(@conn, :show, machine.plan) %></td>
+      <td><%= machine.hypervisor.name %></td>
+      <td><%= machine.plan.name %></td>
 
-      <td><ul>
-        <%= for network <- machine.networks do %>
-           <li><%= link "#{network.name} (#{network.network})", to: Routes.admin_network_path(@conn, :show, network) %></li>
-        <% end %>
-      </ul></td>
     </tr>
 <% end %>
 <%= if Enum.empty?(@hypervisors) do %>

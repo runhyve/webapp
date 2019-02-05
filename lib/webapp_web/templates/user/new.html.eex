@@ -35,7 +35,7 @@
 
       <hr />
       <div class="notification">
-        Enter a name and namespace for your team even if you want to use Runhyve without other people.
+        Enter a name for your team even if you want to use Runhyve without other people.
       </div>
 
       <div class="field">
@@ -46,7 +46,7 @@
         <%= error_tag f, :team_name %>
       </div>
 
-      <div class="field">
+      <div class="field is-hidden">
         <%= label f, "Team namespace", class: "label" %>
         <div class="control">
           <%= text_input f, :team_namespace, class: "input", data_slugify: "registration[team_name]" %>

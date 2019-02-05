@@ -7,3 +7,157 @@ body {
 #main {
   flex: 1;
 }
+
+.columns.is-stretched  {
+  align-items: stretch;
+}
+
+.radio-boxes {
+  span {
+    display: block;
+  }
+
+  label {
+    display: block;  
+
+    &.box {
+      height: 100%;
+    }
+  }
+
+  input[type="radio"]:checked+label {
+    background: #D0D1CD;
+  }
+}
+
+.plans {
+  display: block;
+  background: url(../static/images/plans.png) 0 0 no-repeat;
+  width: 100px;
+  height: 100px;
+  margin: 10px auto;
+
+  width: 45px;
+  height: 31px;
+  background-position: -398px -185px;
+
+  &.compsognathus {
+    width: 45px;
+    height: 31px;
+    background-position: -398px -185px;
+  }
+
+  &.deinonychus {
+    width: 120px;
+    height: 52px;
+    background-position: -234px -165px;
+    left: 10px;
+  }
+
+  &.triceratops {
+    width: 171px;
+    height: 71px;
+    background-position: -8px -138px;
+    left: 20px;
+  }
+
+
+  &.tyrannosaurus {
+    width: 163px;
+    height: 95px;
+    background-position: -292px -33px;
+    left: 30px;
+  }
+
+  &.diplodocus {
+    width: 252px;
+    height: 108.9px;
+    background-position: -1px -6px;
+    background-size: 175%
+  }
+
+}
+
+.distributions {
+  display: block;
+  background: url(../static/images/plans.png) 0 0 no-repeat;
+  width: 100px;
+  height: 100px;
+  margin: 10px auto;
+
+  &.netbsd {
+    width: 100px;
+    height: 81px;
+    background-position: 0px -217px;
+  }
+
+  &.openbsd {
+    width: 100px;
+    height: 81px;
+    background-position: -100px -217px;
+  }
+
+  &.dragonflybsd {
+    width: 100px;
+    height: 81px;
+    background-position: -200px -217px;
+  }
+
+  &.void {
+    width: 100px;
+    height: 81px;
+    background-position: -300px -217px;
+  }
+
+  &.hardenedbsd {
+    width: 100px;
+    height: 81px;
+    background-position: -400px -217px;
+  }
+
+  &.openindiana {
+    width: 100px;
+    height: 81px;
+    background-position: -400px -298px;
+  }
+
+  &.freebsd {
+    width: 100px;
+    height: 81px;
+    background-position: 0px -298px;
+  }
+
+  &.slackware {
+    width: 100px;
+    height: 81px;
+    background-position: -100px -298px;
+  }
+
+  &.alpine {
+    width: 100px;
+    height: 81px;
+    background-position: -200px -298px;
+  }
+
+  &.minix {
+    width: 100px;
+    height: 81px;
+    background-position: -300px -298px;
+  }
+
+  &.nixos {
+    width: 100px;
+    height: 81px;
+    background-position: 0px -379px;
+  }
+  &.hurd {
+    width: 100px;
+    height: 81px;
+    background-position: -100px -379px;
+  }
+  &.ubuntu {
+    width: 100px;
+    height: 81px;
+    background-position: -200px -379px;
+  }
+}

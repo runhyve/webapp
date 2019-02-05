@@ -103,7 +103,12 @@ defmodule Webapp.Hypervisors.Bhyve do
     try do
       case webhook_trigger(token, endpoint, payload) do
         {:ok, message} -> {:ok, message}
-        {:error, error} -> {:error, error}
+        {:error, error} -> 
+          if String.match?(error, ~r/Virtual machine (.*) doesn't exist/) do
+            {:ok, error}
+          else 
+            {:error, error}
+          end
       end
     rescue
       e -> {:error, e.message}
