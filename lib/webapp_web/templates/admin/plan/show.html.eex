@@ -28,6 +28,11 @@
       <strong>Name:</strong>
       <%= @plan.name %>
     </li>
+    
+    <li>
+      <strong>Price:</strong>
+      $<%= @plan.price %>
+    </li>
 
     <li>
       <strong>Storage:</strong>

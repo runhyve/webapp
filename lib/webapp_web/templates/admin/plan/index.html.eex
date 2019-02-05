@@ -20,6 +20,7 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Price</th>
       <th>Storage</th>
       <th>Ram</th>
       <th>Cpu</th>
@@ -31,6 +32,7 @@
 <%= for plan <- @plans do %>
     <tr>
       <td><%= link plan.name, to: Routes.admin_plan_path(@conn, :show, plan) %></td>
+      <td><%= plan.price %></td>
       <td><%= plan.storage %></td>
       <td><%= plan.ram %></td>
       <td><%= plan.cpu %></td>

@@ -15,6 +15,16 @@
     </div>
 
     <div class="field">
+      <%= label f, :price, class: "label" %>
+      <div>Price (monthly)</div>
+      <div class="control">
+        <%= number_input f, :price, class: "input" %>
+      </div>
+      <%= error_tag f, :price %>
+    </div>
+
+
+    <div class="field">
       <%= label f, :storage, class: "label" %>
       <div>Storage in gigabytes.</div>
       <div class="control">

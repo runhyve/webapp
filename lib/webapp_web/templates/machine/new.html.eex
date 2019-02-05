@@ -80,7 +80,7 @@
 
                 <span>
                   <strong>Price:</strong>
-                  $999
+                  $<%= plan.price %> / mo
                 </span>
               </span>
             </label>
