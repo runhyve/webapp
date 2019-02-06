@@ -11,6 +11,10 @@ defmodule Webapp.Machines.Machine do
     Accounts.Team
   }
 
+  # Machine name max length
+  # @TODO: Change to UUID once https://github.com/churchers/vm-bhyve/issues/281 will be solved.
+  @machine_maxlen 30
+
   schema "machines" do
     field(:uuid, Ecto.UUID, autogenerate: true)
     field(:name, :string)
@@ -55,6 +59,7 @@ defmodule Webapp.Machines.Machine do
     |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id, :team_id])
     |> validate_required([:name, :template, :hypervisor_id, :plan_id, :team_id])
     |> unique_constraint(:name, name: :machines_name_team_id_index)
+    |> validate_name()
     |> put_change(:uuid, uuid)
     |> unique_constraint(:uuid)
     |> assoc_constraint(:hypervisor)
@@ -74,5 +79,19 @@ defmodule Webapp.Machines.Machine do
   def update_changeset(machine, attrs) do
     machine
     |> cast(attrs, [:last_status, :job_id])
+  end
+
+  defp validate_name(changeset) do
+    team_len =
+      Ecto.Changeset.get_change(changeset, :team_id)
+      |> Integer.to_string()
+      |> String.length()
+
+    changeset
+    # Machine name is prefixed with "TEAMID_"
+    |> validate_length(:name, max: 32 - team_len - 1)
+    |> validate_format(:name, ~r/^[a-zA-Z0-9_-]+$/,
+      message: "Namespace must only contain letters and numbers and _ -"
+    )
   end
 end

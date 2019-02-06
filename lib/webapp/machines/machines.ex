@@ -33,7 +33,7 @@ defmodule Webapp.Machines do
   def list_machines(preloads \\ [:hypervisor, :plan]) do
     Machine
     |> order_by(asc: :name)
-    |> Repo.all
+    |> Repo.all()
     |> Repo.preload(preloads)
   end
 

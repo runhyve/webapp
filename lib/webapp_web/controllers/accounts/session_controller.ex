@@ -26,7 +26,9 @@ defmodule WebappWeb.SessionController do
       {:ok, user} ->
         conn
         |> add_session(user, params)
-        |> redirect(to: get_session(conn, :request_path) || team_path(:machine_path, conn, :index))
+        |> redirect(
+          to: get_session(conn, :request_path) || team_path(:machine_path, conn, :index)
+        )
 
       {:error, message} ->
         conn

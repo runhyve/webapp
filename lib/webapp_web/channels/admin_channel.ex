@@ -24,11 +24,12 @@ defmodule WebappWeb.AdminChannel do
     {:reply, {:ok, payload}, socket}
   end
 
-
   def handle_in("status", payload, socket) do
-    machines = String.split(socket.assigns[:machines], ",")
+    machines =
+      String.split(socket.assigns[:machines], ",")
       |> Enum.map(fn id ->
         machine = Machines.get_machine!(id)
+
         %{
           id: machine.id,
           status_css: map_status_to_css(machine.last_status),

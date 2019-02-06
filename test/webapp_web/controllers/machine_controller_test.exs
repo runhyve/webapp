@@ -8,7 +8,6 @@ defmodule WebappWeb.MachineControllerTest do
   @update_attrs %{name: "some updated name", template: "some updated template"}
   @invalid_attrs %{name: nil, template: nil}
 
-
   # setup do
   #   conn = build_conn() |> bypass_through(WebappWeb.Router, [:browser]) |> get("/")
 

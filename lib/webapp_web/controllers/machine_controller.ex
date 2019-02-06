@@ -136,13 +136,19 @@ defmodule WebappWeb.MachineController do
       # Errors from changeset should be displayed!
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
-        |> put_flash(:error, "Couldn't connect machine #{machine.name} to network #{network.name}")
+        |> put_flash(
+          :error,
+          "Couldn't connect machine #{machine.name} to network #{network.name}"
+        )
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       # Errors from changeset should be displayed!
       {:error, :machine, %Ecto.Changeset{} = changeset, _} ->
         conn
-        |> put_flash(:error, "Couldn't connect machine #{machine.name} to network #{network.name}")
+        |> put_flash(
+          :error,
+          "Couldn't connect machine #{machine.name} to network #{network.name}"
+        )
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, :hypervisor, error, _} ->

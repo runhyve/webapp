@@ -5,6 +5,5 @@ defmodule Webapp.Repo.Migrations.AddPriceToPlan do
     alter table(:plans) do
       add(:price, :integer)
     end
-    
   end
 end
