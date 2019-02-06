@@ -97,7 +97,7 @@ defmodule WebappWeb.Emails.UserEmail do
   defp prep_mail(address) do
     new_email()
     |> to(address)
-    |> from("noreply-runhyve@panic.pl")
+    |> from(System.get_env("SMTP_FROM") || "noreply@runhyve.app")
     |> put_html_layout({WebappWeb.LayoutView, "email.html"})
   end
 end
