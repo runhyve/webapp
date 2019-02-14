@@ -90,8 +90,8 @@ defmodule Webapp.Machines.Machine do
     changeset
     # Machine name is prefixed with "TEAMID_"
     |> validate_length(:name, max: 32 - team_len - 1)
-    |> validate_format(:name, ~r/^[a-zA-Z0-9_-]+$/,
-      message: "Namespace must only contain letters and numbers and _ -"
+    |> validate_format(:name, ~r/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/,
+      message: "Name must only contain letters and numbers and . - "
     )
   end
 end
