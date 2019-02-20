@@ -49,7 +49,7 @@
     <tr>
       <th>Name</th>
       <th></th>
-      <th>Template</th>
+      <th>Distribution</th>
       <th>Hypervisor</th>
       <th>Plan</th>
       <th>Networks</th>
@@ -65,7 +65,7 @@
           <span class="tag status <%= map_status_to_css(machine.last_status) %>" data-status="<%= map_status_to_css(machine.last_status) %>"><%= machine.last_status %></span>
         </div>
       </td>
-      <td><%= machine.template %></td>
+      <td><%= machine.distribution.name %> <%= machine.distribution.version %></td>
       <td><%= link machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, machine.hypervisor) %></td>
       <td><%= link machine.plan.name, to: Routes.admin_plan_path(@conn, :show, machine.plan) %></td>
 

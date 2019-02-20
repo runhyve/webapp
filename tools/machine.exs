@@ -14,7 +14,7 @@ defmodule Script do
       name: :string,
       plan: :integer,
       hypervisor: :integer,
-      template: :string
+      distribution: :string
     ]
   end
 
@@ -22,7 +22,7 @@ defmodule Script do
   defp commands do
     [
       ["list", "List all available machines", ""],
-      ["add", "Add existing machine to webapp", "--name NAME --hypervisor ID --plan ID --template STRING"],
+      ["add", "Add existing machine to webapp", "--name NAME --hypervisor ID --plan ID --distribution ID"],
       ["update", "Updates machine with given fields", "--machine ID"]
     ]
   end
@@ -62,8 +62,8 @@ defmodule Script do
     unless options[:plan] do
       raise ArgumentError, message: "missing --plan"
     end
-    unless options[:template] do
-      raise ArgumentError, message: "missing --template"
+    unless options[:distribution] do
+      raise ArgumentError, message: "missing --distribution"
     end
 
     %Machine{last_status: "Creating"}
@@ -71,7 +71,7 @@ defmodule Script do
       name: options[:name],
       hypervisor_id: options[:hypervisor],
       plan_id: options[:plan],
-      template: options[:template],
+      distribution_id: options[:distribution],
       created: true
     })
     |> Repo.insert()
