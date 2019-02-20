@@ -84,80 +84,101 @@ body {
   width: 100px;
   height: 100px;
   margin: 10px auto;
+  background-position: -400px -400px;
 
-  &.netbsd {
+  &[class*="netbsd"] {
     width: 100px;
     height: 81px;
     background-position: 0px -217px;
   }
 
-  &.openbsd {
+  &[class*="openbsd"] {
     width: 100px;
     height: 81px;
     background-position: -100px -217px;
   }
 
-  &.dragonflybsd {
+  &[class*="dragonflybsd"] {
     width: 100px;
     height: 81px;
     background-position: -200px -217px;
   }
 
-  &.void {
+  &[class*="void"] {
     width: 100px;
     height: 81px;
     background-position: -300px -217px;
   }
 
-  &.hardenedbsd {
+  &[class*="hardenedbsd"] {
     width: 100px;
     height: 81px;
     background-position: -400px -217px;
   }
 
-  &.openindiana {
+  &[class*="openindiana"] {
     width: 100px;
     height: 81px;
     background-position: -400px -298px;
   }
 
-  &.freebsd {
+  &[class*="freebsd"] {
     width: 100px;
     height: 81px;
     background-position: 0px -298px;
   }
 
-  &.slackware {
+  &[class*="slackware"] {
     width: 100px;
     height: 81px;
     background-position: -100px -298px;
   }
 
-  &.alpine {
+  &[class*="alpine"] {
     width: 100px;
     height: 81px;
     background-position: -200px -298px;
   }
 
-  &.minix {
+  &[class*="minix"] {
     width: 100px;
     height: 81px;
     background-position: -300px -298px;
   }
 
-  &.nixos {
+  &[class*="nixos"] {
     width: 100px;
     height: 81px;
     background-position: 0px -379px;
   }
-  &.hurd {
+
+  &[class*="hurd"] {
     width: 100px;
     height: 81px;
     background-position: -100px -379px;
   }
-  &.ubuntu {
+
+  &[class*="ubuntu"] {
     width: 100px;
     height: 81px;
     background-position: -200px -379px;
+  }
+
+  &[class*="fedora"] {
+    width: 100px;
+    height: 84px;
+    background-position: -300px -379px;
+  }
+
+  &[class*="debian"] {
+    width: 100px;
+    height: 84px;
+    background-position: -400px -379px;
+  }
+
+  &[class*="centos"] {
+    width: 100px;
+    height: 84px;
+    background-position: 0 -460px;
   }
 }

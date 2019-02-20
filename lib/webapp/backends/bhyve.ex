@@ -9,7 +9,8 @@ defmodule Webapp.Hypervisors.Bhyve do
     Hypervisors,
     Machines,
     Machines.Machine,
-    Networks.Network
+    Networks.Network,
+    Distributions
   }
 
   @headers [{"Content-Type", "application/json"}]
@@ -45,25 +46,10 @@ defmodule Webapp.Hypervisors.Bhyve do
     """
 
     # TODO: add the template model with system and image field.
-    system = machine.template
+    distribution = Distributions.get_distribution!(machine.distribution_id)
 
-    image =
-      case machine.template do
-        "freebsd" ->
-          "FreeBSD-11.2-RELEASE-amd64.raw"
-
-        "ubuntu" ->
-          "xenial-server-cloudimg-amd64-uefi1.img"
-      end
-
-    template =
-      case machine.template do
-        "freebsd" ->
-          "freebsd"
-
-        "ubuntu" ->
-          "linux"
-      end
+    image = Distributions.get_img_name(distribution)
+    template = distribution.loader
 
     [network | _] = machine.networks
 

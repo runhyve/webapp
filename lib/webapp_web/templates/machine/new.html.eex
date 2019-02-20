@@ -92,20 +92,19 @@
     </div>
 
     <div class="field">
-      <%= label f, :template, class: "label" %>
+      <%= label f, :distribution_id, class: "label" %>
       <div class="columns radio-boxes">
+        <%= for distribution <- @distributions do %>
 
-        <%= for {template,name} <- ["freebsd": "FreeBSD 12.0", "ubuntu": "Ubuntu 18.04.01 LTS", "openbsd": "OpenBSD 6.4"] do %>
-          
           <div class="column">
-            <%= radio_button(f, :template, template, id: "template-#{template}", class: "is-hidden") %>
+            <%= radio_button(f, :distribution_id, distribution.id, id: "template-#{String.downcase(distribution.name)}-#{distribution.version}", class: "is-hidden") %>
 
-            <label class="box" for="template-<%= template %>">
+            <label class="box" for="template-<%= String.downcase(distribution.name) %>-<%= distribution.version %>">
               <span class="card-image">
-                <span class="distributions <%= template %>" />
+                <span class="distributions distributions-<%= String.downcase(distribution.name) %>" />
               </span>
               <span class="title is-5 has-text-centered">
-                <%= name %>
+                <%= distribution.name %> <%= distribution.version %>
               </span>
             </label>
           </div>
@@ -113,7 +112,7 @@
         <% end %>
       </div>
 
-      <%= error_tag f, :template %>
+      <%= error_tag f, :distribution_id %>
     </div>
 
     <%= if @current_user.role == "Administrator" do %>

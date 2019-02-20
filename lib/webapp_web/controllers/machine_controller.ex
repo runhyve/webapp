@@ -9,19 +9,20 @@ defmodule WebappWeb.MachineController do
     Plans,
     Accounts,
     Accounts.User,
-    Accounts.Team
+    Accounts.Team,
+    Distributions
   }
 
   plug :load_resource,
     model: Machine,
     non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks]
+    preload: [:hypervisor, :plan, :networks, :distribution]
 
   plug :authorize_resource,
     current_user: :current_member,
     model: Machine,
     non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks]
+    preload: [:hypervisor, :plan, :networks, :distribution]
 
   plug :load_hypervisor when action in [:new, :create]
   plug :load_references when action in [:new, :create, :edit, :update]
@@ -49,7 +50,7 @@ defmodule WebappWeb.MachineController do
   #  end
 
   def admin_index(%Conn{assigns: %{current_user: %User{role: "Administrator"}}} = conn, _params) do
-    machines = Machines.list_team_machines([:hypervisor, :plan, :networks])
+    machines = Machines.list_team_machines([:hypervisor, :plan, :networks, :distribution])
     hypervisors = Hypervisors.list_hypervisors()
 
     render(conn, "admin/index.html",
@@ -61,7 +62,7 @@ defmodule WebappWeb.MachineController do
 
   # My machines
   def index(%Conn{assigns: %{current_team: %Team{} = team}} = conn, _params) do
-    machines = Machines.list_team_machines(team, [:hypervisor, :plan, :networks])
+    machines = Machines.list_team_machines(team, [:hypervisor, :plan, :networks, :distribution])
     hypervisors = Hypervisors.list_hypervisors()
 
     render(conn, "index.html", machines: machines, hypervisor: false, hypervisors: hypervisors)
@@ -258,7 +259,7 @@ defmodule WebappWeb.MachineController do
   defp load_machine(conn, _) do
     try do
       %{"id" => id} = conn.params
-      machine = Machines.get_machine!(id, [:hypervisor, :plan, :networks])
+      machine = Machines.get_machine!(id, [:hypervisor, :plan, :networks, :distribution])
 
       conn
       |> assign(:machine, machine)
@@ -284,6 +285,7 @@ defmodule WebappWeb.MachineController do
     |> assign(:networks, Hypervisors.list_hypervisor_networks(hypervisor))
     |> assign(:plans, Plans.list_plans())
     |> assign(:teams, Accounts.list_teams())
+    |> assign(:distributions, Distributions.list_distributions())
   end
 
   defp load_hypervisor(conn, _) do

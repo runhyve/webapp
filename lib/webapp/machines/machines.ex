@@ -30,7 +30,7 @@ defmodule Webapp.Machines do
       [%Machine{}, ...]
 
   """
-  def list_machines(preloads \\ [:hypervisor, :plan]) do
+  def list_machines(preloads \\ [:hypervisor, :plan, :distribution]) do
     Machine
     |> order_by(asc: :name)
     |> Repo.all()
@@ -46,7 +46,7 @@ defmodule Webapp.Machines do
       [%Machine{}, ...]
 
   """
-  def list_team_machines(%Team{} = team, preloads \\ [:hypervisor, :plan]) do
+  def list_team_machines(%Team{} = team, preloads \\ [:hypervisor, :plan, :distribution]) do
     team
     |> Ecto.assoc(:machines)
     |> order_by(asc: :name)
@@ -68,7 +68,7 @@ defmodule Webapp.Machines do
       ** (Ecto.NoResultsError)
 
   """
-  def get_machine!(id, preloads \\ [:hypervisor, :plan]) do
+  def get_machine!(id, preloads \\ [:hypervisor, :plan, :distribution]) do
     Repo.get!(Machine, id)
     |> Repo.preload(preloads)
   end

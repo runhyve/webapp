@@ -8,7 +8,8 @@ defmodule Webapp.Machines.Machine do
     Plans.Plan,
     Networks,
     Networks.Network,
-    Accounts.Team
+    Accounts.Team,
+    Distributions.Distribution
   }
 
   # Machine name max length
@@ -18,7 +19,6 @@ defmodule Webapp.Machines.Machine do
   schema "machines" do
     field(:uuid, Ecto.UUID, autogenerate: true)
     field(:name, :string)
-    field(:template, :string)
     field(:last_status, :string)
     field(:created, :boolean, default: false)
     field(:failed, :boolean, default: false)
@@ -26,6 +26,7 @@ defmodule Webapp.Machines.Machine do
 
     belongs_to(:hypervisor, Hypervisor)
     belongs_to(:plan, Plan)
+    belongs_to(:distribution, Distribution)
     belongs_to(:team, Team)
     many_to_many(:networks, Network, join_through: "machines_networks")
 
@@ -40,8 +41,8 @@ defmodule Webapp.Machines.Machine do
     networks = Networks.list_networks_by_id(network_ids)
 
     machine
-    |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id, :team_id])
-    |> validate_required([:name, :template, :hypervisor_id, :plan_id, :team_id])
+    |> cast(attrs, [:name, :distribution_id, :hypervisor_id, :plan_id, :team_id])
+    |> validate_required([:name, :distribution_id, :hypervisor_id, :plan_id, :team_id])
     |> unique_constraint(:name, name: :machines_name_team_id_index)
     |> assoc_constraint(:hypervisor)
     |> assoc_constraint(:plan)
@@ -56,8 +57,8 @@ defmodule Webapp.Machines.Machine do
     uuid = Ecto.UUID.generate()
 
     machine
-    |> cast(attrs, [:name, :template, :hypervisor_id, :plan_id, :team_id])
-    |> validate_required([:name, :template, :hypervisor_id, :plan_id, :team_id])
+    |> cast(attrs, [:name, :distribution_id, :hypervisor_id, :plan_id, :team_id])
+    |> validate_required([:name, :distribution_id, :hypervisor_id, :plan_id, :team_id])
     |> unique_constraint(:name, name: :machines_name_team_id_index)
     |> validate_name()
     |> put_change(:uuid, uuid)
