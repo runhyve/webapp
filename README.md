@@ -1,5 +1,10 @@
 # Webapp
 
+This repository contains web application to manage Runhyve hypervisors. It's written in Elixir with Phoenix and uses PosgreSQL to keep the state.
+HTTP API is used to communicate with hypervisors. 
+
+![Machines Screenshot](https://gitlab.com/runhyve/webapp/raw/master/assets/static/images/screenshot-machines.png)
+
 ### Development
 
 ##### Using Docker
