@@ -1,8 +1,8 @@
 # Webapp
 
-# Development
+### Development
 
-## Using Docker
+##### Using Docker
 1. Run `docker-compose up -d` to run the containers
 2. Setup the database: `docker-compose run webapp mix ecto.setup`
 3. Visit http://localhost:4000 to see webapp running.
@@ -12,7 +12,7 @@ To open Interactive Elixir Shell run `docker-compose run webapp iex -S mix`<br>
 To open PostgreSQL interactive terminal run `docker-compose exec -u postgres  postgres psql -U postgres webapp_dev`
 
 
-## Using local environment
+### Using local environment
 
 ##### Dependencies
 
@@ -24,6 +24,10 @@ To open PostgreSQL interactive terminal run `docker-compose exec -u postgres  po
 2. Create and migrate your database with `mix ecto.setup`
 3. Install Node.js dependencies with `cd assets && npm install`
 4. Start Phoenix server `mix phx.server`
+
+##### Default credentials
+
+Default credentials are imported from `priv/repo/seeds.exs` file during setup of database (`mix ecto.setup`).
 
 ## Learn more
 
