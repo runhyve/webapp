@@ -9,28 +9,50 @@
 
 <%= render "_menu.html",  Map.put(assigns, :hide_status, false) %>
 
-<div class="box">
-  <ul>
-    <li>
-      <strong>Name:</strong>
-      <%= @hypervisor.name %>
-    </li>
+<div class="box columns">
+  <div class="column">
+    <ul>
+      <li>
+        <strong>Name:</strong>
+        <%= @hypervisor.name %>
+      </li>
 
-    <li>
-      <strong>FQDN:</strong>
-      <%= @hypervisor.fqdn %>
-    </li>
+      <li>
+        <strong>FQDN:</strong>
+        <%= @hypervisor.fqdn %>
+      </li>
 
-    <li>
-      <strong>TLS:</strong>
-      <%= @hypervisor.tls %>
-    </li>
-    
-    <li>
-      <strong>Type:</strong>
-      <%= @hypervisor.hypervisor_type.name %>
-    </li>
-  </ul>
+      <li>
+        <strong>TLS:</strong>
+        <%= @hypervisor.tls %>
+      </li>
+
+      <li>
+        <strong>Type:</strong>
+        <%= @hypervisor.hypervisor_type.name %>
+      </li>
+    </ul>
+  </div>
+  <div class="column">
+    <ul>
+      <li>
+        <strong>Virtual Machines:</strong>
+        <%= length(@hypervisor.machines) %>
+      </li>
+      <li>
+        <strong>Booked RAM:</strong>
+        <%= Enum.reduce(@hypervisor.machines, 0, fn(v, acc) -> v.plan.ram + acc end) %> MB
+      </li>
+      <li>
+        <strong>Booked storage:</strong>
+        <%= Enum.reduce(@hypervisor.machines, 0, fn(v, acc) -> v.plan.storage + acc end) %> GB
+      </li>
+      <li>
+        <strong>Income:</strong>
+        $<%= Enum.reduce(@hypervisor.machines, 0, fn(v, acc) -> v.plan.price + acc end) %>/mo
+      </li>
+    </ul>
+  </div>
 </div>
 
 <div class="box" id="charts">
