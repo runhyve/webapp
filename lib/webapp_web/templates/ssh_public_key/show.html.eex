@@ -1,0 +1,23 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><%= link "My Profile", to: Routes.user_path(@conn, :show, @current_user) %></li>
+    <li><%= link "SSH Keys", to: Routes.ssh_public_key_path(@conn, :index) %></li>
+    <li class="is-active"><a>SSH Key</a></li>
+  </ul>
+</nav>
+<h1>SSH key</h1>
+<hr>
+<div class="columns">
+    <div class="column is-one-quarter">
+        <strong>Title:</strong> <%= @ssh_public_key.title %><br/>
+        <strong>Created on:</strong> <%= @ssh_public_key.inserted_at %>
+    </div>
+    <div class="column">
+        <p><strong>Fingerprint:</strong> <%= @ssh_public_key.fingerprint %></p>
+        <textarea class="textarea has-fixed-size" rows="11" readonly><%= @ssh_public_key.ssh_public_key %></textarea>
+    </div>
+
+</div>
+
+<span><%= link "Back", to: Routes.ssh_public_key_path(@conn, :index) %></span>

@@ -38,6 +38,8 @@ defmodule WebappWeb.Router do
     resources "/users", UserController, except: [:delete]
     get "/users/:id/teams", UserController, :teams
 
+    resources "/user/keys", SSHPublicKeyController, except: [:edit]
+
     resources "/sessions", SessionController, only: [:new, :create, :delete]
     get "/user/confirm", UserController, :confirm
     resources "/user/password_resets", PasswordResetController, only: [:new, :create]

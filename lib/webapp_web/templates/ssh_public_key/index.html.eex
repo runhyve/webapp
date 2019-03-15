@@ -1,0 +1,37 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><%= link "My Profile", to: Routes.user_path(@conn, :show, @current_user) %></li>
+    <li class="is-active"><a>SSH Keys</a></li>
+  </ul>
+</nav>
+<div class="columns">
+<div class="column is-one-quarter">
+<h1>SSH Keys</h1>
+<hr/>
+<p> SSH keys may be inserted into the virtual machine during the creation time. They are used to authorize SSH connections and it is more secure than logging with a password.</p>
+</div>
+
+<div class="column">
+<div class="columns">
+  <div class="column"><strong>Title</strong></div>
+  <div class="column"><strong>Fingerprint</strong></div>
+</div>
+
+<%= for ssh_public_key <- @ssh_public_keys do %>
+<div class="columns">
+<div class="column"><%= link ssh_public_key.title, to: Routes.ssh_public_key_path(@conn, :show, ssh_public_key) %></div>
+<div class="column"><%= ssh_public_key.fingerprint %>
+<small>Created <%= ssh_public_key.inserted_at %></small>
+</div>
+
+
+<div class="column">
+<%= link "Delete", to: Routes.ssh_public_key_path(@conn, :delete, ssh_public_key), method: :delete, data: [confirm: "Are you sure?"], class: "delete" %>
+</div>
+</div>
+<% end %>
+<hr>
+<span><%= link "Add SSH key", to: Routes.ssh_public_key_path(@conn, :new) %></span>
+</div>
+</div>

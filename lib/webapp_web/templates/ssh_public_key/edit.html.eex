@@ -1,0 +1,5 @@
+<h1>Edit Ssh public key</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.ssh_public_key_path(@conn, :update, @ssh_public_key)) %>
+
+<span><%= link "Back", to: Routes.ssh_public_key_path(@conn, :index) %></span>

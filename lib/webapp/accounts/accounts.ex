@@ -11,6 +11,7 @@ defmodule Webapp.Accounts do
     Accounts.User,
     Accounts.Team,
     Accounts.Namespace,
+    Accounts.SSHPublicKey,
     Sessions,
     Sessions.Session
   }
@@ -265,5 +266,96 @@ defmodule Webapp.Accounts do
   """
   def change_team(%Team{} = team) do
     Team.changeset(team, %{})
+  end
+
+
+  @doc """
+  Returns the list of ssh_public_keys.
+
+  ## Examples
+
+      iex> list_ssh_public_keys()
+      [%SSHPublicKey{}, ...]
+
+  """
+  def list_ssh_public_keys do
+    Repo.all(SSHPublicKey)
+  end
+
+  @doc """
+  Returns the list of ssh_public_keys belonging to the user.
+
+  ## Examples
+
+      iex> list_ssh_public_keys(user_id)
+      [%SSHPublicKey{}, ...]
+
+  """
+  def list_user_ssh_public_keys(%User{} = user) do
+    user
+    |> Ecto.assoc(:ssh_public_keys)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a single ssh_public_key.
+
+  Raises `Ecto.NoResultsError` if the Ssh public key does not exist.
+
+  ## Examples
+
+      iex> get_ssh_public_key!(123)
+      %SSHPublicKey{}
+      iex> get_ssh_public_key!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_ssh_public_key!(id), do: Repo.get!(SSHPublicKey, id)
+
+  @doc """
+  Creates a ssh_public_key.
+
+  ## Examples
+
+      iex> create_ssh_public_key(%{field: value})
+      {:ok, %SSHPublicKey{}}
+
+      iex> create_ssh_public_key(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_ssh_public_key(user, attrs \\ %{}) do
+    %SSHPublicKey{user_id: user.id}
+    |> SSHPublicKey.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Deletes a SSHPublicKey.
+
+  ## Examples
+
+      iex> delete_ssh_public_key(ssh_public_key)
+      {:ok, %SSHPublicKey{}}
+
+      iex> delete_ssh_public_key(ssh_public_key)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_ssh_public_key(%SSHPublicKey{} = ssh_public_key) do
+    Repo.delete(ssh_public_key)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking ssh_public_key changes.
+
+  ## Examples
+
+      iex> change_ssh_public_key(ssh_public_key)
+      %Ecto.Changeset{source: %SSHPublicKey{}}
+
+  """
+  def change_ssh_public_key(%SSHPublicKey{} = ssh_public_key) do
+    SSHPublicKey.changeset(ssh_public_key, %{})
   end
 end
