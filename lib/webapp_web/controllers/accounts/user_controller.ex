@@ -2,7 +2,7 @@ defmodule WebappWeb.UserController do
   use WebappWeb, :controller
 
   alias Phauxth.{Log, Confirm}
-  alias Webapp.{Accounts, Accounts.User, Accounts.Registration}
+  alias Webapp.{Accounts, Accounts.User, Accounts.Registration, Accounts.SSHPublicKey}
   alias WebappWeb.{Auth.Token}
   alias WebappWeb.Emails.UserEmail, as: Email
   alias Ecto.Changeset
@@ -61,7 +61,6 @@ defmodule WebappWeb.UserController do
   end
 
   def show(%Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    Accounts.get_by(%{"user_id" => id})
     render(conn, "show.html", user: user)
   end
 

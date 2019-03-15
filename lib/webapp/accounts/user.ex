@@ -6,6 +6,7 @@ defmodule Webapp.Accounts.User do
     Accounts.User,
     Accounts.Team,
     Accounts.Member,
+    Accounts.SSHPublicKey,
     Types.UserRole
   }
 
@@ -21,6 +22,7 @@ defmodule Webapp.Accounts.User do
     has_many(:sessions, Session, on_delete: :delete_all)
     has_many(:memberships, Member, on_delete: :delete_all)
     has_many(:teams, through: [:memberships, :team])
+    has_many(:ssh_public_keys, SSHPublicKey, on_delete: :delete_all)
 
     timestamps()
   end

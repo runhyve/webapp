@@ -15,14 +15,23 @@ accounts = [
     user_name: "Runhyve Admin",
     user_password: "aeja9aif9oNg",
     team_name: "Runateam",
-    team_namespace: "runateam"
+    team_namespace: "runateam",
+    role: "Administrator"
+  },
+  %{
+    user_email: "user@runateam.com",
+    user_name: "Runhyve user",
+    user_password: "aeja9aif9oNg",
+    team_name: "Runhyve",
+    team_namespace: "runhyve",
+    role: "User"
   }
 ]
 
 for account <- accounts do
   {:ok, %{user: user}} = Webapp.Accounts.register_user(account)
   Webapp.Accounts.confirm_user(user)
-  Webapp.Accounts.update_user(user, %{role: "Administrator"})
+  Webapp.Accounts.update_user(user, %{role: account.role})
 end
 
 Webapp.Repo.insert!(%Webapp.Hypervisors.Type{name: "bhyve"})
