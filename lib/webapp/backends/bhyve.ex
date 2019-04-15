@@ -10,7 +10,8 @@ defmodule Webapp.Hypervisors.Bhyve do
     Machines,
     Machines.Machine,
     Networks.Network,
-    Distributions
+    Distributions,
+    Accounts
   }
 
   @headers [{"Content-Type", "application/json"}]
@@ -45,7 +46,6 @@ defmodule Webapp.Hypervisors.Bhyve do
        - image
     """
 
-    # TODO: add the template model with system and image field.
     distribution = Distributions.get_distribution!(machine.distribution_id)
 
     image = Distributions.get_img_name(distribution)
@@ -64,6 +64,14 @@ defmodule Webapp.Hypervisors.Bhyve do
       "memory" => "#{machine.plan.ram}M",
       "disk" => "#{machine.plan.storage}G"
     }
+
+    payload =
+      if machine.ssh_public_key_id != nil do
+        ssh_public_key = Accounts.get_ssh_public_key!(machine.ssh_public_key_id)
+        Map.put(payload, "ssh_public_key", ssh_public_key.ssh_public_key)
+      else
+        payload
+      end
 
     endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/create"
     token = machine.hypervisor.webhook_token
