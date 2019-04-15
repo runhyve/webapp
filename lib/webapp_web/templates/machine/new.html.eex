@@ -115,6 +115,14 @@
       <%= error_tag f, :distribution_id %>
     </div>
 
+    <div class="field">
+      <%= label f, :ssh_public_key_id, class: "label" %>
+      <div class="select">
+        <%= select f, :ssh_public_key_id, ssh_public_keys_select_options(@current_user.ssh_public_keys), prompt: "Select SSH key" %>
+      </div>
+      <%= error_tag f, :ssh_public_key_id %>
+    </div>
+
     <%= if @current_user.role == "Administrator" do %>
       <div class="field">
     <% else %>

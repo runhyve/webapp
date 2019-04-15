@@ -36,6 +36,12 @@ defmodule WebappWeb.MachineView do
     end
   end
 
+  def ssh_public_keys_select_options(public_keys) do
+    for public_key <- public_keys do
+      {public_key.title, public_key.id}
+    end
+  end
+
   def map_status_to_css(status) do
     case status do
       "Creating" -> "is-light"

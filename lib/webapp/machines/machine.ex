@@ -23,6 +23,7 @@ defmodule Webapp.Machines.Machine do
     field(:created, :boolean, default: false)
     field(:failed, :boolean, default: false)
     field(:job_id, :integer)
+    field(:ssh_public_key_id, :string, virtual: true)
 
     belongs_to(:hypervisor, Hypervisor)
     belongs_to(:plan, Plan)
@@ -57,7 +58,7 @@ defmodule Webapp.Machines.Machine do
     uuid = Ecto.UUID.generate()
 
     machine
-    |> cast(attrs, [:name, :distribution_id, :hypervisor_id, :plan_id, :team_id])
+    |> cast(attrs, [:name, :distribution_id, :hypervisor_id, :plan_id, :team_id, :ssh_public_key_id])
     |> validate_required([:name, :distribution_id, :hypervisor_id, :plan_id, :team_id])
     |> unique_constraint(:name, name: :machines_name_team_id_index)
     |> validate_name()
