@@ -29,7 +29,7 @@ defmodule WebappWeb.HypervisorTokenAuth do
     end
 
     defp verify_hypervisor_token([token], opts) do
-        case Hypervisors.get_hypervisor_by_token(token) do
+        case Hypervisors.get_hypervisor_by("webhook_token", token) do
             nil -> {:error, "authentication failed"}
             hypervisor -> {:ok, hypervisor}
         end
