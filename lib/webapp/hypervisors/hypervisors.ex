@@ -180,10 +180,15 @@ defmodule Webapp.Hypervisors do
   end
 
   @doc """
-  Gets hypervisor by token
+  Gets hypervisor by specified field name.
   """
-  def get_hypervisor_by_token(token) do
-    Repo.get_by(Hypervisor, webhook_token: token)
+  def get_hypervisor_by(field, value) when is_atom(field) do
+    Repo.get_by(Hypervisor, [{field, value}])
+  end
+
+  def get_hypervisor_by(field, value) when is_binary(field) do
+    field = String.to_atom(field)
+    Repo.get_by(Hypervisor, [{field, value}])
   end
 
   @doc """
