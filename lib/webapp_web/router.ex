@@ -22,6 +22,13 @@ defmodule WebappWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug WebappWeb.HypervisorTokenAuth
+  end
+
+  scope "/api/v1", WebappWeb do
+    pipe_through :api
+
+    resources "/distributions", DistributionController, except: [:new, :edit]
   end
 
   scope "/", WebappWeb do

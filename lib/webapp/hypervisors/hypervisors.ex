@@ -180,6 +180,13 @@ defmodule Webapp.Hypervisors do
   end
 
   @doc """
+  Gets hypervisor by token
+  """
+  def get_hypervisor_by_token(token) do
+    Repo.get_by(Hypervisor, webhook_token: token)
+  end
+
+  @doc """
   Check a hypervisor webhook health status.
   """
   def update_hypervisor_status(%Hypervisor{} = hypervisor) do
