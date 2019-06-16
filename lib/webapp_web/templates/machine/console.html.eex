@@ -11,6 +11,20 @@
 
 <%= render "_menu.html", assigns %>
 
-<div class="box">
-  <iframe id="console" type="text/html" src="<%= get_hypervisor_url(@machine.hypervisor, :gotty, @console["port"]) %>/<%= @token %>/tty/" width="100%" height="600px"></iframe>
+<div id="console-wrapper" class="box is-relative">
+  <button alt="Toggle fullscreen" id="console-toggle" class="button"><i class="fas fa-compress"></i></button>
+  <iframe id="console" type="text/html" src="<%= get_hypervisor_url(@machine.hypervisor, :gotty, @console["port"]) %>/<%= @token %>/tty/"></iframe>
 </div>
+
+<script>
+document.getElementById("console-toggle").addEventListener('touchstart', toggleConsoleFullscreen);
+document.getElementById("console-toggle").addEventListener("keypress", function(e) {
+  if (e.keyCode === 13 || e.keyCode == 0 || e.keyCode == 32 ) {
+    toggleConsoleFullscreen();
+  }
+});
+
+function toggleConsoleFullscreen() {
+  document.getElementById("console-wrapper").classList.toggle('fullscreen');
+}
+</script>
