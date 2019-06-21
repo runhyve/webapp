@@ -18,6 +18,7 @@ module.exports = (env, options) => ({
       './machine.js': ['./js/machine.js'].concat(glob.sync('./vendor/**/*.js')),
       './team.js': ['./js/team.js'].concat(glob.sync('./vendor/**/*.js')),
       './admin.js': ['./js/admin.js'].concat(glob.sync('./vendor/**/*.js')),
+      './ip_pool.js': ['./js/ip_pool.js'].concat(glob.sync('./vendor/**/*.js')),
   },
   output: {
     filename: '[name]',

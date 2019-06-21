@@ -4,9 +4,12 @@ defmodule WebappWeb.SSHPublicKeyControllerTest do
   import WebappWeb.AuthCase
   alias Webapp.Accounts
 
-  @create_attrs %{ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC8zjxRY3HmSJ/I6VGvuwEwrQv1hViE9bRx95qz7HR0T7MP10f+X39eKbGF82Nlju1J7u3djgWjNGYp7Yumd3bqbvu8+8Q5yqUYgF2VIDc64Vl0rK4zT6otIKerRcY2vEesZu/pRTZ7VD9dentODLHISRo4+1V+lLEqIFTteBtCxxhJc2g4GVKB2MpL7btZjtqP1X6++8qkg++wXOouNE+3lcgbu6d+SbL9skx3QTO/VwdC+U2yc8lIp2hz79FxUUGIQhV8NuPXp5/sRFGHITkFIu9dxgsqcSoSQQkyBvzd6XCXuwWpAQlmtgsjfYqQdq1/XDL+F2KqH9Vb+rD2dQLT dummy@key", title: "some title"}
+  @create_attrs %{
+    ssh_public_key:
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC8zjxRY3HmSJ/I6VGvuwEwrQv1hViE9bRx95qz7HR0T7MP10f+X39eKbGF82Nlju1J7u3djgWjNGYp7Yumd3bqbvu8+8Q5yqUYgF2VIDc64Vl0rK4zT6otIKerRcY2vEesZu/pRTZ7VD9dentODLHISRo4+1V+lLEqIFTteBtCxxhJc2g4GVKB2MpL7btZjtqP1X6++8qkg++wXOouNE+3lcgbu6d+SbL9skx3QTO/VwdC+U2yc8lIp2hz79FxUUGIQhV8NuPXp5/sRFGHITkFIu9dxgsqcSoSQQkyBvzd6XCXuwWpAQlmtgsjfYqQdq1/XDL+F2KqH9Vb+rD2dQLT dummy@key",
+    title: "some title"
+  }
   @invalid_attrs %{ssh_public_key: "invalid public key", title: "some title"}
-
 
   setup do
     conn = build_conn() |> bypass_through(WebappWeb.Router, [:browser]) |> get("/")

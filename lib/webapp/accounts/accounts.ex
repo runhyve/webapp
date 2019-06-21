@@ -268,7 +268,6 @@ defmodule Webapp.Accounts do
     Team.changeset(team, %{})
   end
 
-
   @doc """
   Returns the list of ssh_public_keys.
 

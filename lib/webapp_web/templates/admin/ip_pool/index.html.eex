@@ -1,0 +1,47 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><a>Admin</a></li>
+    <li class="is-active"><a>IP Pools</a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1>Listing IP Pools</h1>
+  </div>
+
+  <div class="level-right">
+    <span><%= link "New IP Pool", to: Routes.admin_ip_pool_path(@conn, :new), class: "button is-rounded is-primary" %></span>
+  </div>
+</div>
+
+<table class="table container">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Network</th>
+      <th>Netmask</th>
+      <th>Gateway</th>
+      <th>Available / Used</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for ip_pool <- @ip_pools do %>
+    <tr>
+      <td><%= ip_pool.name %></td>
+      <td><%= ip_pool.network.name %></td>
+      <td><%= ip_pool.netmask %></td>
+      <td><%= ip_pool.gateway %></td>
+      <td><%= Enum.count(ip_pool.ipv4) %> / <%= count_used_ips(ip_pool.ipv4) %></td>
+      <td>
+        <%= link "Show", to: Routes.admin_ip_pool_path(@conn, :show, ip_pool), class: "button is-rounded"  %>
+      </td>
+    </tr>
+<% end %>
+<%= if Enum.empty?(@ip_pools) do %>
+    <tr><td colspan="3">Empty here, add a IP Pool...</td></tr>
+<% end %>
+  </tbody>
+</table>

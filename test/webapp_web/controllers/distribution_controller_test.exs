@@ -29,13 +29,14 @@ defmodule WebappWeb.DistributionControllerTest do
   def hypervisor_fixture do
     hypervisor_type = fixture_hypervisor_type(%{name: "bhyve"})
 
-    {:ok, hypervisor} = Hypervisors.create_hypervisor(%{
-      name: "authenticated-hypervisor",
-      ip_address: "192.168.199.253",
-      hypervisor_type_id: hypervisor_type.id,
-      fqdn: "authenticated-hypervisor",
-      webhook_token: @webhook_token
-    })
+    {:ok, hypervisor} =
+      Hypervisors.create_hypervisor(%{
+        name: "authenticated-hypervisor",
+        ip_address: "192.168.199.253",
+        hypervisor_type_id: hypervisor_type.id,
+        fqdn: "authenticated-hypervisor",
+        webhook_token: @webhook_token
+      })
   end
 
   defp authenticate(conn) do
@@ -45,11 +46,14 @@ defmodule WebappWeb.DistributionControllerTest do
 
   setup context do
     create_hypervisor()
-    conn = if Map.has_key?(context, :authenticated_hypervisor) do
-      authenticate(context.conn)
-    else
-      context.conn
-    end
+
+    conn =
+      if Map.has_key?(context, :authenticated_hypervisor) do
+        authenticate(context.conn)
+      else
+        context.conn
+      end
+
     conn = put_req_header(conn, "accept", "application/json")
     {:ok, conn: conn}
   end
@@ -77,8 +81,15 @@ defmodule WebappWeb.DistributionControllerTest do
   describe "update distribution" do
     setup [:create_distribution]
 
-    test "renders distribution when data is valid", %{conn: conn, distribution: %Distribution{id: id} = distribution} do
-      conn = put(conn, Routes.distribution_path(conn, :update, distribution), distribution: @update_attrs)
+    test "renders distribution when data is valid", %{
+      conn: conn,
+      distribution: %Distribution{id: id} = distribution
+    } do
+      conn =
+        put(conn, Routes.distribution_path(conn, :update, distribution),
+          distribution: @update_attrs
+        )
+
       assert response(conn, 401)
     end
   end
@@ -86,7 +97,10 @@ defmodule WebappWeb.DistributionControllerTest do
   describe "delete distribution" do
     setup [:create_distribution]
 
-    test "disallow delete chosen distribution to unauthenticated user/hypervisor", %{conn: conn, distribution: distribution} do
+    test "disallow delete chosen distribution to unauthenticated user/hypervisor", %{
+      conn: conn,
+      distribution: distribution
+    } do
       conn = delete(conn, Routes.distribution_path(conn, :delete, distribution))
       assert response(conn, 401)
     end

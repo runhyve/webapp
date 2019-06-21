@@ -62,8 +62,10 @@ defmodule Webapp.MixProject do
       {:httpoison, "~> 1.0"},
       {:phoenix_active_link, "~> 0.1.1"},
       {:table_rex, "~> 2.0.0"},
-      {:ecto_network, "~> 1.0.0"},
-      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
+      {:ecto_network, "~> 1.1.0"},
+      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
+      {:inet_cidr, "~> 1.0.0"},
+      {:iptools, "~> 0.0.2"}
     ]
   end
 

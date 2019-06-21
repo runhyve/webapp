@@ -43,6 +43,7 @@
                         <%= link "Plans", to: Routes.admin_plan_path(@conn, :index), class: "dropdown-item" %>
                         <%= link "Hypervisors", to: Routes.admin_hypervisor_path(@conn, :index), class: "dropdown-item" %>
                         <%= link "Machines", to: Routes.admin_machine_path(@conn, :index), class: "dropdown-item" %>
+                        <%= link "IP Pools", to: Routes.admin_ip_pool_path(@conn, :index), class: "dropdown-item" %>
                         <%= link "Users", to: Routes.admin_user_path(@conn, :index), class: "dropdown-item" %>
                         <%= link "Teams", to: Routes.admin_team_path(@conn, :index), class: "dropdown-item" %>
                        </div>

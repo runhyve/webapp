@@ -1,0 +1,27 @@
+# Local Script for populating the database. Might contain sensitive data.
+#
+#     mix run priv/repo/seeds.local.exs
+#
+# Inside the script, you can read and write to any of your
+# repositories directly:
+#
+#     Webapp.Repo.insert!(%Webapp.SomeSchema{})
+#
+# We recommend using the bang functions (`insert!`, `update!`
+# and so on) as they will fail if something goes wrong.
+
+
+Webapp.Hypervisors.create_hypervisor(%{
+  name: "hypervisor1",
+  fqdn: "192.168.0.1.xip.io",
+  tls: false,
+  hypervisor_type_id: 1,
+  webhook_token: "Asd123"
+})
+
+Webapp.Repo.insert!(%Webapp.Accounts.SSHPublicKey{
+  title: "import",
+  ssh_public_key: "ssh-rsa admin@runhyve",
+  fingerprint: "aa:bb:cc",
+  user_id: 1
+})

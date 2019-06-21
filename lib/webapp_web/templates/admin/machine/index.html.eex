@@ -88,10 +88,11 @@
   </tbody>
 </table>
 
-<script type="text/javascript">
-var machines = {
-  ids: "<%= extract_ids(@machines) %>"
-}
-</script>
-<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/admin.js") %>"></script>
-
+<%= unless Enum.empty?(@machines) do %>
+  <script type="text/javascript">
+  var machines = {
+    ids: "<%= extract_ids(@machines) %>"
+  }
+  </script>
+  <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/admin.js") %>"></script>
+<%= end %>

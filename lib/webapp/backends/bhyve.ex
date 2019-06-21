@@ -37,7 +37,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   Creates a machine on bhyve hypervisor.
   """
   def create_machine(_repo, _multi_changes, %Machine{} = machine) do
-    machine = Repo.preload(machine, [:plan, :hypervisor, :networks])
+    machine = Repo.preload(machine, [:plan, :hypervisor, :networks, ipv4: [:ip_pool]])
 
     """
       Before we can call create_machine webhook we need to
@@ -53,7 +53,6 @@ defmodule Webapp.Hypervisors.Bhyve do
 
     [network | _] = machine.networks
 
-    # TODO: machine name should be prefixed with owner namespace.
     payload = %{
       "name" => Machines.get_machine_hid(machine),
       "template" => template,
@@ -62,7 +61,14 @@ defmodule Webapp.Hypervisors.Bhyve do
       "network" => network.name,
       "cpu" => machine.plan.cpu,
       "memory" => "#{machine.plan.ram}M",
-      "disk" => "#{machine.plan.storage}G"
+      "disk" => "#{machine.plan.storage}G",
+      "ipv4" => Enum.map(machine.ipv4, fn ip ->
+        %{
+          ip: to_string(ip.ip),
+          netmask: to_string(ip.ip_pool.netmask),
+          gateway: to_string(ip.ip_pool.gateway)
+        } |> Jason.encode!()
+      end)
     }
 
     payload =
