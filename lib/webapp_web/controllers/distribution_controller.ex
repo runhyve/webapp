@@ -12,7 +12,8 @@ defmodule WebappWeb.DistributionController do
   end
 
   def create(conn, %{"distribution" => distribution_params}) do
-    with {:ok, %Distribution{} = distribution} <- Distributions.create_distribution(distribution_params) do
+    with {:ok, %Distribution{} = distribution} <-
+           Distributions.create_distribution(distribution_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.distribution_path(conn, :show, distribution))
@@ -28,7 +29,8 @@ defmodule WebappWeb.DistributionController do
   def update(conn, %{"id" => id, "distribution" => distribution_params}) do
     distribution = Distributions.get_distribution!(id)
 
-    with {:ok, %Distribution{} = distribution} <- Distributions.update_distribution(distribution, distribution_params) do
+    with {:ok, %Distribution{} = distribution} <-
+           Distributions.update_distribution(distribution, distribution_params) do
       render(conn, "show.json", distribution: distribution)
     end
   end

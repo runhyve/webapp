@@ -1,4 +1,4 @@
-defmodule Webapp.NetworksTest do
+defmodule Webapp.Hypervisors.NetworksTest do
   use Webapp.DataCase
 
   alias Webapp.Networks

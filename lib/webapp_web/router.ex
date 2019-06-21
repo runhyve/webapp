@@ -57,14 +57,16 @@ defmodule WebappWeb.Router do
       resources "/members", MemberController, except: [:index]
     end
 
+    get "/ip_pools/new", IpPoolController, :new
+
     # Machine
     resources "/machines", MachineController, except: [:new, :create]
-    get "/hypervisors/:hypervisor_id/machines/new", MachineController, :new
-    post "/hypervisors/:hypervisor_id/machines/create", MachineController, :create
     get "/machines/:id/console", MachineController, :console
     post "/machines/:id/start", MachineController, :start
     post "/machines/:id/stop", MachineController, :stop
     post "/machines/:id/poweroff", MachineController, :poweroff
+    get "/hypervisors/:hypervisor_id/machines/new", MachineController, :new
+    post "/hypervisors/:hypervisor_id/machines/create", MachineController, :create
   end
 
   scope "/admin", WebappWeb.Admin, as: :admin do
@@ -78,6 +80,7 @@ defmodule WebappWeb.Router do
     resources "/machines", MachineController, only: [:index]
     resources "/plans", PlanController
     resources "/networks", NetworkController, except: [:new, :create, :index]
+    resources "/ip_pools", Ip_poolController, except: [:edit, :update, :delete]
     resources "/users", UserController, only: [:index]
     resources "/teams", TeamController, only: [:index]
   end

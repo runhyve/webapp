@@ -1,0 +1,24 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><a>Admin</a></li>
+    <li><%= link "IP Pools", to: Routes.admin_ip_pool_path(@conn, :index) %></li>
+    <li class="is-active"><a>New IP Pool</a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1>New IP Pool</h1>
+  </div>
+
+  <div class="level-right">
+    <span>
+      <%= link "Back",
+            to: Routes.admin_ip_pool_path(@conn, :index),
+            class: "button is-rounded" %>
+    </span>
+  </div>
+</div>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.admin_ip_pool_path(@conn, :create)) %>

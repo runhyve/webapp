@@ -1,0 +1,87 @@
+<div class="box">
+  <%= form_for @changeset, @action, fn f -> %>
+    <%= if @changeset.action do %>
+      <div class="alert alert-danger">
+        <p>Oops, something went wrong! Please check the errors below.</p>
+      </div>
+    <% end %>
+
+  <div class="columns">
+    <div class="column is-half">
+      <div class="field">
+        <%= label f, :name, class: "label" %>
+        <div class="control">
+          <%= text_input f, :name, class: "input" %>
+        </div>
+        <%= error_tag f, :name %>
+      </div>
+
+      <div class="field">
+        <label class="label">Network</label>
+        <div class="select">
+        <%= select f, :network_id, networks_select_options(@networks), prompt: "Select network" %>
+        </div>
+        <p class="help">Select the network to which you want to add this IP pool.</p>
+        <%= error_tag f, :network_id %>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <label class="label">IP Range</label>
+          <%= text_input f, :ip_range, class: "input" %>
+          <p class="help notification">
+            Enter a IP Range in one of allowed formats: <br />
+            <br />
+            192.168.0.24/32 (single ip)<br />
+            192.168.0.1/24 (CIDR network)<br />
+            192.168.0.1-16/24 (CIDR range)<br />
+            192.168.0.1-192.168.0.15/24 (CIDR range)
+          </p>
+        </div>
+
+        <%= error_tag f, :ip_range %>
+      </div>
+
+      <div class="field">
+        <label class="label">Gateway</label>
+        <div class="control">
+          <%= text_input f, :gateway, class: "input" %>
+        </div>
+        <%= error_tag f, :gateway %>
+      </div>
+    </div>
+
+    <div class="column is-half">
+
+      <div class="notification">
+        The netmask and list of available addresses will be automatically calculated from the IP range.
+      </div>
+
+      <div class="field">
+        <label class="label">Netmask</label>
+        <div class="control">
+          <%= text_input f, :netmask, readonly: :readonly, class: "input"  %>
+        </div>
+        <%= error_tag f, :netmask %>
+      </div>
+
+      <div class="field">
+        <label class="label">List of available addreses: (<span id="ip-pool-count">0</span>)</label>
+        <div class="control">
+          <%= textarea f, :list, readonly: :readonly, class: "textarea", cols: 30, rows: 16  %>
+          <%= error_tag f, :list %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+      <div class="field">
+        <div class="control">
+          <%= submit "Save", class: "button is-rounded is-primary" %>
+        </div>
+      </div>
+  <% end %>
+</div>
+
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/ip_pool.js") %>"></script>

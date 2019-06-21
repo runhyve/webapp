@@ -2,6 +2,7 @@ defmodule WebappWeb.SSHPublicKeyController do
   use WebappWeb, :controller
 
   alias Webapp.Accounts
+
   alias Webapp.Accounts.{
     User,
     Team,
@@ -9,8 +10,8 @@ defmodule WebappWeb.SSHPublicKeyController do
   }
 
   plug :load_and_authorize_resource,
-       model: SSHPublicKey,
-       non_id_actions: [:index, :create, :new]
+    model: SSHPublicKey,
+    non_id_actions: [:index, :create, :new]
 
   def index(%Conn{assigns: %{current_user: user}} = conn, _params) do
     ssh_public_keys = Accounts.list_user_ssh_public_keys(user)

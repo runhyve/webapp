@@ -7,6 +7,7 @@ defmodule Webapp.Machines.Machine do
     Hypervisors.Hypervisor,
     Plans.Plan,
     Networks,
+    Networks.Ipv4,
     Networks.Network,
     Accounts.Team,
     Distributions.Distribution
@@ -30,6 +31,7 @@ defmodule Webapp.Machines.Machine do
     belongs_to(:distribution, Distribution)
     belongs_to(:team, Team)
     many_to_many(:networks, Network, join_through: "machines_networks")
+    has_many(:ipv4, Ipv4)
 
     field(:created_at, :naive_datetime)
     field(:failed_at, :naive_datetime)
@@ -48,6 +50,7 @@ defmodule Webapp.Machines.Machine do
     |> assoc_constraint(:hypervisor)
     |> assoc_constraint(:plan)
     |> assoc_constraint(:team)
+    |> assoc_constraint(:distribution)
     |> put_assoc(:networks, networks)
     |> validate_length(:networks, min: 1)
   end
@@ -56,6 +59,12 @@ defmodule Webapp.Machines.Machine do
     network_ids = Map.get(attrs, "network_ids", [])
     networks = Networks.list_networks_by_id(network_ids)
     uuid = Ecto.UUID.generate()
+
+    ipv4 =
+      Enum.map(networks, fn network ->
+        Networks.get_unused_ipv4(network)
+      end)
+      |> Enum.filter(fn ip -> ip end)
 
     machine
     |> cast(attrs, [:name, :distribution_id, :hypervisor_id, :plan_id, :team_id, :ssh_public_key_id])
@@ -67,7 +76,9 @@ defmodule Webapp.Machines.Machine do
     |> assoc_constraint(:hypervisor)
     |> assoc_constraint(:plan)
     |> assoc_constraint(:team)
+    |> assoc_constraint(:distribution)
     |> put_assoc(:networks, networks)
+    |> put_assoc(:ipv4, ipv4)
     |> validate_length(:networks, min: 1)
   end
 
@@ -92,7 +103,9 @@ defmodule Webapp.Machines.Machine do
     changeset
     # Machine name is prefixed with "TEAMID_"
     |> validate_length(:name, max: 32 - team_len - 1)
-    |> validate_format(:name, ~r/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/,
+    |> validate_format(
+      :name,
+      ~r/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/,
       message: "Name must only contain letters and numbers and . - "
     )
   end

@@ -3,10 +3,10 @@ defmodule Webapp.Repo.Migrations.CreateDistributions do
 
   def change do
     create table(:distributions) do
-      add :name, :string
-      add :version, :string
-      add :image, :string
-      add :loader, :string
+      add(:name, :string)
+      add(:version, :string)
+      add(:image, :string)
+      add(:loader, :string)
 
       timestamps()
     end

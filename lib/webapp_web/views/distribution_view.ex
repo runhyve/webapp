@@ -11,10 +11,12 @@ defmodule WebappWeb.DistributionView do
   end
 
   def render("distribution.json", %{distribution: distribution}) do
-    %{id: distribution.id,
+    %{
+      id: distribution.id,
       image: distribution.image,
       loader: distribution.loader,
       name: distribution.name,
-      version: distribution.version}
+      version: distribution.version
+    }
   end
 end

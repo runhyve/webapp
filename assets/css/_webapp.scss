@@ -12,6 +12,13 @@ body {
   align-items: stretch;
 }
 
+.tabs a {
+  &.is-disabled {
+    opacity: .65;
+    cursor: not-allowed;
+  }
+}
+
 .radio-boxes {
   span {
     display: block;

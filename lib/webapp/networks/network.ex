@@ -4,7 +4,8 @@ defmodule Webapp.Networks.Network do
 
   alias Webapp.{
     Hypervisors.Hypervisor,
-    Machines.Machine
+    Machines.Machine,
+    Networks.Ip_pool
   }
 
   schema "networks" do
@@ -14,6 +15,8 @@ defmodule Webapp.Networks.Network do
 
     belongs_to(:hypervisor, Hypervisor)
     many_to_many(:machines, Machine, join_through: "machines_networks")
+    has_many(:ip_pools, Ip_pool)
+    has_many(:ipv4, through: [:ip_pools, :ipv4])
 
     timestamps()
   end
