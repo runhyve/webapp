@@ -299,11 +299,11 @@ defmodule Webapp.Hypervisors do
   end
 
   def get_hypervisor_url(%Hypervisor{} = hypervisor, :webhook) do
-    get_hypervisor_schema(hypervisor) <> "vm-webhook." <> hypervisor.fqdn
+    get_hypervisor_schema(hypervisor) <> hypervisor.fqdn <> "/vm-webhook/"
   end
 
   def get_hypervisor_url(%Hypervisor{} = hypervisor, :netdata) do
-    get_hypervisor_schema(hypervisor) <> "netdata." <> hypervisor.fqdn
+    get_hypervisor_schema(hypervisor) <> hypervisor.fqdn <> "/netdata/"
   end
 
   def get_hypervisor_url(%Hypervisor{} = hypervisor, _) do
@@ -311,7 +311,7 @@ defmodule Webapp.Hypervisors do
   end
 
   def get_hypervisor_url(%Hypervisor{} = hypervisor, :gotty, port) do
-    get_hypervisor_schema(hypervisor) <> "port#{port}." <> hypervisor.fqdn
+    get_hypervisor_schema(hypervisor) <> hypervisor.fqdn <> "/sol/#{port}/"
   end
 
   defp get_hypervisor_schema(%Hypervisor{tls: true}), do: "https://"
