@@ -34,7 +34,6 @@ defmodule Webapp.Accounts.SSHPublicKey do
        ) do
     try do
       [{pk, attributes}] = :public_key.ssh_decode(ssh_public_key, :public_key)
-
       changeset
       |> change(%{fingerprint: to_string(:public_key.ssh_hostkey_fingerprint(pk))})
     rescue

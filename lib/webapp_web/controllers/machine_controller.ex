@@ -245,10 +245,10 @@ defmodule WebappWeb.MachineController do
   def console(conn, _params) do
     machine = conn.assigns[:machine]
 
-    with {:ok, console} <- Machines.console_machine(machine) do
-      token = Base.encode64(console["user"] <> ":" <> console["password"])
-      render(conn, "console.html", machine: machine, console: console, token: token)
-    else
+    case Machines.console_machine(machine) do
+      {:ok, console} ->
+        token = Base.encode64(console["user"] <> ":" <> console["password"])
+        render(conn, "console.html", machine: machine, console: console, token: token)
       {:error, error} ->
         conn
         |> put_flash(:error, error)

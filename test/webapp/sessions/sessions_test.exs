@@ -43,7 +43,7 @@ defmodule Webapp.SessionsTest do
       create_attrs = %{user_id: user.id}
       assert {:ok, %Session{} = session} = Sessions.create_session(create_attrs)
       assert session.user_id == user.id
-      assert DateTime.diff(session.expires_at, DateTime.utc_now()) == 86400
+      assert DateTime.diff(session.expires_at, DateTime.utc_now()) == 86_400
     end
 
     test "create_session/1 with invalid data returns error changeset" do
