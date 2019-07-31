@@ -58,13 +58,11 @@ defmodule Webapp.Accounts.Registration do
   defp extract_attrs(field_prefix, attrs) do
     attrs
     |> Enum.map(fn {field, value} ->
-      cond do
-        String.match?("#{field}", ~r/#{field_prefix}/) ->
-          field = String.trim_leading("#{field}", "#{field_prefix}_")
-          {field, value}
-
-        true ->
-          nil
+      if String.match?("#{field}", ~r/#{field_prefix}/)  do
+        field = String.trim_leading("#{field}", "#{field_prefix}_")
+        {field, value}
+      else
+        nil
       end
     end)
     |> Enum.filter(& &1)

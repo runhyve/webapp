@@ -237,13 +237,11 @@ defmodule Webapp.Machines do
 
   #
   def update_status(%Machine{failed: false, created: false, inserted_at: inserted_at} = machine) do
-    cond do
-      NaiveDateTime.diff(NaiveDateTime.utc_now(), inserted_at) >= @create_timeout ->
-        mark_as_failed(machine)
-        {:error, "Something went wrong, your machine has been created for too long."}
-
-      true ->
-        check_job_status(machine)
+    if NaiveDateTime.diff(NaiveDateTime.utc_now(), inserted_at) >= @create_timeout do
+      mark_as_failed(machine)
+      {:error, "Something went wrong, your machine has been created for too long."}
+    else
+      check_job_status(machine)
     end
   end
 
@@ -416,6 +414,7 @@ defmodule Webapp.Machines do
   def machine_can_do?(%Machine{failed: true} = machine, action), do: false
   def machine_can_do?(%Machine{created: false} = machine, action), do: false
 
+  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
   def machine_can_do?(%Machine{} = machine, action) do
     case action do
       :console ->

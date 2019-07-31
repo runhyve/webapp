@@ -251,15 +251,15 @@ defmodule Webapp.Hypervisors.Bhyve do
   end
 
   defp webhook_trigger(token, endpoint) do
-    Logger.debug("Bhyve webhook GET call: #{endpoint} without parameters")
+    Logger.debug(["Bhyve webhook GET call: ", endpoint, " without parameters"])
 
     case HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", token}], follow_redirect: true) do
       {:ok, %{body: body, status_code: 200}} ->
-        Logger.debug("Bhyve webhook response: #{body}")
+        Logger.debug(["Bhyve webhook response: ", body])
         webhook_process_response(body)
 
       {:ok, %{body: body, status_code: _}} ->
-        Logger.debug("Bhyve webhook response: #{body}")
+        Logger.debug(["Bhyve webhook response: ", body])
         webhook_process_response(body)
 
       {:error, error} ->
@@ -269,18 +269,18 @@ defmodule Webapp.Hypervisors.Bhyve do
 
   defp webhook_trigger(token, endpoint, payload) do
     json = Jason.encode!(payload)
-    Logger.debug("Bhyve webhook POST call: #{endpoint} with #{json}")
+    Logger.debug(["Bhyve webhook POST call: ", endpoint, " with ", json])
 
     case HTTPoison.post(endpoint, json, @headers ++ [{"X-RUNHYVE-TOKEN", token}],
            follow_redirect: true,
            hackney: [force_redirect: true]
          ) do
       {:ok, %{body: body, status_code: 200}} ->
-        Logger.debug("Bhyve webhook response: #{body}")
+        Logger.debug(["Bhyve webhook response: ", body])
         webhook_process_response(body)
 
       {:ok, %{body: body, status_code: _}} ->
-        Logger.debug("Bhyve webhook response: #{body}")
+        Logger.debug(["Bhyve webhook response: ", body])
         webhook_process_response(body)
 
       {:error, error} ->
