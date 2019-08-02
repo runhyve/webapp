@@ -17,6 +17,23 @@ defmodule Webapp.Hypervisors.Bhyve do
   @headers [{"Content-Type", "application/json"}]
 
   @doc """
+  Get details about hypervisor's operating system
+  """
+  def hypervisor_os_details(hypervisor) do
+    endpoint = Hypervisors.get_hypervisor_url(hypervisor, :webhook) <> "/vm/ohai"
+    token = hypervisor.webhook_token
+
+    try do
+      case webhook_trigger(token, endpoint) do
+        {:ok, message} -> {:ok, message}
+        {:error, error} -> {:error, error}
+      end
+    rescue
+      e -> {:error, e.message}
+    end
+  end
+
+  @doc """
   Checks hypervisor status.
   """
   def hypervisor_status(hypervisor) do

@@ -60,6 +60,8 @@ defmodule WebappWeb.Admin.HypervisorController do
         {:error, _} -> "unreachable"
       end
 
+    os_details = Hypervisors.update_hypervisor_os_details(hypervisor)
+
     conn =
       if status == "unreachable" do
         put_flash(conn, :error, "Hypervisor #{hypervisor.name} unreachable.")
@@ -67,7 +69,7 @@ defmodule WebappWeb.Admin.HypervisorController do
         conn
       end
 
-    render(conn, "show.html", hypervisor: hypervisor, status: status)
+    render(conn, "show.html", hypervisor: hypervisor, status: status, os_details: os_details)
   end
 
   def edit(conn, %{"id" => id}) do

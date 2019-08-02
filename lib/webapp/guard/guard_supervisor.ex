@@ -1,7 +1,7 @@
 defmodule Webapp.GuardSupervisor do
   use Supervisor
 
-  alias Webapp.Guard.MachineGuard
+  alias Webapp.Guard.{MachineGuard, HypervisorGuard}
 
   @doc """
   Starts the process supervisor.
@@ -13,7 +13,8 @@ defmodule Webapp.GuardSupervisor do
   @impl true
   def init(_arg) do
     children = [
-      MachineGuard
+      MachineGuard,
+      HypervisorGuard
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

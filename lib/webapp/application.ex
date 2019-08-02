@@ -14,7 +14,11 @@ defmodule Webapp.Application do
       WebappWeb.Endpoint,
       # Starts a worker by calling: Webapp.Worker.start_link(arg)
       # {Webapp.Worker, arg},
-      Webapp.GuardSupervisor
+      Webapp.GuardSupervisor,
+      {ConCache, [
+        name: :rh_cache,
+        ttl_check_interval: :timer.seconds(300),
+        global_ttl: :timer.seconds(300)]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

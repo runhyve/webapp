@@ -123,8 +123,9 @@ defmodule Webapp.Hypervisors do
       [%Hypervisor{}, ...]
 
   """
-  def list_hypervisors do
+  def list_hypervisors(preloads \\ [:hypervisor_type]) do
     Repo.all(Hypervisor)
+    |> Repo.preload(preloads)
   end
 
   @doc """
@@ -189,6 +190,29 @@ defmodule Webapp.Hypervisors do
   def get_hypervisor_by(field, value) when is_binary(field) do
     field = String.to_atom(field)
     Repo.get_by(Hypervisor, [{field, value}])
+  end
+
+  @doc """
+  Get cached details about hypervisor's operating system from cache
+  """
+  def get_hypervisor_os_details(%Hypervisor{} = hypervisor) do
+    module = get_hypervisor_module(hypervisor)
+
+    ConCache.get(:rh_cache, "hv_os_data_#{hypervisor.id}")
+  end
+
+  @doc """
+  Get details about hypervisor's operating system and store in cache
+  """
+  def update_hypervisor_os_details(%Hypervisor{} = hypervisor) do
+    module = get_hypervisor_module(hypervisor)
+
+    ConCache.get_or_store(:rh_cache, "hv_os_data_#{hypervisor.id}", fn() ->
+      case apply(module, :hypervisor_os_details, [hypervisor]) do
+        {:ok, message} -> message
+        {:error, _} -> %{}
+      end
+    end)
   end
 
   @doc """

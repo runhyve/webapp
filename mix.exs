@@ -29,7 +29,7 @@ defmodule Webapp.MixProject do
   def application do
     [
       mod: {Webapp.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :con_cache]
     ]
   end
 
@@ -65,7 +65,8 @@ defmodule Webapp.MixProject do
       {:ecto_network, "~> 1.1.0"},
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
       {:inet_cidr, "~> 1.0.0"},
-      {:iptools, "~> 0.0.2"}
+      {:iptools, "~> 0.0.2"},
+      {:con_cache, "~> 0.13"}
     ]
   end
 

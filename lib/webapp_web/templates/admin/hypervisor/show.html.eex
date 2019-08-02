@@ -11,6 +11,14 @@
 
 <div class="box columns">
   <div class="column">
+    <strong>OS:</strong>
+    <%= @os_details["kernel"]["name"] %> <%= @os_details["kernel"]["release"] %>
+    <strong>Uptime:</strong>
+    <%= @os_details["uptime"] %>
+  </div>
+</div>
+<div class="box columns is-multiline">
+  <div class="column">
     <ul>
       <li>
         <strong>Name:</strong>
@@ -31,6 +39,39 @@
         <strong>Type:</strong>
         <%= @hypervisor.hypervisor_type.name %>
       </li>
+    </ul>
+  </div>
+  <div class="column">
+    <ul>
+      <%= if Map.has_key?(@os_details, "memory") do %>
+        <li>
+          <strong>Memory:</strong>
+          <%= @os_details["memory"]["total"]/1024/1024/1024 |> Decimal.from_float() |> Decimal.round(2) %> GB
+        </li>
+      <% end %>
+      <%= if Map.has_key?(@os_details, "cpu") do %>
+        <li>
+          <strong>CPU:</strong>
+          <%= @os_details["cpu"]["model_name"] %>
+        </li>
+        <li>
+          <strong>CPU Cores:</strong>
+          <%= @os_details["cpu"]["total"] %>
+        </li>
+        <li>
+      <% end %>
+      <%= if Map.has_key?(@os_details, "dmi") && Map.has_key?(@os_details["dmi"], "system") do %>
+        <strong>Hardware:</strong>
+        </li>
+        <li>
+        <%= @os_details["dmi"]["system"]["manufacturer"] %> <%= @os_details["dmi"]["system"]["product_name"] %>
+        </li>
+        <strong>Serial Number:</strong>
+        </li>
+        <li>
+        <%= @os_details["dmi"]["system"]["serial_number"] %>
+        </li>
+      <% end %>
     </ul>
   </div>
   <div class="column">
