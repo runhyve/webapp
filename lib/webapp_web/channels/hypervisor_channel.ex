@@ -45,6 +45,21 @@ defmodule WebappWeb.HypervisorChannel do
     {:noreply, socket}
   end
 
+  def handle_in("hypervisor_os_data", payload, socket) do
+    hypervisor =
+      socket.assigns[:hypervisor_id]
+      |> Hypervisors.get_hypervisor!()
+
+    os_details = Hypervisors.get_hypervisor_os_details(hypervisor) 
+
+    response = %{
+      os_details: os_details
+    }
+
+    broadcast(socket, "os_details", response)
+    {:noreply, socket}
+  end
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true

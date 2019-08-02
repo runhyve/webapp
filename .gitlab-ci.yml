@@ -39,7 +39,9 @@ build_docker_image:
     REGISTRY_PATH: registry.gitlab.com/runhyve/webapp
     IMAGE_TAG: "$REGISTRY_PATH:$CI_COMMIT_REF_SLUG"
   services:
-  - docker:dind
+  - name: docker:dind
+    entrypoint: ["env", "-u", "DOCKER_HOST"]
+    command: ["dockerd-entrypoint.sh"]
   before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY_PATH
   script:
