@@ -61,6 +61,8 @@ defmodule WebappWeb.Admin.HypervisorController do
       end
 
     os_details = Hypervisors.update_hypervisor_os_details(hypervisor)
+    memory_details = Hypervisors.get_hypervisor_memory_details(hypervisor, os_details)
+    storage_details = Hypervisors.get_hypervisor_storage_details(hypervisor, os_details)
 
     conn =
       if status == "unreachable" do
@@ -69,7 +71,12 @@ defmodule WebappWeb.Admin.HypervisorController do
         conn
       end
 
-    render(conn, "show.html", hypervisor: hypervisor, status: status, os_details: os_details)
+    render(conn, "show.html",
+     hypervisor: hypervisor,
+     status: status,
+     os_details: os_details,
+     memory_details: memory_details,
+     storage_details: storage_details)
   end
 
   def edit(conn, %{"id" => id}) do

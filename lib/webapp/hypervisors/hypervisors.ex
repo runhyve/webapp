@@ -229,6 +229,37 @@ defmodule Webapp.Hypervisors do
   end
 
   @doc """
+  Return struct with Hypervisors' memory usage
+  """
+  def get_hypervisor_memory_details(%Hypervisor{} = hypervisor, os_details) do
+    if Map.has_key?(os_details, "memory") do
+      total_memory_mb = os_details["memory"]["total"]/1024/1024
+      booked_memory_mb = Enum.reduce(hypervisor.machines, 0, fn(v, acc) -> v.plan.ram + acc end)
+      booked_memory_pct = booked_memory_mb * 100 / total_memory_mb
+      resources = %{
+        :total_memory_mb => total_memory_mb |> Decimal.from_float() |> Decimal.round(2),
+        :booked_memory_mb => booked_memory_mb,
+        :booked_memory_pct =>  booked_memory_pct  |> Decimal.from_float() |> Decimal.round(2)
+      }
+    else
+      resources = %{}
+    end
+  end
+
+  @doc """
+  Return struct with Hypervisors' storage details
+  """
+  def get_hypervisor_storage_details(%Hypervisor{} = hypervisor, os_details) do
+    resources = if Map.has_key?(os_details, "zpools") do
+      %{
+        :zpools => os_details["zpools"]
+      }
+    else
+      %{}
+    end
+  end
+
+  @doc """
   Creates a hypervisor.
 
   ## Examples

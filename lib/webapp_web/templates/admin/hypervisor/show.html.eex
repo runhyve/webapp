@@ -9,92 +9,135 @@
 
 <%= render "_menu.html",  Map.put(assigns, :hide_status, false) %>
 
-<div class="box columns">
-  <div class="column">
+<div class="box">
+  <div>
     <strong>OS:</strong>
     <%= @os_details["kernel"]["name"] %> <%= @os_details["kernel"]["release"] %>
     <strong>Uptime:</strong>
     <%= @os_details["uptime"] %>
   </div>
 </div>
-<div class="box columns is-multiline">
-  <div class="column">
-    <ul>
-      <li>
-        <strong>Name:</strong>
-        <%= @hypervisor.name %>
-      </li>
-
-      <li>
-        <strong>FQDN:</strong>
-        <%= @hypervisor.fqdn %>
-      </li>
-
-      <li>
-        <strong>TLS:</strong>
-        <%= @hypervisor.tls %>
-      </li>
-
-      <li>
-        <strong>Type:</strong>
-        <%= @hypervisor.hypervisor_type.name %>
-      </li>
-    </ul>
-  </div>
-  <div class="column">
-    <ul>
-      <%= if Map.has_key?(@os_details, "memory") do %>
+<div class="box is-multiline is-gapless">
+  <div class="columns">
+    <div class="column">
+      <ul>
         <li>
-          <strong>Memory:</strong>
-          <%= @os_details["memory"]["total"]/1024/1024/1024 |> Decimal.from_float() |> Decimal.round(2) %> GB
-        </li>
-      <% end %>
-      <%= if Map.has_key?(@os_details, "cpu") do %>
-        <li>
-          <strong>CPU:</strong>
-          <%= @os_details["cpu"]["model_name"] %>
+          <strong>Name:</strong>
+          <%= @hypervisor.name %>
         </li>
         <li>
-          <strong>CPU Cores:</strong>
-          <%= @os_details["cpu"]["total"] %>
+          <strong>FQDN:</strong>
+          <%= @hypervisor.fqdn %>
         </li>
         <li>
-      <% end %>
-      <%= if Map.has_key?(@os_details, "dmi") && Map.has_key?(@os_details["dmi"], "system") do %>
-        <strong>Hardware:</strong>
+          <strong>TLS:</strong>
+          <%= @hypervisor.tls %>
         </li>
         <li>
-        <%= @os_details["dmi"]["system"]["manufacturer"] %> <%= @os_details["dmi"]["system"]["product_name"] %>
+          <strong>Type:</strong>
+          <%= @hypervisor.hypervisor_type.name %>
         </li>
-        <strong>Serial Number:</strong>
+      </ul>
+    </div>
+    <div class="column">
+      <ul>
+        <%= if Map.has_key?(@os_details, "memory") do %>
+          <li>
+            <strong>Memory:</strong>
+            <%= Decimal.div(@memory_details.total_memory_mb, 1024) |> Decimal.round(2) %> GB
+          </li>
+        <% end %>
+        <%= if Map.has_key?(@os_details, "cpu") do %>
+          <li>
+            <strong>CPU:</strong>
+            <%= @os_details["cpu"]["model_name"] %>
+          </li>
+          <li>
+            <strong>CPU Cores:</strong>
+            <%= @os_details["cpu"]["total"] %>
+          </li>
+          <li>
+        <% end %>
+        <%= if Map.has_key?(@os_details, "dmi") && Map.has_key?(@os_details["dmi"], "system") do %>
+          <strong>Hardware:</strong>
+          </li>
+          <li>
+          <%= @os_details["dmi"]["system"]["manufacturer"] %> <%= @os_details["dmi"]["system"]["product_name"] %>
+          </li>
+          <strong>Serial Number:</strong>
+          </li>
+          <li>
+          <%= @os_details["dmi"]["system"]["serial_number"] %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="column">
+      <ul>
+        <li>
+          <strong>Virtual Machines:</strong>
+          <%= length(@hypervisor.machines) %>
+        </li>
+        <%= if Map.has_key?(@memory_details, 'booked_memory_mb') do %>
+        <li>
+          <strong>Booked RAM:</strong>
+          <%= @memory_details.booked_memory_mb %> MB
+          (<%= @memory_details.booked_memory_pct %>%)
+        </li>
+        <%= end %>
+        <li>
+          <strong>Booked storage:</strong>
+          <%= Enum.reduce(@hypervisor.machines, 0, fn(v, acc) -> v.plan.storage + acc end) %> GB
         </li>
         <li>
-        <%= @os_details["dmi"]["system"]["serial_number"] %>
+          <strong>Income:</strong>
+          $<%= Enum.reduce(@hypervisor.machines, 0, fn(v, acc) -> v.plan.price + acc end) %>/mo
         </li>
-      <% end %>
-    </ul>
-  </div>
-  <div class="column">
-    <ul>
-      <li>
-        <strong>Virtual Machines:</strong>
-        <%= length(@hypervisor.machines) %>
-      </li>
-      <li>
-        <strong>Booked RAM:</strong>
-        <%= Enum.reduce(@hypervisor.machines, 0, fn(v, acc) -> v.plan.ram + acc end) %> MB
-      </li>
-      <li>
-        <strong>Booked storage:</strong>
-        <%= Enum.reduce(@hypervisor.machines, 0, fn(v, acc) -> v.plan.storage + acc end) %> GB
-      </li>
-      <li>
-        <strong>Income:</strong>
-        $<%= Enum.reduce(@hypervisor.machines, 0, fn(v, acc) -> v.plan.price + acc end) %>/mo
-      </li>
-    </ul>
+      </ul>
+    </div>
   </div>
 </div>
+<%= if Map.has_key?(@storage_details, :zpools) do %>
+  <div class="box">
+    <div class="has-text-centered"><strong>ZFS Pools</strong></div>
+    <div class="columns has-text-weight-bold">
+      <div class="column">
+        Pool Name
+      </div>
+      <div class="column">
+        Health
+      </div>
+      <div class="column">
+        Pool Size
+      </div>
+      <div class="column">
+        Pool Allocated
+      </div>
+      <div class="column">
+        Pool Free
+      </div>
+    </div>
+    <%= for {zpool, value} <- @storage_details[:zpools] do %>
+      <div class="columns">
+        <div class="column">
+          <%= zpool %>
+        </div>
+        <div class="column">
+          <%= @storage_details[:zpools][zpool]["health"] %> 
+        </div>
+        <div class="column">
+          <%= @storage_details[:zpools][zpool]["pool_size"] %> 
+        </div>
+        <div class="column">
+          <%= @storage_details[:zpools][zpool]["pool_allocated"] %> 
+        </div>
+        <div class="column">
+          <%= @storage_details[:zpools][zpool]["pool_free"] %>
+        </div>
+      </div>
+    <% end %>
+</div>
+<% end %>
 
 <div class="box" id="charts">
   <div class="columns is-multiline">
