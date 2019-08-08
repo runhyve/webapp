@@ -4,6 +4,7 @@ This repository contains web application to manage Runhyve hypervisors. It's wri
 HTTP API is used to communicate with hypervisors. 
 
 ![Machines Screenshot](https://gitlab.com/runhyve/webapp/raw/master/assets/static/images/screenshot-machines.png)
+Virtual machines view
 
 ### Development
 
@@ -68,6 +69,10 @@ Token is a random string generated during setup of the hypervisor. It's saved in
 $ sudo cat /usr/local/etc/nginx/.runhyvetoken
 c81f578d-c558-4623-a2d4-10ada9dcb431
 ```
+After succesfuly connecting to hypervisor you should be able to see its details:
+
+![Hypervisor Screenshot](https://gitlab.com/runhyve/webapp/raw/master/assets/static/images/screenshot-hypervisor.png)
+Hypervisor view
 
 ##### Downloading images to hypervisors
 
