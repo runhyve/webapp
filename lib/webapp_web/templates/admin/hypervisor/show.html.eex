@@ -78,7 +78,7 @@
           <strong>Virtual Machines:</strong>
           <%= length(@hypervisor.machines) %>
         </li>
-        <%= if Map.has_key?(@memory_details, 'booked_memory_mb') do %>
+        <%= if Map.has_key?(@memory_details, :booked_memory_mb) do %>
         <li>
           <strong>Booked RAM:</strong>
           <%= @memory_details.booked_memory_mb %> MB
