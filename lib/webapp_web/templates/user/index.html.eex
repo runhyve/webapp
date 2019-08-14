@@ -16,7 +16,7 @@
 </div>
 
 
-<table class="table container">
+<table class="table container is-fullwidth">
   <thead>
     <tr>
       <th>Name</th>
@@ -30,7 +30,7 @@
       <td><%= link user.name, to: Routes.user_path(@conn, :show, user) %></td>
       <td><%= user.inserted_at %></td>
 
-      <td>
+      <td class="has-text-right">
         <%= link "Show", to: Routes.user_path(@conn, :show, user), class: "button is-rounded" %>
         <%= link "Edit", to: Routes.user_path(@conn, :edit, user), class: "button is-rounded is-info" %>
         <%= link "Delete", to: Routes.user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger" %>
@@ -42,4 +42,3 @@
 <% end %>
   </tbody>
 </table>
-

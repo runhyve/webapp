@@ -20,7 +20,7 @@
   </div>
 </div>
 
-<table class="table container">
+<table class="table container is-fullwidth">
   <thead>
     <tr>
       <th>Name</th>
