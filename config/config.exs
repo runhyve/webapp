@@ -20,7 +20,7 @@ config :webapp, WebappWeb.Endpoint,
 # Phauxth authentication configuration
 config :phauxth,
   user_context: Webapp.Accounts,
-  crypto_module: Comeonin.Argon2,
+  crypto_module: Argon2,
   token_module: WebappWeb.Auth.Token
 
 # Mailer configuration

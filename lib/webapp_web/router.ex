@@ -15,8 +15,8 @@ defmodule WebappWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug WebappWeb.Authenticate
     plug Phauxth.Remember, create_session_func: &WebappWeb.Accounts.Utils.create_session/1
+    plug WebappWeb.Authenticate
     plug WebappWeb.TeamContext
   end
 
