@@ -6,7 +6,6 @@ defmodule WebappWeb.Auth.Login do
 
   use Phauxth.Login.Base
 
-  alias Comeonin.Argon2
   alias Webapp.Accounts
 
   @impl true
