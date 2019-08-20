@@ -4,8 +4,8 @@
 import css from "../css/app.scss"
 
 // BulmaJS
-import Bulma from '@vizuaalog/bulmajs';
-
+import Notification from '@vizuaalog/bulmajs/src/plugins/notification';
+import Dropdown from '@vizuaalog/bulmajs/src/plugins/dropdown';
 
 // webpack automatically bundles all modules in your
 // entry points. Those entry points can be configured
@@ -22,3 +22,6 @@ import "phoenix_html"
 
 import slugify from './text/slugify'
 slugify()
+
+import navbarToggle from './components/navbar'
+navbarToggle()

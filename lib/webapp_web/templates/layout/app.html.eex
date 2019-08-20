@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="has-navbar-fixed-top">
 
 <head>
   <meta charset="utf-8" />
@@ -10,7 +10,7 @@
 </head>
 
 <body>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar  is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="/">
         <img src="<%= Routes.static_path(@conn, "/images/runhyve-logo.svg") %>" class="is-large" alt="Runhyve" />
@@ -20,9 +20,15 @@
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
+          <a class="navbar-burger sidebar-toggle" role="button" data-target="sidebar" aria-label="menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </a>
+
           <%= if @current_user do %>
           <%= if @current_team do %>
-          <div class="dropdown is-hoverable">
+          <div class="dropdown is-right">
             <div class="dropdown-trigger">
               <button class="button is-rounded is-info" aria-haspopup="true" aria-controls="dropdown-menu">
                 <span><%= @current_team.name %></span>
@@ -56,12 +62,12 @@
         </div>
       </div>
     </div>
-  </nav>
+  </div>
 
   <section id="main" class="">
-    <div class="columns is-stretched">
+
       <%= if @current_user do %>
-      <div class="column box is-2 is-radiusless is-gapless is-shadowless section" id="sidebar">
+      <aside class="sidebar" id="sidebar">
         <aside class="menu">
           <p class="menu-label">
             <span class="icon">
@@ -90,10 +96,10 @@
           </ul>
           <% end %>
         </aside>
-      </div>
+      </aside>
       <% end %>
 
-      <div class="column section" id="main-content">
+      <section class="main-content" id="main-content">
         <div id="notifications">
           <%= if info = get_flash(@conn, :info) do %>
           <div class="notification is-info" role="alert"> <button class="delete"></button><%= info %></div>
@@ -104,7 +110,7 @@
         </div>
 
         <%= render @view_module, @view_template, assigns %>
-      </div>
+      </section>
     </div>
   </section>
 

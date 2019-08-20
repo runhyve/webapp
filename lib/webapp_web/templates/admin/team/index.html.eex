@@ -28,8 +28,8 @@
   <tbody>
 <%= for team <- @teams do %>
     <tr>
-      <td><%= link team.name, to: Routes.team_path(@conn, :show, team) %></td>
-      <td><%= team.namespace %></td>
+      <td data-header="Name"><%= link team.name, to: Routes.team_path(@conn, :show, team) %></td>
+      <td data-header="Namespace"><%= team.namespace %></td>
 
       <td>
         <%= link "Show", to: Routes.team_path(@conn, :show, team), class: "button is-rounded"  %>

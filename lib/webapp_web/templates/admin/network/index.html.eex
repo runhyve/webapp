@@ -32,9 +32,9 @@
   <tbody>
 <%= for network <- @networks do %>
     <tr>
-      <td><%= link network.name, to: Routes.admin_network_path(@conn, :show, network) %></td>
-      <td><%= network.network %></td>
-      <td><%= link @hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, @hypervisor) %></td>
+      <td data-header="Name"><%= link network.name, to: Routes.admin_network_path(@conn, :show, network) %></td>
+      <td data-header="Network"><%= network.network %></td>
+      <td data-header="Hypervisor"><%= link @hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, @hypervisor) %></td>
 
       <td class="has-text-right">
         <%= link "Show", to: Routes.admin_network_path(@conn, :show, network), class: "button is-rounded" %>
