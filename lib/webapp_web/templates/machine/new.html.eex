@@ -51,7 +51,7 @@
 
         <%= for plan <- @plans do %>
           
-          <div class="column is-one-third">
+          <div class="column">
             <%= radio_button(f, :plan_id, plan.id, id: "plan-#{plan.id}", class: "is-hidden") %>
 
             <label class="box" for="plan-<%= plan.id %>">

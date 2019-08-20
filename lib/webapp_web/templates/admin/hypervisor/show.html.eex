@@ -17,7 +17,7 @@
     <%= @os_details["uptime"] %>
   </div>
 </div>
-<div class="box is-multiline is-gapless">
+<div class="box is-multiline">
   <div class="columns">
     <div class="column">
       <ul>

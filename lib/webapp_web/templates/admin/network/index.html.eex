@@ -20,7 +20,7 @@
   </div>
 </div>
 
-<table class="table container is-fullwidth">
+<table class="table is-fullwidth">
   <thead>
     <tr>
       <th>Name</th>
@@ -36,7 +36,7 @@
       <td><%= network.network %></td>
       <td><%= link @hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, @hypervisor) %></td>
 
-      <td>
+      <td class="has-text-right">
         <%= link "Show", to: Routes.admin_network_path(@conn, :show, network), class: "button is-rounded" %>
         <%= link "Edit", to: Routes.admin_network_path(@conn, :edit, network), class: "button is-rounded is-info" %>
         <%= link "Delete", to: Routes.admin_network_path(@conn, :delete, network), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger" %>

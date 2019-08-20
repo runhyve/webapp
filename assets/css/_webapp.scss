@@ -6,10 +6,13 @@ body {
 
 #main {
   flex: 1;
+  display: flex;
 }
 
 .columns.is-stretched  {
   align-items: stretch;
+  width: 100%;
+  margin: 0;
 }
 
 .tabs a {
@@ -19,13 +22,17 @@ body {
   }
 }
 
+.navbar-item img {
+  max-height: 3rem;
+}
+
 .radio-boxes {
   span {
     display: block;
   }
 
   label {
-    display: block;  
+    display: block;
 
     &.box {
       height: 100%;
@@ -238,4 +245,15 @@ body {
     }
   }
 
+}
+
+.is-fullwidth {
+  width: 100%;
+}
+
+
+.box {
+  &.is-gapless {
+    margin: 0;
+  }
 }
