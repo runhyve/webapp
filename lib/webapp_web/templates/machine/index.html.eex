@@ -58,8 +58,8 @@
   <tbody>
     <%= for machine <- @machines do %>
     <tr id="machine-<%= machine.id %>">
-      <td><%= link machine.name, to: team_path(:machine_path, @conn, :show, machine) %></td>
-      <td>
+      <td data-header="Name"><%= link machine.name, to: team_path(:machine_path, @conn, :show, machine) %></td>
+      <td data-header="Status">
         <div class="tags has-addons">
           <span class="tag status status-icon <%= map_status_to_css(machine.last_status) %>"
             data-status="<%= map_status_to_css(machine.last_status) %>"><i
@@ -68,14 +68,14 @@
             data-status="<%= map_status_to_css(machine.last_status) %>"><%= machine.last_status %></span>
         </div>
       </td>
-      <td>
+      <td data-header="Distribution">
         <%= if machine.distribution do %>
         <%= machine.distribution.name %> <%= machine.distribution.version %>
         <%= end %>
       </td>
-      <td><%= machine.hypervisor.name %></td>
-      <td><%= machine.plan.name %></td>
-      <td>$<%= machine.plan.price %>/mo</td>
+      <td data-header="Region"><%= machine.hypervisor.name %></td>
+      <td data-header="Plan"><%= machine.plan.name %></td>
+      <td data-header="Cost">$<%= machine.plan.price %>/mo</td>
       <td>
         <%= link to: team_path(:machine_path, @conn, :console, machine), class: "button is-rounded is-small is-black" do %>
         <span class="icon"><i class="fas fa-terminal"></i></span>

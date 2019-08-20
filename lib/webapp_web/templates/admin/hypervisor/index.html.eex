@@ -27,10 +27,10 @@
   <tbody>
 <%= for hypervisor <- @hypervisors do %>
     <tr>
-      <td><%= link hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, hypervisor) %></td>
-      <td><%= hypervisor.fqdn %></td>
+      <td data-header="Name"><%= link hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, hypervisor) %></td>
+      <td data-header="FQDN"><%= hypervisor.fqdn %></td>
 
-      <td class="has-text-right">
+      <td data-header="" class="has-text-right">
         <%= link "Show", to: Routes.admin_hypervisor_path(@conn, :show, hypervisor), class: "button is-rounded"  %>
         <%= link "Edit", to: Routes.admin_hypervisor_path(@conn, :edit, hypervisor), class: "button is-rounded is-info"  %>
         <%= link "Delete", to: Routes.admin_hypervisor_path(@conn, :delete, hypervisor), method: :delete, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger"  %>

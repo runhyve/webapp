@@ -28,8 +28,8 @@
   <tbody>
 <%= for user <- @users do %>
     <tr>
-      <td><%= link user.name, to: Routes.user_path(@conn, :show, user) %></td>
-      <td><%= user.inserted_at %></td>
+      <td data-header="Name"><%= link user.name, to: Routes.user_path(@conn, :show, user) %></td>
+      <td data-header="Created"><%= user.inserted_at %></td>
 
       <td class="has-text-right">
         <%= link "Show", to: Routes.user_path(@conn, :show, user), class: "button is-rounded" %>

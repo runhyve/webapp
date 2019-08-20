@@ -30,11 +30,11 @@
   <tbody>
 <%= for ip_pool <- @ip_pools do %>
     <tr>
-      <td><%= ip_pool.name %></td>
-      <td><%= ip_pool.network.name %></td>
-      <td><%= ip_pool.netmask %></td>
-      <td><%= ip_pool.gateway %></td>
-      <td><%= Enum.count(ip_pool.ipv4) %> / <%= count_used_ips(ip_pool.ipv4) %></td>
+      <td data-header="Name"><%= ip_pool.name %></td>
+      <td data-header="Network"><%= ip_pool.network.name %></td>
+      <td data-header="Netmask"><%= ip_pool.netmask %></td>
+      <td data-header="Gateway"><%= ip_pool.gateway %></td>
+      <td data-header="Aavailable / Used"><%= Enum.count(ip_pool.ipv4) %> / <%= count_used_ips(ip_pool.ipv4) %></td>
       <td>
         <%= link "Show", to: Routes.admin_ip_pool_path(@conn, :show, ip_pool), class: "button is-rounded"  %>
       </td>

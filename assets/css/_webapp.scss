@@ -89,7 +89,6 @@ body {
     background-position: -1px -6px;
     background-size: 175%
   }
-
 }
 
 .distributions {
@@ -256,4 +255,51 @@ body {
   &.is-gapless {
     margin: 0;
   }
+}
+
+@media (max-width: 1008px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    display: none;
+  }
+
+  tr {
+    border: 1px solid #ccc;
+  }
+
+  td {
+    border: none;
+    border-bottom: 1px solid #eee !important;
+    position: relative;
+    padding-left: 200px;
+    margin-left: 150px;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  td:before {
+    position: absolute;
+    top: 12px;
+    left: 6px;
+    width: 200px;
+    padding-right: 40px;
+    white-space: nowrap;
+    margin-left: -150px;
+  }
+
+  td:nth-of-type(1):before { content: attr(data-header); }
+  td:nth-of-type(2):before { content: attr(data-header); }
+  td:nth-of-type(3):before { content: attr(data-header); }
+  td:nth-of-type(4):before { content: attr(data-header); }
+  td:nth-of-type(5):before { content: attr(data-header); }
+  td:nth-of-type(6):before { content: attr(data-header); }
+  td:nth-of-type(7):before { content: attr(data-header); }
 }

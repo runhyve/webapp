@@ -52,7 +52,7 @@
       <th>Name</th>
       <th></th>
       <th>Distribution</th>
-      <th>Hypervisor</th>
+      <th>Region</th>
       <th>Plan</th>
       <th>Networks</th>
     </tr>
@@ -60,22 +60,22 @@
   <tbody>
 <%= for machine <- @machines do %>
     <tr id="machine-<%= machine.id %>">
-      <td><%= link machine.name, to: Routes.machine_path(@conn, :show, machine) %></td>
-      <td>
+      <td data-header="Name"><%= link machine.name, to: Routes.machine_path(@conn, :show, machine) %></td>
+      <td data-header="Status">
         <div class="tags has-addons">
           <span class="tag status status-icon <%= map_status_to_css(machine.last_status) %>" data-status="<%= map_status_to_css(machine.last_status) %>"><i class="<%= status_icon(machine.last_status) %>"></i></span>
           <span class="tag status <%= map_status_to_css(machine.last_status) %>" data-status="<%= map_status_to_css(machine.last_status) %>"><%= machine.last_status %></span>
         </div>
       </td>
-      <td>
+      <td data-header="Distribution">
         <%= if machine.distribution do %>
           <%= machine.distribution.name %> <%= machine.distribution.version %>
         <%= end %>
       </td>
-      <td><%= link machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, machine.hypervisor) %></td>
-      <td><%= link machine.plan.name, to: Routes.admin_plan_path(@conn, :show, machine.plan) %></td>
+      <td data-header="Region"><%= link machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, machine.hypervisor) %></td>
+      <td data-header="Plan"><%= link machine.plan.name, to: Routes.admin_plan_path(@conn, :show, machine.plan) %></td>
 
-      <td><ul>
+      <td data-header="Networks"><ul>
         <%= for network <- machine.networks do %>
            <li><%= link "#{network.name} (#{network.network})", to: Routes.admin_network_path(@conn, :show, network) %></li>
         <% end %>

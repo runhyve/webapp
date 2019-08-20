@@ -31,11 +31,11 @@
   <tbody>
 <%= for plan <- @plans do %>
     <tr>
-      <td><%= link plan.name, to: Routes.admin_plan_path(@conn, :show, plan) %></td>
-      <td><%= plan.price %></td>
-      <td><%= plan.storage %></td>
-      <td><%= plan.ram %></td>
-      <td><%= plan.cpu %></td>
+      <td data-header="Name"><%= link plan.name, to: Routes.admin_plan_path(@conn, :show, plan) %></td>
+      <td data-header="Price"><%= plan.price %></td>
+      <td data-header="Storage"><%= plan.storage %></td>
+      <td data-header="Ram"><%= plan.ram %></td>
+      <td data-header="CPU"><%= plan.cpu %></td>
 
       <td class="has-text-right">
         <%= link "Show", to: Routes.admin_plan_path(@conn, :show, plan), class: "button is-rounded"  %>
