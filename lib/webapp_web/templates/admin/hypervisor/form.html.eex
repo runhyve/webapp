@@ -1,4 +1,4 @@
-<div class="box">
+<div class="box container">
   <%= form_for @changeset, @action, fn f -> %>
     <%= if @changeset.action do %>
       <div class="notification is-danger">

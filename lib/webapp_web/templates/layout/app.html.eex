@@ -1,127 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Webapp · Phoenix Framework</title>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
-  </head>
-  <body>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="container">
-          <div class="navbar-brand">
-            <a class="navbar-item" href="/">
-               <img src="/images/runhyve-logo.svg">
-            </a>
 
-            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-            </a>
-          </div>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Webapp · Phoenix Framework</title>
+  <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>" />
+</head>
 
-          <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-              <%= if @current_user do %>
-                <%= link "My Machines", to: team_path(:machine_path, @conn, :index), class: "navbar-item" %>
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="<%= Routes.static_path(@conn, "/images/runhyve-logo.svg") %>" class="is-large" alt="Runhyve" />
+      </a>
+    </div>
 
-                  <%= if @current_user.role == "Administrator" do %>
-                  <div class="navbar-item dropdown is-hoverable">
-                    <div class="dropdown-trigger">
-                      <button class="button is-rounded" aria-haspopup="true" aria-controls="dropdown-menu">
-                        <span>Admin</span>
-                        <span class="icon is-small">
-                          <i class="fas fa-angle-down" aria-hidden="true"></i>
-                        </span>
-                      </button>
-                    </div>
-
-                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                      <div class="dropdown-content">
-                        <%= link "Plans", to: Routes.admin_plan_path(@conn, :index), class: "dropdown-item" %>
-                        <%= link "Hypervisors", to: Routes.admin_hypervisor_path(@conn, :index), class: "dropdown-item" %>
-                        <%= link "Machines", to: Routes.admin_machine_path(@conn, :index), class: "dropdown-item" %>
-                        <%= link "IP Pools", to: Routes.admin_ip_pool_path(@conn, :index), class: "dropdown-item" %>
-                        <%= link "Users", to: Routes.admin_user_path(@conn, :index), class: "dropdown-item" %>
-                        <%= link "Teams", to: Routes.admin_team_path(@conn, :index), class: "dropdown-item" %>
-                       </div>
-                    </div>
-                  </div>
-                  <% end %>
-              <% end %>
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          <%= if @current_user do %>
+          <%= if @current_team do %>
+          <div class="dropdown is-hoverable">
+            <div class="dropdown-trigger">
+              <button class="button is-rounded is-info" aria-haspopup="true" aria-controls="dropdown-menu">
+                <span><%= @current_team.name %></span>
+                <span class="icon is-small">
+                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                </span>
+              </button>
             </div>
-
-            <div class="navbar-end">
-              <div class="navbar-item">
-                <div class="buttons">
-                <%= if @current_user do %>
-
-                    <%= if @current_team do %>
-                    <div class="dropdown is-hoverable">
-                      <div class="dropdown-trigger">
-                        <button class="button is-rounded is-info" aria-haspopup="true" aria-controls="dropdown-menu">
-                          <span><%= @current_team.name %></span>
-                          <span class="icon is-small">
-                            <i class="fas fa-angle-down" aria-hidden="true"></i>
-                          </span>
-                        </button>
-                      </div>
-                      <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                        <div class="dropdown-content">
-                          <%= for team <- @current_user.teams do %>
-                            <%= link "#{team.name}", to: switch_team_path(@conn, team), class: "dropdown-item" %>
-                          <% end %>
-
-                          <hr class="dropdown-divider">
-                          <%= link "My Teams", to: Routes.user_path(@conn, :teams, @current_user), class: "dropdown-item" %>
-                          <%= link "My Profile", to: Routes.user_path(@conn, :show, @current_user), class: "dropdown-item" %>
-                          <hr class="dropdown-divider">
-                          <%= link "Logout", to: Routes.session_path(@conn, :delete, current_session(@conn)), method: :delete, class: "dropdown-item" %>
-                        </div>
-                      </div>
-                    </div>
-                    <% end %>
-
-                  <% else %>
-                    <a href="<%= Routes.user_path(@conn, :new) %>" class="button is-rounded is-primary">
-                      <strong>Sign up</strong>
-                    </a>
-                    <a href="<%= Routes.session_path(@conn, :new) %>" class="button is-rounded is-light">
-                      Log in
-                    </a>
-                  <% end %>
-                </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+              <div class="dropdown-content">
+                <%= for team <- @current_user.teams do %>
+                <%= link "#{team.name}", to: switch_team_path(@conn, team), class: "dropdown-item" %>
+                <% end %>
+                <hr class="dropdown-divider">
+                <%= link "My Teams", to: Routes.user_path(@conn, :teams, @current_user), class: "dropdown-item" %>
+                <%= link "My Profile", to: Routes.user_path(@conn, :show, @current_user), class: "dropdown-item" %>
+                <hr class="dropdown-divider">
+                <%= link "Logout", to: Routes.session_path(@conn, :delete, current_session(@conn)), method: :delete, class: "dropdown-item" %>
               </div>
             </div>
           </div>
-      </div>
-    </nav>
-
-    <section id="main" class="section">
-      <div class="container">
-        <div id="notifications">
-          <%= if info = get_flash(@conn, :info) do %>
-            <div class="notification is-info" role="alert"> <button class="delete"></button><%= info %></div>
           <% end %>
-          <%= if error = get_flash(@conn, :error) do %>
-            <div class="notification is-danger" role="alert"> <button class="delete"></button><%= error %></div>
+          <% else %>
+          <a href="<%= Routes.user_path(@conn, :new) %>" class="button is-rounded is-primary">
+            <strong>Sign up</strong>
+          </a>
+          <a href="<%= Routes.session_path(@conn, :new) %>" class="button is-rounded is-light">
+            Log in
+          </a>
           <% end %>
         </div>
+      </div>
+    </div>
+  </nav>
+
+  <section id="main" class="">
+    <div class="columns is-stretched">
+      <%= if @current_user do %>
+      <div class="column box is-2 is-radiusless is-gapless is-shadowless section" id="sidebar">
+        <aside class="menu">
+          <p class="menu-label">
+            <span class="icon">
+              <i class="fas fa-microchip"></i>
+            </span>
+            Compute
+          </p>
+          <ul class="menu-list">
+            <li><%= link "Machines", to: team_path(:machine_path, @conn, :index) %></li>
+          </ul>
+          <hr />
+          <%= if @current_user.role == "Administrator" do %>
+          <p class="menu-label">
+            <span class="icon">
+              <i class="fas fa-cog"></i>
+            </span>
+            Administration
+          </p>
+          <ul class="menu-list">
+            <li><%= link "Plans", to: Routes.admin_plan_path(@conn, :index) %></li>
+            <li><%= link "Hypervisors", to: Routes.admin_hypervisor_path(@conn, :index) %></li>
+            <li><%= link "Machines", to: Routes.admin_machine_path(@conn, :index) %></li>
+            <li><%= link "IP Pools", to: Routes.admin_ip_pool_path(@conn, :index) %></li>
+            <li><%= link "Users", to: Routes.admin_user_path(@conn, :index) %></li>
+            <li><%= link "Teams", to: Routes.admin_team_path(@conn, :index) %></li>
+          </ul>
+          <% end %>
+        </aside>
+      </div>
+      <% end %>
+
+      <div class="column section" id="main-content">
+        <div id="notifications">
+          <%= if info = get_flash(@conn, :info) do %>
+          <div class="notification is-info" role="alert"> <button class="delete"></button><%= info %></div>
+          <% end %>
+          <%= if error = get_flash(@conn, :error) do %>
+          <div class="notification is-danger" role="alert"> <button class="delete"></button><%= error %></div>
+          <% end %>
+        </div>
+
         <%= render @view_module, @view_template, assigns %>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <footer class="footer">
-      <div class="content has-text-centered">
-        <p>
-          Powered by <strong><a href="https://runhyve.app">Runhyve</a></strong> <%= version() %>.<br />
-          Made with <i class="has-text-danger fa fa-heart"></i> in Poland.
-        </p>
-      </div>
-    </footer>
-
-    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
-  </body>
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p>
+        Powered by <strong><a href="https://runhyve.app">Runhyve</a></strong> <%= version() %>.<br />
+        Made with <i class="has-text-danger fa fa-heart"></i> in Poland.
+      </p>
+    </div>
+  </footer>
+  <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+</body>
 </html>
