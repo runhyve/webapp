@@ -69,7 +69,12 @@
       </td>
       <td data-header="Distribution">
         <%= if machine.distribution do %>
-          <%= machine.distribution.name %> <%= machine.distribution.version %>
+          <span class="distributions--wrapper is-small">
+            <span class="distributions distributions-<%= String.downcase(machine.distribution.name) %>"></span>
+          </span>
+          <span class="distributions--name">
+            <%= machine.distribution.name %> <%= machine.distribution.version %>
+          </span>
         <%= end %>
       </td>
       <td data-header="Region"><%= link machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, machine.hypervisor) %></td>

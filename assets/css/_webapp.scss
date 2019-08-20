@@ -93,11 +93,10 @@ body {
 
 .distributions {
   display: block;
-  background: url(../static/images/plans.png) 0 0 no-repeat;
   width: 100px;
   height: 100px;
   margin: 10px auto;
-  background-position: -400px -400px;
+  background: url(../static/images/plans.png) no-repeat -400px -400px;
 
   &[class*="netbsd"] {
     width: 100px;
@@ -193,6 +192,26 @@ body {
     width: 100px;
     height: 84px;
     background-position: 0 -460px;
+  }
+
+  &--wrapper {
+    &.is-small {
+      width: 33px;
+      height: 27px;
+      display: inline-block;
+      vertical-align: middle;
+
+      & > .distributions {
+        transform: scale(0.33);
+        transform-origin: top;
+        margin: 0 auto 0 -33px;
+        position: absolute;
+      }
+    }
+
+    &--name {
+      display: inline-block;
+    }
   }
 }
 
