@@ -69,7 +69,9 @@
       </td>
       <td>
         <%= if machine.distribution do %>
-          <%= machine.distribution.name %> <%= machine.distribution.version %>
+        <span class="tooltip distributions--wrapper is-small" data-tooltip="<%= machine.distribution.name %> <%= machine.distribution.version %>">
+          <span class="distributions distributions-<%= String.downcase(machine.distribution.name) %>" />
+        </span>
         <%= end %>
       </td>
       <td><%= link machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, machine.hypervisor) %></td>
