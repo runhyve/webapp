@@ -70,9 +70,12 @@
       </td>
       <td>
         <%= if machine.distribution do %>
-        <span class="tooltip distributions--wrapper is-small" data-tooltip="<%= machine.distribution.name %> <%= machine.distribution.version %>">
-          <span class="is-small distributions distributions-<%= String.downcase(machine.distribution.name) %>" />
-        </span>
+          <span class="distributions--wrapper is-small">
+            <span class="distributions distributions-<%= String.downcase(machine.distribution.name) %>"></span>
+          </span>
+          <span class="distributions--name">
+            <%= machine.distribution.name %> <%= machine.distribution.version %>
+          </span>
         <%= end %>
       </td>
       <td><%= machine.hypervisor.name %></td>

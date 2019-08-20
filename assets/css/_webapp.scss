@@ -199,7 +199,8 @@ body {
     &.is-small {
       width: 33px;
       height: 27px;
-      display: block;
+      display: inline-block;
+      vertical-align: middle;
 
       & > .distributions {
         transform: scale(0.33);
@@ -207,6 +208,10 @@ body {
         margin: 0 auto 0 -33px;
         position: absolute;
       }
+    }
+
+    &--name {
+      display: inline-block;
     }
   }
 }
