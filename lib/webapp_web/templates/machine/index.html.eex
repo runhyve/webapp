@@ -2,8 +2,8 @@
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
     <%= if @hypervisor do %>
-      <li><%= link "Hypervisors", to: team_path(:admin_hypervisor_path, @conn, :index) %></li>
-      <li><%= link @hypervisor.name, to: team_path(:admin_hypervisor_path, @conn, :show, @hypervisor)  %></li>
+    <li><%= link "Hypervisors", to: team_path(:admin_hypervisor_path, @conn, :index) %></li>
+    <li><%= link @hypervisor.name, to: team_path(:admin_hypervisor_path, @conn, :show, @hypervisor)  %></li>
     <% end %>
 
     <li class="is-active"><a>Machines</a></li>
@@ -19,27 +19,27 @@
 
   <div class="level-right">
     <%= if @hypervisor do %>
-      <span><%= link "New Machine", to: team_path(:machine_path, @conn, :new, @hypervisor), class: "button is-rounded is-primary" %></span>
+    <span><%= link "New Machine", to: team_path(:machine_path, @conn, :new, @hypervisor), class: "button is-rounded is-primary" %></span>
     <% else %>
-      <%= if !Enum.empty?(@hypervisors) do %>
-      <div class="dropdown is-hoverable">
-        <div class="dropdown-trigger">
-          <button class="button is-rounded is-primary" aria-haspopup="true" aria-controls="dropdown-menu">
-            <span>New machine</span>
-            <span class="icon is-small">
-              <i class="fas fa-angle-down" aria-hidden="true"></i>
-            </span>
-          </button>
-        </div>
-        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-          <div class="dropdown-content">
-            <%= for hypervisor <- @hypervisors do %>
-              <%= link "#{hypervisor.name}", to: team_path(:machine_path, @conn, :new, hypervisor), class: "dropdown-item" %>
-            <% end %>
-          </div>
+    <%= if !Enum.empty?(@hypervisors) do %>
+    <div class="dropdown is-hoverable">
+      <div class="dropdown-trigger">
+        <button class="button is-rounded is-primary" aria-haspopup="true" aria-controls="dropdown-menu">
+          <span>New machine</span>
+          <span class="icon is-small">
+            <i class="fas fa-angle-down" aria-hidden="true"></i>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          <%= for hypervisor <- @hypervisors do %>
+          <%= link "#{hypervisor.name}", to: team_path(:machine_path, @conn, :new, hypervisor), class: "dropdown-item" %>
+          <% end %>
         </div>
       </div>
-      <% end %>
+    </div>
+    <% end %>
     <% end %>
   </div>
 </div>
@@ -52,52 +52,77 @@
       <th>Region</th>
       <th>Plan</th>
       <th>Cost</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
-<%= for machine <- @machines do %>
+    <%= for machine <- @machines do %>
     <tr id="machine-<%= machine.id %>">
       <td><%= link machine.name, to: team_path(:machine_path, @conn, :show, machine) %></td>
       <td>
         <div class="tags has-addons">
-          <span class="tag status status-icon <%= map_status_to_css(machine.last_status) %>" data-status="<%= map_status_to_css(machine.last_status) %>"><i class="<%= status_icon(machine.last_status) %>"></i></span>
-          <span class="tag status <%= map_status_to_css(machine.last_status) %>" data-status="<%= map_status_to_css(machine.last_status) %>"><%= machine.last_status %></span>
+          <span class="tag status status-icon <%= map_status_to_css(machine.last_status) %>"
+            data-status="<%= map_status_to_css(machine.last_status) %>"><i
+              class="<%= status_icon(machine.last_status) %>"></i></span>
+          <span class="tag status <%= map_status_to_css(machine.last_status) %>"
+            data-status="<%= map_status_to_css(machine.last_status) %>"><%= machine.last_status %></span>
         </div>
       </td>
       <td>
         <%= if machine.distribution do %>
-          <%= machine.distribution.name %> <%= machine.distribution.version %>
+        <%= machine.distribution.name %> <%= machine.distribution.version %>
         <%= end %>
       </td>
       <td><%= machine.hypervisor.name %></td>
       <td><%= machine.plan.name %></td>
       <td>$<%= machine.plan.price %>/mo</td>
-
+      <td>
+        <%= link to: team_path(:machine_path, @conn, :console, machine), class: "button is-rounded is-small is-black" do %>
+        <span class="icon"><i class="fas fa-terminal"></i></span>
+        <%= end %>
+        <%= if machine_can_do?(machine, :start) do %>
+        <%= link to: team_path(:machine_path, @conn, :start, machine), class: "button is-rounded is-small is-success", method: :post, class: "has-text-success" do %>
+        <span class="icon"><i class="fas fa-lg fa-play-circle"></i></span>
+        <%= end %>
+        <%= end %>
+        <%= if machine_can_do?(machine, :stop) do %>
+        <%= link to: team_path(:machine_path, @conn, :stop, machine), class: "button is-rounded is-small is-danger", method: :post, data: [confirm: "Are you sure?"], class: "has-text-danger" do %>
+        <span class="icon"><i class="fas fa-lg fa-stop-circle"></i></span>
+        <%= end %>
+        <% end %>
+      </td>
     </tr>
-<% end %>
-<%= if Enum.empty?(@hypervisors) do %>
+    <% end %>
+    <%= if Enum.empty?(@hypervisors) do %>
     <%= if @current_user.role == "Administrator" do %>
-      <tr><td colspan="3">No hypervisors available. You should <%= link "add one", to: Routes.admin_hypervisor_path(@conn, :new) %> first</td></tr>
-    <%= else %>
-      <tr><td colspan="3">No hypervisors available. Administrator should add one first.</td></tr>
-    <%= end %>
-<%= else %>
-  <%= if Enum.empty?(@machines) do %>
-    <tr><td colspan="3">Empty here, add a machine...</td></tr>
-  <%= else %>
     <tr>
-      <td colspan="4"></td>
+      <td colspan="3">No hypervisors available. You should
+        <%= link "add one", to: Routes.admin_hypervisor_path(@conn, :new) %> first</td>
+    </tr>
+    <%= else %>
+    <tr>
+      <td colspan="3">No hypervisors available. Administrator should add one first.</td>
+    </tr>
+    <%= end %>
+    <%= else %>
+    <%= if Enum.empty?(@machines) do %>
+    <tr>
+      <td colspan="3">Empty here, add a machine...</td>
+    </tr>
+    <%= else %>
+    <tr>
+      <td colspan="5"></td>
       <td class="has-text-weight-bold has-text-right">Total:</td>
       <td>$<%= Enum.reduce(@machines, 0, fn(v, acc) -> v.plan.price + acc end) %>/mo</td>
     </tr>
-  <% end %>
-<%= end %>
+    <%= end %>
+    <%= end %>
   </tbody>
 </table>
 
 <script type="text/javascript">
-var team = {
-  id: <%= @current_team.id %>
-}
+  var team = {
+    id: <%= @current_team.id %>
+  }
 </script>
 <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/team.js") %>"></script>
