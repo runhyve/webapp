@@ -80,13 +80,12 @@ We included few popular Distributions in development database. At this moment th
 downloaded automatically on hypervisors so you need to do it manually.
 For each image in `priv/repo/seeds.exs` you need issue this command on the hypervisor:
 ```
-cd /opt/runhyve/vm-bhyve
-./vm img <image url>
+vm img <image url>
 ``` 
 
 After importing images you can list them:
 ```
-./vm img
+vm img
 DATASTORE           FILENAME
 default             Fedora-Cloud-Base-29-1.2.x86_64.raw
 default             FreeBSD-12.0-RELEASE-amd64.raw
