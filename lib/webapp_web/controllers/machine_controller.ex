@@ -16,7 +16,7 @@ defmodule WebappWeb.MachineController do
   plug :load_resource,
     model: Machine,
     non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks, :distribution]
+    preload: [:hypervisor, :plan, :networks, :distribution, ipv4: [:ip_pool]]
 
   plug :authorize_resource,
     current_user: :current_member,

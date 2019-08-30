@@ -15,6 +15,18 @@
       <%= @machine.name %>
     </li>
 
+    <%= for ip <- @machine.ipv4 do %>
+    <li>
+      <strong>IP:</strong>
+      <%= ip.ip %>
+      <strong>Gateway:</strong>
+      <%= ip.ip_pool.gateway %>
+
+      <strong>Netmask:</strong>
+      <%= ip.ip_pool.netmask %>
+    </li>
+    <% end %>
+
     <li>
       <strong>Distribution:</strong>
       <%= if @machine.distribution do %>
