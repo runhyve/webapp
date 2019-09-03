@@ -48,6 +48,13 @@ build_docker_image:
   - docker build -t $IMAGE_TAG --build-arg $SECRET_KEY_BASE -f Dockerfile.prod .
   - docker push $IMAGE_TAG
 
+build_jail_image:
+  stage: build
+  tags:
+  - freebsd
+  script:
+  - sudo -E jailer build
+
 deploy_demo:
   stage: deploy
   image: ubuntu:18.04
