@@ -1,0 +1,16 @@
+FROM 12.0-RELEASE
+#RUN "pkg bootstrap -y && pkg install -y elixir node10 npm-node10 python"
+RUN "pkg bootstrap -y"
+RUN "which python"
+RUN "pw user add webapp -m"
+WORKDIR /usr/home/webapp/
+ADD . /usr/home/webapp/
+RUN mix local.hex --force
+RUN mix local.rebar --force
+RUN mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
+#
+RUN mix deps.get
+WORKDIR /usr/home/webapp/assets
+RUN "npm install && npm rebuild node-sass && npm run deploy"
+WORKDIR /usr/home/webapp/
+RUN "mix compile && mix phx.digest"
