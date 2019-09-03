@@ -1,7 +1,7 @@
 .sidebar {
   background-color: #fff;
   padding: 3rem 1.5rem;
-  left: -250px;
+  transform: translateX(-250px);
   position: fixed;
   z-index: 400;
   width: 250px;
@@ -13,7 +13,7 @@
     margin-left: 250px;
   }
   @media (min-width: 1008px) {
-    left: 0;
+    transform: translateX(0px);
     &.is-active {
       margin-left: 0;
     }
@@ -23,7 +23,9 @@
 .main-content {
   padding: 3rem 1.5rem;
   flex: 1;
-  @media (min-width: 1008px) {
-    margin-left: 250px;
+  .logged-in & {
+    @media (min-width: 1008px) {
+      margin-left: 250px;
+    }
   }
 }

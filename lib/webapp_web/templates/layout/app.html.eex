@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>" />
 </head>
 
-<body>
+<body class="<%= if @current_user, do: "logged-in"  %>">
   <div class="navbar  is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="/">
