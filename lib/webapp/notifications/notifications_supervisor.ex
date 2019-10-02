@@ -1,10 +1,6 @@
 defmodule Webapp.NotificationsSupervisor do
   use Supervisor
-
-  alias Webapp.Notifications.{
-    NotifyConsole,
-    NotifySlack
-  }
+  require Logger
 
   @doc """
   Starts the process supervisor.
@@ -17,6 +13,7 @@ defmodule Webapp.NotificationsSupervisor do
   def init(_arg) do
     children = Application.get_env(:webapp, Webapp.Notifications)[:enabled_modules]
 
+    Logger.info("Initializing Notifications Supervisor. Enabled modules: #{Enum.join(children, ", ")}")
     Supervisor.init(children, strategy: :one_for_one)
   end
 end

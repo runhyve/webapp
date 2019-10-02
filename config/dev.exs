@@ -73,10 +73,3 @@ config :webapp, Webapp.Repo,
   password: System.get_env("POSTGRES_PASSWORD") || "postgres",
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   pool_size: 10
-
-config :webapp, Webapp.Notifications,
-  #enabled_modules: [Webapp.Notifications.NotifyConsole, Webapp.Notifications.NotifySlack],
-  enabled_modules: [],
-  slack_webhook_url: "https://hooks.slack.com/services/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",
-  slack_channel: "#runhyve-notifications",
-  slack_username: "Runhyve"
