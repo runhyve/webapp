@@ -26,19 +26,19 @@ defmodule Webapp.Notifications.NotifySlack do
   end
 
   defp gen_slack_text(msg, username, channel) do
-      """
-      {"username": "#{username}",
-      "channel": "#{channel}",
-      "text": "#{msg}",
-      "icon_emoji": ":bee:"}
-      """
+    """
+    {"username": "#{username}",
+    "channel": "#{channel}",
+    "text": "#{msg}",
+    "icon_emoji": ":bee:"}
+    """
   end
 
   defp get_slack_config() do
-      url = Application.get_env(:webapp, Webapp.Notifications)[:slack_webhook_url]
-      username = Application.get_env(:webapp, Webapp.Notifications)[:slack_username]
-      channel = Application.get_env(:webapp, Webapp.Notifications)[:slack_channel]
-      %{url: url, username: username, channel: channel}
+    url = Application.get_env(:webapp, Webapp.Notifications)[:slack_webhook_url]
+    username = Application.get_env(:webapp, Webapp.Notifications)[:slack_username]
+    channel = Application.get_env(:webapp, Webapp.Notifications)[:slack_channel]
+    %{url: url, username: username, channel: channel}
   end
 
   defp send(msg) do
