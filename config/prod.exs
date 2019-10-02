@@ -14,10 +14,11 @@ config :webapp, WebappWeb.Endpoint,
   url: [host: System.get_env("WEBAPP_DOMAIN") || "demo.runhyve.app", scheme: "https", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE"),
+  debug_errors: System.get_env("DEBUG") || false,
   server: true
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: System.get_env("WEBAPP_LOGLEVEL") || :info
 
 # ## SSL Support
 #
