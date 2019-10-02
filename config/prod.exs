@@ -86,3 +86,9 @@ config :webapp, Webapp.Mailer,
   password: System.get_env("SMTP_PASSWORD"),
   ssl: true,
   retries: 1
+
+config :webapp, Webapp.Notifications,
+  enabled_modules: [Webapp.Notifications.NotifySlack],
+  slack_webhook_url: System.get_env("SLACK_WEBHOOK_URL"),
+  slack_channel: System.get_env("SLACK_CHANNEL"),
+  slack_username: System.get_env("SLACK_USERNAME")
