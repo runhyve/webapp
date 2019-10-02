@@ -45,13 +45,13 @@ config :phoenix_active_link, :defaults,
   class_active: "is-active",
   class_inactive: ""
 
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
-import_config "#{Mix.env()}.exs"
 
 config :webapp, Webapp.Notifications,
-  #enabled_modules: [Webapp.Notifications.NotifyConsole, Webapp.Notifications.NotifySlack],
-  enabled_modules: [],
+  enabled_modules: [Webapp.Notifications.NotifyConsole],
   slack_webhook_url: "",
   slack_channel: "",
   slack_username: "Runhyve"
+
+# Import environment specific config. This must remain at the bottom
+# of this file so it overrides the configuration defined above.
+import_config "#{Mix.env()}.exs"
