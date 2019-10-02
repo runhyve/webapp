@@ -21,6 +21,23 @@ defmodule Webapp.Machines do
   # Number of seconds after the create action is considered as failed.
   @create_timeout 300
 
+  @pubsub_topic "machines"
+
+  @doc """
+  Send notifications about machine's events.
+  Use publish_notification/5 for Multi.run/5; publish_notification/3 to call directly
+  """
+
+  def publish_notification(_repo, _changes, severity, msg) do
+    WebappWeb.Endpoint.broadcast("machines", @pubsub_topic, %{severity: severity, msg: msg})
+    {:ok, :broadcasted}
+  end
+
+  def publish_notification(severity, msg) do
+    WebappWeb.Endpoint.broadcast("machines", @pubsub_topic, %{severity: severity, msg: msg})
+    {:ok, :broadcasted}
+  end
+
   @doc """
   Returns the list of machines.
 
@@ -120,9 +137,11 @@ defmodule Webapp.Machines do
           |> Changeset.put_change(:job_id, job_id)
           |> Repo.insert()
         end)
+        |> Multi.run(:notify, Webapp.Machines, :publish_notification, [:info, "Machine #{attrs["name"]} created successfuly"])
         |> Repo.transaction()
       rescue
         UndefinedFunctionError ->
+          publish_notification(:critical, "Machine #{attrs["name"]} couldn't be created")
           {:error, :hypervisor_not_found, changeset}
       end
     else
@@ -143,9 +162,13 @@ defmodule Webapp.Machines do
 
   """
   def update_machine(%Machine{} = machine, attrs) do
-    machine
+    result = machine
     |> Machine.update_changeset(attrs)
     |> Repo.update()
+
+    publish_notification(:info, "Machine #{machine.name} updated successfuly")
+
+    result
   end
 
   @doc """
@@ -167,11 +190,13 @@ defmodule Webapp.Machines do
     try do
       apply(module, :delete_machine, [%{machine: machine}])
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        {:error, :hypervisor_not_found}
     end
 
     Multi.new()
     |> Multi.delete(:machine, machine)
+    |> Multi.run(:notify, Webapp.Machines, :publish_notification, [:info, "Machine #{machine.name} deleted"])
     |> Repo.transaction()
   end
 
@@ -182,9 +207,12 @@ defmodule Webapp.Machines do
       Multi.new()
       |> Multi.delete(:machine, machine)
       |> Multi.run(:hypervisor, module, :delete_machine, [])
+      |> Multi.run(:notify, Webapp.Machines, :publish_notification, [:info, "Machine #{machine.name} deleted"])
       |> Repo.transaction()
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        publish_notification(:critical, "Couldn't delete machine #{machine.name}")
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -239,7 +267,7 @@ defmodule Webapp.Machines do
   def update_status(%Machine{failed: false, created: false, inserted_at: inserted_at} = machine) do
     if NaiveDateTime.diff(NaiveDateTime.utc_now(), inserted_at) >= @create_timeout do
       mark_as_failed(machine)
-      {:error, "Something went wrong, your machine has been created for too long."}
+      {:error, "Something went wrong, creating virtual machine took too long."}
     else
       check_job_status(machine)
     end
@@ -324,9 +352,12 @@ defmodule Webapp.Machines do
       Multi.new()
       |> Multi.update(:machine, changeset)
       |> Multi.run(:hypervisor, module, :add_network_to_machine, [])
+      |> Multi.run(:notify, Webapp.Machines, :publish_notification, [:info, "Machine #{machine.name} is now connected to #{network.name}"])
       |> Repo.transaction()
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        publish_notification(:critical, "Couldn't connect machine #{machine.name} to network #{network.namae}")
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -350,9 +381,15 @@ defmodule Webapp.Machines do
     module = get_hypervisor_module(machine)
 
     try do
-      apply(module, :start_machine, [%{machine: machine}])
+      result = apply(module, :start_machine, [%{machine: machine}])
+
+      publish_notification(:info, "Machine #{machine.name} started")
+
+      result
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        publish_notification(:critical, "Machine #{machine.name} couldn't be started")
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -363,9 +400,15 @@ defmodule Webapp.Machines do
     module = get_hypervisor_module(machine)
 
     try do
-      apply(module, :stop_machine, [%{machine: machine}])
+      result = apply(module, :stop_machine, [%{machine: machine}])
+
+      publish_notification(:info, "Machine #{machine.name} stopped")
+
+      result
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        publish_notification(:critical, "Couldn't stop #{machine.name}")
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -376,9 +419,15 @@ defmodule Webapp.Machines do
     module = get_hypervisor_module(machine)
 
     try do
-      apply(module, :poweroff_machine, [%{machine: machine}])
+      result = apply(module, :poweroff_machine, [%{machine: machine}])
+
+      publish_notification(:info, "Machine #{machine.name} powered off")
+
+      result
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        publish_notification(:critical, "Couldn't power off machine #{machine.name}")
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -389,9 +438,15 @@ defmodule Webapp.Machines do
     module = get_hypervisor_module(machine)
 
     try do
-      apply(module, :console_machine, [%{machine: machine}])
+      result = apply(module, :console_machine, [%{machine: machine}])
+
+      publish_notification(:info, "Console requested for machine #{machine.name}")
+
+      result
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        publish_notification(:critical, "Couldn't open open console to machine #{machine.name}")
+        {:error, :hypervisor_not_found}
     end
   end
 

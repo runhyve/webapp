@@ -15,6 +15,7 @@ defmodule Webapp.Application do
       # Starts a worker by calling: Webapp.Worker.start_link(arg)
       # {Webapp.Worker, arg},
       Webapp.GuardSupervisor,
+      Webapp.NotificationsSupervisor,
       {ConCache, [
         name: :rh_cache,
         ttl_check_interval: :timer.seconds(300),
