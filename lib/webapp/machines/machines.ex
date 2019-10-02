@@ -137,7 +137,7 @@ defmodule Webapp.Machines do
           |> Changeset.put_change(:job_id, job_id)
           |> Repo.insert()
         end)
-        |> Multi.run(:notify, Webapp.Machines, :publish_notification, [:info, "Machine #{attrs["name"]} created successfuly"])
+        |> Multi.run(:notify, Webapp.Machines, :publish_notification, [:info, "Machine #{attrs["name"]} is being created"])
         |> Repo.transaction()
       rescue
         UndefinedFunctionError ->
@@ -196,7 +196,7 @@ defmodule Webapp.Machines do
 
     Multi.new()
     |> Multi.delete(:machine, machine)
-    |> Multi.run(:notify, Webapp.Machines, :publish_notification, [:info, "Machine #{machine.name} deleted"])
+    |> Multi.run(:notify, Webapp.Machines, :publish_notification, [:info, "Machine #{machine.name} is being deleted"])
     |> Repo.transaction()
   end
 
@@ -207,7 +207,7 @@ defmodule Webapp.Machines do
       Multi.new()
       |> Multi.delete(:machine, machine)
       |> Multi.run(:hypervisor, module, :delete_machine, [])
-      |> Multi.run(:notify, Webapp.Machines, :publish_notification, [:info, "Machine #{machine.name} deleted"])
+      |> Multi.run(:notify, Webapp.Machines, :publish_notification, [:info, "Machine #{machine.name} is being deleted"])
       |> Repo.transaction()
     rescue
       UndefinedFunctionError ->
@@ -244,6 +244,9 @@ defmodule Webapp.Machines do
             changeset
           end
 
+        if Changeset.get_change(changeset, :last_status, false) do
+          publish_notification(:info, "Machine #{machine.name} is now in state #{status}")
+        end
         Repo.update(changeset)
       end)
       |> Repo.transaction()
@@ -383,7 +386,7 @@ defmodule Webapp.Machines do
     try do
       result = apply(module, :start_machine, [%{machine: machine}])
 
-      publish_notification(:info, "Machine #{machine.name} started")
+      publish_notification(:info, "Machine #{machine.name} is being started")
 
       result
     rescue
@@ -402,7 +405,7 @@ defmodule Webapp.Machines do
     try do
       result = apply(module, :stop_machine, [%{machine: machine}])
 
-      publish_notification(:info, "Machine #{machine.name} stopped")
+      publish_notification(:info, "Machine #{machine.name} is being stopped")
 
       result
     rescue
@@ -421,7 +424,7 @@ defmodule Webapp.Machines do
     try do
       result = apply(module, :poweroff_machine, [%{machine: machine}])
 
-      publish_notification(:info, "Machine #{machine.name} powered off")
+      publish_notification(:info, "Machine #{machine.name} is being powered off")
 
       result
     rescue
