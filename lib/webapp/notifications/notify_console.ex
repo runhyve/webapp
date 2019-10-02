@@ -8,6 +8,7 @@ defmodule Webapp.Notifications.NotifyConsole do
   end
 
   def init(_) do
+    Logger.info("Starting #{__MODULE__} module. Subscribing to machines topic.")
     WebappWeb.Endpoint.subscribe("machines")
     {:ok, %{}}
   end
