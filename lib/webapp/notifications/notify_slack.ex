@@ -8,8 +8,8 @@ defmodule Webapp.Notifications.NotifySlack do
   end
 
   def init(_) do
-    Logger.info("Starting #{__MODULE__} module. Subscribing to machines topic.")
-    WebappWeb.Endpoint.subscribe("machines")
+    Logger.info("Starting #{__MODULE__} module. Subscribing to events topic.")
+    WebappWeb.Endpoint.subscribe("events")
     {:ok, %{}}
   end
 
