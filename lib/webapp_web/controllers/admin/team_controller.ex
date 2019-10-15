@@ -3,8 +3,7 @@ defmodule WebappWeb.Admin.TeamController do
 
   alias Webapp.{
     Accounts,
-    Accounts.Team,
-    Accounts.Member
+    Accounts.Team
   }
 
   plug :load_and_authorize_resource,

@@ -135,7 +135,7 @@ defmodule WebappWeb.MachineController do
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       # Errors from changeset should be displayed!
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(
           :error,
@@ -144,7 +144,7 @@ defmodule WebappWeb.MachineController do
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       # Errors from changeset should be displayed!
-      {:error, :machine, %Ecto.Changeset{} = changeset, _} ->
+      {:error, :machine, %Ecto.Changeset{} = _changeset, _} ->
         conn
         |> put_flash(
           :error,
@@ -165,7 +165,7 @@ defmodule WebappWeb.MachineController do
   end
 
   # Change machine name
-  def update(conn, %{"id" => id, "machine" => %{"name" => name} = machine_params}) do
+  def update(conn, %{"id" => id, "machine" => %{"name" => _name} = _machine_params}) do
     machine = Machines.get_machine!(id, [:networks])
 
     conn
@@ -182,12 +182,12 @@ defmodule WebappWeb.MachineController do
         |> put_flash(:info, "Machine #{machine.name} has been deleted")
         |> redirect(to: team_path(:machine_path, conn, :index))
 
-      {:error, :hypervisor, error, changes} ->
+      {:error, :hypervisor, error, _changes} ->
         conn
         |> put_flash(:error, error)
         |> redirect(to: team_path(:machine_path, conn, :index))
 
-      {:error, :hypervisor_not_found, %Ecto.Changeset{} = changeset} ->
+      {:error, :hypervisor_not_found, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:error, "Coulnd't delete machine #{machine.name}")
         |> redirect(to: team_path(:machine_path, conn, :index))
@@ -264,7 +264,7 @@ defmodule WebappWeb.MachineController do
       conn
       |> assign(:machine, machine)
     rescue
-      e ->
+      _e ->
         conn
         |> put_flash(:error, "Machine was not found.")
         |> redirect(to: team_path(:machine_path, conn, :index))

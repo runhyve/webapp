@@ -51,7 +51,7 @@ defmodule WebappWeb.Admin.HypervisorController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => _id}) do
     hypervisor = conn.assigns[:hypervisor]
 
     status =

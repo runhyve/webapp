@@ -1,7 +1,7 @@
 defmodule WebappWeb.MemberController do
   use WebappWeb, :controller
 
-  alias Webapp.{Accounts, Accounts.Team, Accounts.Member}
+  alias Webapp.Accounts
 
   plug :is_logged_in
   plug :load_team
@@ -14,10 +14,10 @@ defmodule WebappWeb.MemberController do
     |> redirect(to: Routes.team_path(conn, :show, team))
   end
 
-  def create(%Conn{assigns: %{current_user: user}} = conn, %{"team" => team_params}) do
+  def create(%Conn{assigns: %{current_user: _user}} = _conn, %{"team" => _team_params}) do
   end
 
-  def edit(conn, %{"id" => id}) do
+  def edit(conn, %{"id" => _id}) do
     team = conn.assigns[:team]
 
     conn
@@ -25,10 +25,10 @@ defmodule WebappWeb.MemberController do
     |> redirect(to: Routes.team_path(conn, :show, team))
   end
 
-  def update(conn, %{"id" => id, "member" => member_params}) do
+  def update(_conn, %{"id" => _id, "member" => _member_params}) do
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => _id}) do
     team = conn.assigns[:team]
 
     conn

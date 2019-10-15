@@ -2,7 +2,6 @@ defmodule WebappWeb.Admin.Ip_poolController do
   use WebappWeb, :controller
 
   alias Webapp.{
-    Hypervisors,
     Networks,
     Networks.Ip_pool,
     Networks.Ipv4

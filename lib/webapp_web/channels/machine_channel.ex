@@ -35,7 +35,7 @@ defmodule WebappWeb.MachineChannel do
     {:reply, {:ok, payload}, socket}
   end
 
-  def handle_in("status", payload, socket) do
+  def handle_in("status", _payload, socket) do
     machine =
       socket.assigns[:machine_id]
       |> Machines.get_machine!()
@@ -53,7 +53,7 @@ defmodule WebappWeb.MachineChannel do
     {:noreply, socket}
   end
 
-  def handle_in("status_team", payload, socket) do
+  def handle_in("status_team", _payload, socket) do
     machines =
       Machines.list_team_machines(socket.assigns[:team], [:hypervisor, :plan, :networks])
       |> Enum.map(fn machine ->

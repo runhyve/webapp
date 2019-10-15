@@ -22,7 +22,7 @@ defmodule WebappWeb.HypervisorChannel do
     {:reply, {:ok, payload}, socket}
   end
 
-  def handle_in("status", payload, socket) do
+  def handle_in("status", _payload, socket) do
     hypervisor =
       socket.assigns[:hypervisor_id]
       |> Hypervisors.get_hypervisor!()
@@ -45,7 +45,7 @@ defmodule WebappWeb.HypervisorChannel do
     {:noreply, socket}
   end
 
-  def handle_in("hypervisor_os_data", payload, socket) do
+  def handle_in("hypervisor_os_data", _payload, socket) do
     hypervisor =
       socket.assigns[:hypervisor_id]
       |> Hypervisors.get_hypervisor!()

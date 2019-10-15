@@ -2,12 +2,9 @@ defmodule Webapp.HypervisorCase do
   use ExUnit.CaseTemplate
   alias Webapp.Repo
 
-  import Ecto
-  import Ecto.Changeset
-  import Ecto.Query
   import Webapp.TestHelpers
 
-  setup_all tags do
+  setup_all _tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Webapp.Repo)
     # we are setting :auto here so that the data persists for all tests,
     # normally (with :shared mode) every process runs in a transaction

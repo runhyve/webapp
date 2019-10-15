@@ -76,7 +76,7 @@
           <span class="distributions--name">
             <%= machine.distribution.name %> <%= machine.distribution.version %>
           </span>
-        <%= end %>
+        <% end %>
       </td>
       <td data-header="Region"><%= machine.hypervisor.name %></td>
       <td data-header="Plan"><%= machine.plan.name %></td>
@@ -84,16 +84,16 @@
       <td>
         <%= link to: team_path(:machine_path, @conn, :console, machine), class: "button is-rounded is-small is-black" do %>
         <span class="icon"><i class="fas fa-terminal"></i></span>
-        <%= end %>
+        <% end %>
         <%= if machine_can_do?(machine, :start) do %>
         <%= link to: team_path(:machine_path, @conn, :start, machine), class: "button is-rounded is-small is-success", method: :post, class: "has-text-success" do %>
         <span class="icon"><i class="fas fa-lg fa-play-circle"></i></span>
-        <%= end %>
-        <%= end %>
+        <% end %>
+        <% end %>
         <%= if machine_can_do?(machine, :stop) do %>
         <%= link to: team_path(:machine_path, @conn, :stop, machine), class: "button is-rounded is-small is-danger", method: :post, data: [confirm: "Are you sure?"], class: "has-text-danger" do %>
         <span class="icon"><i class="fas fa-lg fa-stop-circle"></i></span>
-        <%= end %>
+        <% end %>
         <% end %>
       </td>
     </tr>
@@ -104,24 +104,24 @@
       <td colspan="3">No hypervisors available. You should
         <%= link "add one", to: Routes.admin_hypervisor_path(@conn, :new) %> first</td>
     </tr>
-    <%= else %>
+    <% else %>
     <tr>
       <td colspan="3">No hypervisors available. Administrator should add one first.</td>
     </tr>
-    <%= end %>
-    <%= else %>
+    <% end %>
+    <% else %>
     <%= if Enum.empty?(@machines) do %>
     <tr>
       <td colspan="3">Empty here, add a machine...</td>
     </tr>
-    <%= else %>
+    <% else %>
     <tr>
       <td colspan="5"></td>
       <td class="has-text-weight-bold has-text-right">Total:</td>
       <td>$<%= Enum.reduce(@machines, 0, fn(v, acc) -> v.plan.price + acc end) %>/mo</td>
     </tr>
-    <%= end %>
-    <%= end %>
+    <% end %>
+    <% end %>
   </tbody>
 </table>
 
