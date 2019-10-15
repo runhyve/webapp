@@ -61,13 +61,13 @@ defmodule Webapp.AccountsUserTest do
     end
 
     test "register_user/1 returns error if user already exists" do
-      user = fixture(:user)
+      _user = fixture(:user)
       assert {:error, :user, %{errors: errors}, _} = Accounts.register_user(@valid_user)
       assert Enum.count(errors) > 0
     end
 
     test "register_user/1 returns error if team already exists" do
-      user = fixture(:user)
+      _user = fixture(:user)
 
       new_user = %{
         user_email: "fred1@example.com",

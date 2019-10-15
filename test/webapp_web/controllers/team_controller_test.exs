@@ -5,8 +5,8 @@ defmodule WebappWeb.TeamControllerTest do
   alias Webapp.Accounts
 
   @create_attrs %{name: "some name", namespace: %{namespace: "some-name"}}
-  @update_attrs %{name: "some updated name"}
-  @invalid_attrs %{name: nil}
+  #  @update_attrs %{name: "some updated name"}
+  #  @invalid_attrs %{name: nil}
 
   def fixture(:group) do
     {:ok, group} = Accounts.create_team(@create_attrs)
@@ -108,8 +108,8 @@ defmodule WebappWeb.TeamControllerTest do
   #    end
   #  end
 
-  defp create_team(_) do
-    group = fixture(:group)
-    {:ok, group: group}
-  end
+  #  defp create_team(_) do
+  #    group = fixture(:group)
+  #    {:ok, group: group}
+  #  end
 end

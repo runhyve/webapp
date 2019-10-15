@@ -2,7 +2,6 @@ defmodule WebappWeb.PlanControllerTest do
   use WebappWeb.ConnCase
 
   import WebappWeb.AuthCase
-  alias Webapp.Plans
 
   @create_attrs %{cpu: 42, name: "some name", ram: 42, storage: 42, price: 10}
   @update_attrs %{cpu: 43, name: "some updated name", ram: 43, storage: 43, price: 20}

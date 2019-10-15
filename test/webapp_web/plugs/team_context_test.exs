@@ -27,7 +27,7 @@ defmodule WebappWeb.TeamContextTest do
         members: [%{"user_id" => user.id, "role" => "Administrator"}]
       })
 
-    {:ok, another_team} =
+    {:ok, _another_team} =
       Accounts.create_team(%{
         name: "other name",
         namespace: "other-company",
@@ -48,14 +48,14 @@ defmodule WebappWeb.TeamContextTest do
     assert conn.assigns[:current_team] == team
   end
 
-  test "current_team is taken form url", %{conn: conn, user: user, team: team} do
+  test "current_team is taken form url", %{conn: conn, user: _user, team: team} do
     conn = get(conn, "/user-company/machines")
     # current_team is loaded without members
     team = Accounts.get_team!(team.id)
     assert conn.assigns[:current_team] == team
   end
 
-  test "user can not access other teams", %{conn: conn, user: user, team: team} do
+  test "user can not access other teams", %{conn: conn, user: _user, team: _team} do
     conn = get(conn, "/other-company/machines")
 
     assert conn.halted

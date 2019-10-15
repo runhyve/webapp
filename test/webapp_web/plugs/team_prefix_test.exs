@@ -27,7 +27,7 @@ defmodule WebappWeb.TeamPrefixTest do
         members: [%{"user_id" => user.id, "role" => "Administrator"}]
       })
 
-    {:ok, another_team} =
+    {:ok, _another_team} =
       Accounts.create_team(%{
         name: "other name",
         namespace: "other-company",
@@ -39,7 +39,7 @@ defmodule WebappWeb.TeamPrefixTest do
     {:ok, %{conn: conn, team: team, user: user}}
   end
 
-  test "assigns user team as current_team form url", %{conn: conn, user: user, team: team} do
+  test "assigns user team as current_team form url", %{conn: conn, user: _user, team: team} do
     conn = get(conn, "/user-company/machines")
     # current_team is loaded without members
     team = Accounts.get_team!(team.id)

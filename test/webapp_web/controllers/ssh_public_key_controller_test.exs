@@ -31,7 +31,7 @@ defmodule WebappWeb.SSHPublicKeyControllerTest do
     {:ok, conn: conn, conn_user: conn_user}
   end
 
-  def user_fixture(attrs \\ %{}) do
+  def user_fixture() do
     {:ok, user} =
       Accounts.register_user(%{
         user_email: "fred@example.com",
@@ -45,7 +45,7 @@ defmodule WebappWeb.SSHPublicKeyControllerTest do
   end
 
   def fixture(:ssh_public_key) do
-    %{team: team, user: user} = user_fixture()
+    %{team: _team, user: user} = user_fixture()
     {:ok, ssh_public_key} = Accounts.create_ssh_public_key(user, @create_attrs)
     ssh_public_key
   end
