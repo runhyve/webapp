@@ -1,12 +1,6 @@
 alias Webapp.{
   Accounts.User,
-  Accounts.Team,
-  Sessions.Session,
-  Plans.Plan,
-  Hypervisors.Hypervisor,
-  Hypervioors.Machine,
-  Hypervisors.Network,
-  Machines.Machine
+  Sessions.Session
 }
 
 defimpl Canada.Can, for: Atom do

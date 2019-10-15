@@ -4,7 +4,7 @@ defmodule WebappWeb.HypervisorTokenAuth do
   @callback report(ok_or_error, keyword) :: map | nil
 
   @behaviour Plug
-  alias Webapp.{Repo, Hypervisors, Hypervisors.Hypervisor}
+  alias Webapp.Hypervisors
   import Plug.Conn
   import Logger
 
@@ -28,7 +28,7 @@ defmodule WebappWeb.HypervisorTokenAuth do
     |> verify_hypervisor_token(opts)
   end
 
-  defp verify_hypervisor_token([token], opts) do
+  defp verify_hypervisor_token([token], _opts) do
     case Hypervisors.get_hypervisor_by("webhook_token", token) do
       nil -> {:error, "authentication failed"}
       hypervisor -> {:ok, hypervisor}
@@ -39,12 +39,12 @@ defmodule WebappWeb.HypervisorTokenAuth do
     {:error, "authentication token missing"}
   end
 
-  def report({:ok, hypervisor}, meta) do
+  def report({:ok, hypervisor}, _meta) do
     Logger.info("hypervisor #{hypervisor.name} authenticated")
     hypervisor
   end
 
-  def report({:error, message}, meta) do
+  def report({:error, message}, _meta) do
     Logger.info(message)
     nil
   end

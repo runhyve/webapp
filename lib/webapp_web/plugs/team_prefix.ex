@@ -1,10 +1,7 @@
 defmodule WebappWeb.TeamPrefix do
   import Plug.Conn
-  import Phoenix.Controller
 
-  alias WebappWeb.Router.Helpers, as: Routes
   alias Webapp.{Accounts, Accounts.Team}
-  alias Plug.Conn
 
   @restricted_namespaces ~w(health dev admin hypervisors machines plans users user teams sessions)
 

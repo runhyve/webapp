@@ -3,9 +3,7 @@ defmodule Webapp.Accounts.Team do
   import Ecto.Changeset
 
   alias Webapp.{
-    Accounts.User,
     Accounts.Member,
-    Accounts.Namespace,
     Machines.Machine
   }
 

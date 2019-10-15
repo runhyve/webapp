@@ -279,7 +279,7 @@ defmodule Webapp.Machines do
         {:error, "Machine was not created successfully"}
 
       # Job is queued or still running
-      {:ok, %{"state" => state}} ->
+      {:ok, %{"state" => _state}} ->
         {:ok, machine}
 
       {:error, :hypervisor_not_found} ->
@@ -453,8 +453,8 @@ defmodule Webapp.Machines do
   @doc """
   Returns bool for given machine and operation if it's allowed.
   """
-  def machine_can_do?(%Machine{failed: true} = machine, action), do: false
-  def machine_can_do?(%Machine{created: false} = machine, action), do: false
+  def machine_can_do?(%Machine{failed: true} = _machine, _action), do: false
+  def machine_can_do?(%Machine{created: false} = _machine, _action), do: false
 
   # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
   def machine_can_do?(%Machine{} = machine, action) do
@@ -483,8 +483,7 @@ defmodule Webapp.Machines do
   defp get_hypervisor_module(%Machine{} = machine) do
     hypervisor = Repo.preload(machine.hypervisor, :hypervisor_type)
 
-    module =
-      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
-      |> String.to_atom()
+    ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
+    |> String.to_atom()
   end
 end

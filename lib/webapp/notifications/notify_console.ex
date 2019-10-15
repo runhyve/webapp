@@ -17,7 +17,7 @@ defmodule Webapp.Notifications.NotifyConsole do
     {:reply, state, state}
   end
 
-  def handle_info(%Broadcast{topic: _, event: event, payload: payload}, socket) do
+  def handle_info(%Broadcast{topic: _, event: _event, payload: payload}, _socket) do
     Logger.info("[NotifyConsole] #{payload.severity}: #{payload.msg}")
 
     {:noreply, []}

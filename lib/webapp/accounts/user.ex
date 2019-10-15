@@ -4,7 +4,6 @@ defmodule Webapp.Accounts.User do
   alias Webapp.{
     Sessions.Session,
     Accounts.User,
-    Accounts.Team,
     Accounts.Member,
     Accounts.SSHPublicKey,
     Types.UserRole

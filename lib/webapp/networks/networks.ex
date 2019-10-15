@@ -13,7 +13,6 @@ defmodule Webapp.Networks do
 
   alias Webapp.{
     Hypervisors,
-    Machines.Machine,
     Networks.Network,
     Networks.Ipv4,
     Networks.Ip_pool
@@ -171,9 +170,8 @@ defmodule Webapp.Networks do
   defp get_hypervisor_module(%Network{} = network) do
     hypervisor = Repo.preload(network.hypervisor, :hypervisor_type)
 
-    module =
-      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
-      |> String.to_atom()
+    ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
+    |> String.to_atom()
   end
 
   @doc """
@@ -244,7 +242,7 @@ defmodule Webapp.Networks do
   end
 
 
-  def add_ipv4_to_multi(multi, ip_pool, []), do: multi
+  def add_ipv4_to_multi(multi, _ip_pool, []), do: multi
 
   def add_ipv4_to_multi(multi, ip_pool, [ip | ip_list]) do
     # If gateway is in pool, mark it as reserved

@@ -3,7 +3,6 @@ defmodule Webapp.Machines.Machine do
   import Ecto.Changeset
 
   alias Webapp.{
-    Hypervisors,
     Hypervisors.Hypervisor,
     Plans.Plan,
     Networks,
@@ -12,10 +11,6 @@ defmodule Webapp.Machines.Machine do
     Accounts.Team,
     Distributions.Distribution
   }
-
-  # Machine name max length
-  # @TODO: Change to UUID once https://github.com/churchers/vm-bhyve/issues/281 will be solved.
-  @machine_maxlen 30
 
   schema "machines" do
     field(:uuid, Ecto.UUID, autogenerate: true)

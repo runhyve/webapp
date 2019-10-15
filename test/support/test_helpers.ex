@@ -1,5 +1,5 @@
 defmodule Webapp.TestHelpers do
-  alias Webapp.{Hypervisors, Plans, Machines, Networks, Networks.Network }
+  alias Webapp.{Hypervisors, Plans, Machines, Networks.Network }
   alias Webapp.Repo
 
   def fixture_hypervisor(hypervisor) do

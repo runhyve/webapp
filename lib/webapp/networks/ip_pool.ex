@@ -3,7 +3,6 @@ defmodule Webapp.Networks.Ip_pool do
   import Ecto.Changeset
 
   alias Webapp.{
-    Machines.Machine,
     Networks.Network,
     Networks.Ipv4
   }
@@ -47,7 +46,7 @@ defmodule Webapp.Networks.Ip_pool do
         _ -> add_error(changeset, field, "Please provide valid IP addresses")
     end
   end
-  def validate_ipv4_list(%Ecto.Changeset{} = changeset, field), do: changeset
+  def validate_ipv4_list(%Ecto.Changeset{} = changeset, _field), do: changeset
 
   def validate_ipv4_range(%Ecto.Changeset{valid?: true} = changeset, field) do
     ip_range = get_field(changeset, field)
@@ -57,14 +56,14 @@ defmodule Webapp.Networks.Ip_pool do
       {:error, _} -> add_error(changeset, field, "Please provide valid IP Range")
     end
   end
-  def validate_ipv4_range(%Ecto.Changeset{} = changeset, range_field), do: changeset
+  def validate_ipv4_range(%Ecto.Changeset{} = changeset, _range_field), do: changeset
 
   def validate_ipv4_list_in_range(%Ecto.Changeset{valid?: true} = changeset, range_field, list_field) do
     ip_range = get_field(changeset, range_field)
     list = get_field(changeset, list_field)
     list_length = Enum.count(list)
 
-    {start_address, end_address, prefix} = ip_range
+    {start_address, end_address, _prefix} = ip_range
 
     list = Enum.filter(list, fn ip ->
       Iptools.is_between?(ip, "#{:inet.ntoa(start_address)}", "#{:inet.ntoa(end_address)}")
@@ -75,7 +74,7 @@ defmodule Webapp.Networks.Ip_pool do
       _ -> add_error(changeset, list_field, "Provided IP addresses does not match IP Range")
     end
   end
-  def validate_ipv4_list_in_range(%Ecto.Changeset{} = changeset, range_field, list_field), do: changeset
+  def validate_ipv4_list_in_range(%Ecto.Changeset{} = changeset, _range_field, _list_field), do: changeset
 
   defp parse_ipv4_range(ip_range) do
     try do
@@ -88,7 +87,7 @@ defmodule Webapp.Networks.Ip_pool do
 
   defp parse_ipv4_string_range(ip_range_string) do
     [ip_range, prefix_length_str] = String.split(ip_range_string, "/", parts: 2)
-    {prefix_length,_} = Integer.parse(prefix_length_str)
+    {prefix_length, _} = Integer.parse(prefix_length_str)
 
     [start_address, end_address] = String.split(ip_range, "-", parts: 2)
 

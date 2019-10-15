@@ -33,11 +33,11 @@ defmodule Webapp.Accounts.SSHPublicKey do
          %Ecto.Changeset{valid?: true, changes: %{ssh_public_key: ssh_public_key}} = changeset
        ) do
     try do
-      [{pk, attributes}] = :public_key.ssh_decode(ssh_public_key, :public_key)
+      [{pk, _attributes}] = :public_key.ssh_decode(ssh_public_key, :public_key)
       changeset
       |> change(%{fingerprint: to_string(:public_key.ssh_hostkey_fingerprint(pk))})
     rescue
-      error ->
+      _error ->
         changeset
         |> add_error(:ssh_public_key, "SSH public key is not valid")
     end
