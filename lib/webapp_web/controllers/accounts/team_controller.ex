@@ -1,7 +1,7 @@
 defmodule WebappWeb.TeamController do
   use WebappWeb, :controller
 
-  alias Webapp.{Accounts, Accounts.Team, Accounts.Member}
+  alias Webapp.{Accounts, Accounts.Team}
 
   plug :is_logged_in
   plug :is_admin? when action in [:index, :delete]

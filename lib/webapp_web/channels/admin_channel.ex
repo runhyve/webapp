@@ -3,8 +3,7 @@ defmodule WebappWeb.AdminChannel do
 
   alias Webapp.{
     Machines,
-    Machines.Machine,
-    Accounts
+    Machines.Machine
   }
 
   import WebappWeb.MachineView, only: [map_status_to_css: 1, status_icon: 1]
@@ -24,7 +23,7 @@ defmodule WebappWeb.AdminChannel do
     {:reply, {:ok, payload}, socket}
   end
 
-  def handle_in("status", payload, socket) do
+  def handle_in("status", _payload, socket) do
     machines =
       String.split(socket.assigns[:machines], ",")
       |> Enum.map(fn id ->

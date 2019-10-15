@@ -17,7 +17,7 @@ defmodule Webapp.Notifications.NotifySlack do
     {:reply, state, state}
   end
 
-  def handle_info(%Broadcast{topic: _, event: event, payload: payload}, socket) do
+  def handle_info(%Broadcast{topic: _, event: _event, payload: payload}, _socket) do
     slack_message = "#{payload.severity}: #{payload.msg}"
     Logger.info("[NotifySlack] Sending Slack notification: #{slack_message}")
     send(slack_message)

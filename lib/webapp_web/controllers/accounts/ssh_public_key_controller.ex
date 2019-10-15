@@ -2,12 +2,7 @@ defmodule WebappWeb.SSHPublicKeyController do
   use WebappWeb, :controller
 
   alias Webapp.Accounts
-
-  alias Webapp.Accounts.{
-    User,
-    Team,
-    SSHPublicKey
-  }
+  alias Webapp.Accounts.SSHPublicKey
 
   plug :load_and_authorize_resource,
     model: SSHPublicKey,

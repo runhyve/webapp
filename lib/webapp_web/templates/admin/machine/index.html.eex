@@ -75,7 +75,7 @@
           <span class="distributions--name">
             <%= machine.distribution.name %> <%= machine.distribution.version %>
           </span>
-        <%= end %>
+        <% end %>
       </td>
       <td data-header="Region"><%= link machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, machine.hypervisor) %></td>
       <td data-header="Plan"><%= link machine.plan.name, to: Routes.admin_plan_path(@conn, :show, machine.plan) %></td>
@@ -100,4 +100,4 @@
   }
   </script>
   <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/admin.js") %>"></script>
-<%= end %>
+<% end %>

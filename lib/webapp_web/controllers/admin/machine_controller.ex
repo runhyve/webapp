@@ -5,10 +5,7 @@ defmodule WebappWeb.Admin.MachineController do
     Machines,
     Machines.Machine,
     Hypervisors,
-    Hypervisors.Hypervisor,
-    Accounts,
-    Accounts.User,
-    Accounts.Team
+    Hypervisors.Hypervisor
   }
 
   plug :authorize_resource,

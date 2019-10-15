@@ -1,8 +1,7 @@
 defmodule WebappWeb.SessionController do
   use WebappWeb, :controller
 
-  import WebappWeb.Authorize
-  import WebappWeb.ViewHelpers, only: [team_path: 3, team_path: 4]
+  import WebappWeb.ViewHelpers, only: [team_path: 3]
 
   alias Phauxth.Remember
 
