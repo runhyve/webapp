@@ -2,7 +2,6 @@ defmodule WebappWeb.HypervisorControllerTest do
   use WebappWeb.ConnCase
 
   import WebappWeb.AuthCase
-  alias Webapp.Hypervisors
 
   @create_attrs %{
     name: "some name",
@@ -157,7 +156,7 @@ defmodule WebappWeb.HypervisorControllerTest do
     hypervisor_type = fixture_hypervisor_type(%{name: "bhyve"})
 
     # Update hypervisor_type id with correct one.
-    hypervisor =
+    _hypervisor =
       struct
       |> Map.put(:hypervisor_type_id, hypervisor_type.id)
   end

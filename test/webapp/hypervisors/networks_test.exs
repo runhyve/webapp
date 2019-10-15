@@ -1,10 +1,10 @@
 defmodule Webapp.Hypervisors.NetworksTest do
   use Webapp.DataCase
 
-  alias Webapp.Networks
+  # alias Webapp.Networks
 
   describe "networks" do
-    alias Webapp.Networks.Network
+    # alias Webapp.Networks.Network
 
     #    @valid_attrs %{name: "some name", network: "some network"}
     #    @update_attrs %{name: "some updated name", network: "some updated network"}

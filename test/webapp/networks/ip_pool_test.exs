@@ -26,7 +26,7 @@ defmodule Webapp.IpPoolTest do
 """
 
     @valid_attrs %{"name" => "test", "gateway" => "192.168.0.1", "netmask" => "255.255.255.240", "ip_range" => "192.168.0.0/28", "list" => ip_list}
-    @update_attrs %{gateway: 43, netmask: 43}
+    #@update_attrs %{gateway: 43, netmask: 43}
     @invalid_attrs %{gateway: nil, netmask: nil}
 
     def ip_pool_fixture(attrs \\ %{}) do

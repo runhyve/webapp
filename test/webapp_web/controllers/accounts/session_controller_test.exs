@@ -2,7 +2,7 @@ defmodule WebappWeb.SessionControllerTest do
   use WebappWeb.ConnCase
 
   import WebappWeb.AuthCase
-  import WebappWeb.ViewHelpers, only: [team_path: 3, team_path: 4]
+  import WebappWeb.ViewHelpers, only: [team_path: 3]
 
   @create_attrs %{
     email: "robin@example.com",

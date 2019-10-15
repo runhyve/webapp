@@ -1,7 +1,7 @@
 defmodule Webapp.MachinesTest do
   use Webapp.DataCase
 
-  alias Webapp.Machines
+  # alias Webapp.Machines
 
   describe "machines" do
     #    alias Webapp.Machines.Machine

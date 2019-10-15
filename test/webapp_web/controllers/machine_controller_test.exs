@@ -1,12 +1,9 @@
 defmodule WebappWeb.MachineControllerTest do
   use WebappWeb.ConnCase
 
-  import WebappWeb.AuthCase
-  alias Webapp.Hypervisors
-
-  @create_attrs %{name: "some name", template: "some template"}
-  @update_attrs %{name: "some updated name", template: "some updated template"}
-  @invalid_attrs %{name: nil, template: nil}
+  #  @create_attrs %{name: "some name", template: "some template"}
+  #  @update_attrs %{name: "some updated name", template: "some updated template"}
+  #  @invalid_attrs %{name: nil, template: nil}
 
   # setup do
   #   conn = build_conn() |> bypass_through(WebappWeb.Router, [:browser]) |> get("/")
@@ -97,29 +94,29 @@ defmodule WebappWeb.MachineControllerTest do
   #    end
   #  end
   #
-
-  defp prepare_struct(struct \\ @create_attrs) do
-    plan = fixture_plan(%{cpu: 2, name: "standard", ram: 1024, storage: 10})
-    hypervisor_type = fixture_hypervisor_type(%{name: "bhyve"})
-
-    hypervisor =
-      fixture_hypervisor(%{
-        name: "standard",
-        ip_address: "192.168.199.254",
-        hypervisor_type_id: hypervisor_type.id,
-        fqdn: "http://127.0.0.1:9090"
-      })
-
-    # Update hypervisor_type id with correct one.
-    machine =
-      struct
-      |> Map.put(:hypervisor_id, hypervisor.id)
-      |> Map.put(:plan_id, plan.id)
-  end
-
-  defp create_machine(_) do
-    machine = prepare_struct()
-    machine = fixture_machine(machine)
-    {:ok, machine: machine}
-  end
+  #
+  #  defp prepare_struct(struct \\ @create_attrs) do
+  #    plan = fixture_plan(%{cpu: 2, name: "standard", ram: 1024, storage: 10})
+  #    hypervisor_type = fixture_hypervisor_type(%{name: "bhyve"})
+  #
+  #    hypervisor =
+  #      fixture_hypervisor(%{
+  #        name: "standard",
+  #        ip_address: "192.168.199.254",
+  #        hypervisor_type_id: hypervisor_type.id,
+  #        fqdn: "http://127.0.0.1:9090"
+  #      })
+  #
+  #    # Update hypervisor_type id with correct one.
+  #    machine =
+  #      struct
+  #      |> Map.put(:hypervisor_id, hypervisor.id)
+  #      |> Map.put(:plan_id, plan.id)
+  #  end
+  #
+  #  defp create_machine(_) do
+  #    machine = prepare_struct()
+  #    machine = fixture_machine(machine)
+  #    {:ok, machine: machine}
+  #  end
 end
