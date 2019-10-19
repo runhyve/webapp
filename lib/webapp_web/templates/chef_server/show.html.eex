@@ -1,0 +1,33 @@
+<h1>Show Chef server</h1>
+
+<ul>
+
+  <li>
+    <strong>Url:</strong>
+    <%= @chef_server.url %>
+  </li>
+
+  <li>
+    <strong>Cacert:</strong>
+    <%= @chef_server.cacert %>
+  </li>
+
+  <li>
+    <strong>Enabled:</strong>
+    <%= @chef_server.enabled %>
+  </li>
+
+  <li>
+    <strong>Private key:</strong>
+    <%= @chef_server.private_key %>
+  </li>
+
+  <li>
+    <strong>Username:</strong>
+    <%= @chef_server.username %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.chef_server_path(@conn, :edit, @chef_server) %></span>
+<span><%= link "Back", to: Routes.chef_server_path(@conn, :index) %></span>

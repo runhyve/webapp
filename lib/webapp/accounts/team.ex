@@ -6,7 +6,8 @@ defmodule Webapp.Accounts.Team do
     Accounts.User,
     Accounts.Member,
     Accounts.Namespace,
-    Machines.Machine
+    Machines.Machine,
+    Integrations.ChefServer
   }
 
   schema "teams" do
@@ -15,6 +16,7 @@ defmodule Webapp.Accounts.Team do
     has_many(:members, Member, on_delete: :delete_all)
     has_many(:users, through: [:members, :user])
     has_many(:machines, Machine, on_delete: :delete_all)
+    has_many(:chefservers, ChefServer, on_delete: :delete_all)
 
     timestamps()
   end

@@ -79,6 +79,16 @@
             <li><%= link "Machines", to: team_path(:machine_path, @conn, :index) %></li>
           </ul>
           <hr />
+          <p class="menu-label">
+            <span class="icon">
+              <i class="fas fa-microchip"></i>
+            </span>
+            Integrations
+          </p>
+          <ul class="menu-list">
+            <li><%= link "Chef", to: team_path(:chef_server_path, @conn, :index) %></li>
+          </ul>
+          <hr />
           <%= if @current_user.role == "Administrator" do %>
           <p class="menu-label">
             <span class="icon">

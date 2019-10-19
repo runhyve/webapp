@@ -1,0 +1,5 @@
+<h1>Edit Chef server</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.chef_server_path(@conn, :update, @chef_server)) %>
+
+<span><%= link "Back", to: Routes.chef_server_path(@conn, :index) %></span>

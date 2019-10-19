@@ -1,0 +1,34 @@
+<h1>Listing Chefservers</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Url</th>
+      <th>Cacert</th>
+      <th>Enabled</th>
+      <th>Private key</th>
+      <th>Username</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for chef_server <- @chefservers do %>
+    <tr>
+      <td><%= chef_server.url %></td>
+      <td><%= chef_server.cacert %></td>
+      <td><%= chef_server.enabled %></td>
+      <td><%= chef_server.private_key %></td>
+      <td><%= chef_server.username %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.chef_server_path(@conn, :show, chef_server) %></span>
+        <span><%= link "Edit", to: Routes.chef_server_path(@conn, :edit, chef_server) %></span>
+        <span><%= link "Delete", to: Routes.chef_server_path(@conn, :delete, chef_server), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Chef server", to: Routes.chef_server_path(@conn, :new) %></span>

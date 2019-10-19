@@ -67,6 +67,9 @@ defmodule WebappWeb.Router do
     post "/machines/:id/poweroff", MachineController, :poweroff
     get "/hypervisors/:hypervisor_id/machines/new", MachineController, :new
     post "/hypervisors/:hypervisor_id/machines/create", MachineController, :create
+
+    # Integrations
+    resources "/chef", ChefServerController
   end
 
   scope "/admin", WebappWeb.Admin, as: :admin do
