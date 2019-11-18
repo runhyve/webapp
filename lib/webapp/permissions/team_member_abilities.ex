@@ -6,13 +6,18 @@ alias Webapp.{
   Hypervisors.Hypervisor,
   Hypervioors.Machine,
   Hypervisors.Network,
-  Machines.Machine
+  Machines.Machine,
+  Integrations.ChefServer
 }
 
 defimpl Canada.Can, for: Member do
   def can?(%Member{}, :index, _model), do: true
   def can?(%Member{}, :new, _model), do: true
   def can?(%Member{}, :create, _model), do: true
+
+  def can?(%Member{role: "Administrator"} = member, _action, %ChefServer{} = chef_server) do
+    chef_server.team_id == member.team_id
+  end
 
   def can?(%Member{role: "Administrator"} = member, _action, %Machine{} = machine) do
     machine.team_id == member.team_id

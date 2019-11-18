@@ -1,5 +1,23 @@
-<h1>New Chef server</h1>
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: team_path(:page_path, @conn, :index) %></li>
+    <li class="is-active"><a>Chef</a></li>
+  </ul>
+</nav>
 
+<div class="level">
+  <div class="level-left">
+    <h1>New Chef server</h1>
+  </div>
+</div>
+
+<div class="box">
+<p>To configure Chef integration you need dedicated user in your Chef Server. You can do this with <code>chef-server-ctl user-create</code> command.<br />
+Example:<br /> <code>chef-server-ctl user-create runhyve Runhyve Webapp contact@example.com secure_password --orgname chef_organization</code>
+</p>
+This command should return RSA private key that you need to paste in the form below.
+</div>
+
+<div class="box">
 <%= render "form.html", Map.put(assigns, :action, Routes.chef_server_path(@conn, :create)) %>
-
-<span><%= link "Back", to: Routes.chef_server_path(@conn, :index) %></span>
+</div>

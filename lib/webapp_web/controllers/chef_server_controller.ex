@@ -6,11 +6,7 @@ defmodule WebappWeb.ChefServerController do
   alias Webapp.Accounts.Team
   import Ecto.Changeset
 
-  plug :load_resource,
-    model: ChefServer,
-    non_id_actions: [:index, :create, :new]
-
-  plug :authorize_resource,
+  plug :load_and_authorize_resource,
     current_user: :current_member,
     model: ChefServer,
     non_id_actions: [:index, :create, :new]
@@ -20,8 +16,11 @@ defmodule WebappWeb.ChefServerController do
 
     # If team has chef server then display it, if not then show form to create one
     if not Enum.empty?(chefservers) do
-      chefserver = hd(chefservers) # We support only one chef server per team
-      render(conn, "show.html", chef_server: get_chef_server!(chefserver.id))
+      chef_server = hd(chefservers) # We support only one chef server per team
+      nodes = chef_nodes_list(chef_server)
+      environments = chef_environments_list(chef_server)
+      roles = chef_roles_list(chef_server)
+      render(conn, "show.html", chef_server: get_chef_server!(chef_server.id), nodes: nodes, environments: environments, roles: roles)
     else
       changeset = change_chef_server(%ChefServer{})
       render(conn, "new.html", changeset: changeset)
@@ -50,7 +49,8 @@ defmodule WebappWeb.ChefServerController do
 
   def show(conn, %{"id" => id}) do
     chef_server = get_chef_server!(id)
-    render(conn, "show.html", chef_server: chef_server)
+    nodes = chef_nodes_list(chef_server)
+    render(conn, "show.html", chef_server: chef_server, nodes: nodes)
   end
 
   def edit(conn, %{"id" => id}) do
