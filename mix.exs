@@ -66,7 +66,8 @@ defmodule Webapp.MixProject do
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
       {:inet_cidr, "~> 1.0.0"},
       {:iptools, "~> 0.0.2"},
-      {:con_cache, "~> 0.13"}
+      {:con_cache, "~> 0.13"},
+      {:sentry, "~> 7.0"}
     ]
   end
 
