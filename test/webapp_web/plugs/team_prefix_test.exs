@@ -58,7 +58,7 @@ defmodule WebappWeb.TeamPrefixTest do
 
   test "responses with not found if team not exists", %{conn: conn} do
     assert_raise Phoenix.Router.NoRouteError,
-                 ~r/no route found for GET \/non-existing-company\/machines/,
+                 ~r/no route found/,
                  fn ->
                    get(conn, "/non-existing-company/machines")
                  end
