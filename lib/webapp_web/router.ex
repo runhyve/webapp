@@ -29,6 +29,7 @@ defmodule WebappWeb.Router do
     pipe_through :api
 
     resources "/distributions", DistributionController, except: [:new, :edit]
+    resources "/machines", MachineControllerJSON, except: [:new, :edit]
   end
 
   scope "/", WebappWeb do
