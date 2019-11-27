@@ -25,7 +25,7 @@ defmodule WebappWeb.Router do
     plug WebappWeb.HypervisorTokenAuth
   end
 
-  scope "/api/v1", WebappWeb do
+  scope "/api/v1", WebappWeb.ApiV1 do
     pipe_through :api
 
     resources "/distributions", DistributionController, except: [:new, :edit]

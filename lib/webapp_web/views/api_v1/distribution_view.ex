@@ -1,6 +1,6 @@
-defmodule WebappWeb.DistributionView do
+defmodule WebappWeb.ApiV1.DistributionView do
   use WebappWeb, :view
-  alias WebappWeb.DistributionView
+  alias WebappWeb.ApiV1.DistributionView
 
   def render("index.json", %{distributions: distributions}) do
     %{data: render_many(distributions, DistributionView, "distribution.json")}
