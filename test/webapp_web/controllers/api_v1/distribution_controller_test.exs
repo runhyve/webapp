@@ -1,4 +1,4 @@
-defmodule WebappWeb.DistributionControllerTest do
+defmodule WebappWeb.ApiV1.DistributionControllerTest do
   use WebappWeb.ConnCase
 
   alias Webapp.Distributions
