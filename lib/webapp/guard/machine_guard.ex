@@ -17,6 +17,11 @@ defmodule Webapp.Guard.MachineGuard do
     {:noreply, state}
   end
 
+  # Workaround for the hackney issue: https://github.com/benoitc/hackney/issues/464
+  def handle_info({:ssl_closed, _}, state) do
+    {:noreply, state}
+  end
+
   def schedule do
     Process.send_after(self(), :check_status, 5000)
   end
