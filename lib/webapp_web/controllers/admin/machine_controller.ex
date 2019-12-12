@@ -8,12 +8,7 @@ defmodule WebappWeb.Admin.MachineController do
     Hypervisors.Hypervisor
   }
 
-  plug :authorize_resource,
-    model: Machine,
-    non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks, :distribution]
-
-  plug :load_resource,
+  plug :load_and_authorize_resource,
     model: Machine,
     non_id_actions: [:index, :create, :new],
     preload: [:hypervisor, :plan, :networks, :distribution],
@@ -23,7 +18,7 @@ defmodule WebappWeb.Admin.MachineController do
     model: Hypervisor,
     id_name: "hypervisor_id",
     only: [:index],
-    preload: [:hypervisor_type, :machines]
+    preload: [:hypervisor_type, machines: [:networks, :hypervisor, :plan, :distribution]]
 
   def index(conn, %{"hypervisor_id" => hypervisor_id} = _params) do
     # For action :index plug :load_resource will load all hypervisors
@@ -43,12 +38,8 @@ defmodule WebappWeb.Admin.MachineController do
         conn
       end
 
-    machines =
-      hypervisor.machines
-      |> Webapp.Repo.preload([:networks, :hypervisor, :plan, :distribution])
-
     render(conn, "index.html",
-      machines: machines,
+      machines: hypervisor.machines,
       hypervisor: hypervisor,
       status: status
     )
