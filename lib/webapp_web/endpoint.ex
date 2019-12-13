@@ -1,6 +1,10 @@
 defmodule WebappWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :webapp
-  use Sentry.Phoenix.Endpoint
+
+  # We don't want Sentry to try report erorrs from :test or :dev envs
+  if Mix.env() == :prod do
+    use Sentry.Phoenix.Endpoint
+  end
 
   socket "/socket", WebappWeb.UserSocket,
     websocket: true,
