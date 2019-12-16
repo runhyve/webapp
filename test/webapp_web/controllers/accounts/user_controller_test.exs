@@ -49,7 +49,7 @@ defmodule WebappWeb.UserControllerTest do
     @tag login: "reg@example.com"
     test "renders form for editing chosen user", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :edit, user))
-      assert html_response(conn, 200) =~ "Edit User"
+      assert html_response(conn, 200) =~ "Edit Profile"
     end
   end
 
@@ -57,7 +57,7 @@ defmodule WebappWeb.UserControllerTest do
     @tag login: "reg@example.com"
     test "show chosen user's page", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :show, user))
-      assert html_response(conn, 200) =~ "Show User"
+      assert html_response(conn, 200) =~ "Change password"
     end
   end
 
@@ -90,7 +90,7 @@ defmodule WebappWeb.UserControllerTest do
       user: user
     } do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @invalid_user)
-      assert html_response(conn, 200) =~ "Edit User"
+      assert html_response(conn, 200) =~ "Edit Profile"
     end
   end
 
