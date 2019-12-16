@@ -31,7 +31,7 @@
       <td data-header="Name"><%= link team.name, to: Routes.team_path(@conn, :show, team) %></td>
       <td data-header="Namespace"><%= team.namespace %></td>
 
-      <td>
+      <td class="has-text-right">
         <%= link "Show", to: Routes.team_path(@conn, :show, team), class: "button is-rounded"  %>
         <%= link "Edit", to: Routes.team_path(@conn, :edit, team),  class: "button is-rounded is-info"  %>
       </td>
