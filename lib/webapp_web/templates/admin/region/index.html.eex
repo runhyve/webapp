@@ -1,0 +1,42 @@
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+    <li><a>Admin</a></li>
+    <li class="is-active"><a>Regions</a></li>
+  </ul>
+</nav>
+
+<div class="level">
+  <div class="level-left">
+    <h1>Listing Regions</h1>
+  </div>
+
+  <div class="level-right">
+    <span><%= link "New Region", to: Routes.admin_region_path(@conn, :new), class: "button is-rounded is-primary" %></span>
+  </div>
+</div>
+
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for region <- @regions do %>
+    <tr>
+      <td data-header="Name"><%= link region.name, to: Routes.admin_region_path(@conn, :show, region) %></td>
+      <td data-header="" class="has-text-right">
+        <span><%= link "Show", to: Routes.admin_region_path(@conn, :show, region), class: "button is-rounded" %></span>
+        <span><%= link "Edit", to: Routes.admin_region_path(@conn, :edit, region), class: "button is-rounded is-info" %></span>
+        <span><%= link "Delete", to: Routes.admin_region_path(@conn, :delete, region),
+                  method: :delete,
+                  data: [confirm: "Are you sure?"],
+                  class: "button is-rounded is-danger" %>
+        </span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

@@ -21,6 +21,7 @@
     <tr>
       <th>Name</th>
       <th>FQDN</th>
+      <th>Region</th>
       <th></th>
     </tr>
   </thead>
@@ -29,6 +30,7 @@
     <tr>
       <td data-header="Name"><%= link hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, hypervisor) %></td>
       <td data-header="FQDN"><%= hypervisor.fqdn %></td>
+      <td data-header="Region"><%= hypervisor.region.name %></td>
 
       <td data-header="" class="has-text-right">
         <%= link "Show", to: Routes.admin_hypervisor_path(@conn, :show, hypervisor), class: "button is-rounded"  %>

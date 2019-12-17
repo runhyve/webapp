@@ -77,6 +77,7 @@ defmodule WebappWeb.Router do
       resources "/machines", MachineController, only: [:new, :create, :index]
     end
 
+    resources "/regions", RegionController
     resources "/machines", MachineController, only: [:index]
     resources "/plans", PlanController
     resources "/networks", NetworkController, except: [:new, :create, :index]

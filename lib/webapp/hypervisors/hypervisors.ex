@@ -123,7 +123,7 @@ defmodule Webapp.Hypervisors do
       [%Hypervisor{}, ...]
 
   """
-  def list_hypervisors(preloads \\ [:hypervisor_type]) do
+  def list_hypervisors(preloads \\ [:hypervisor_type, :region]) do
     Repo.all(Hypervisor)
     |> Repo.preload(preloads)
   end

@@ -30,6 +30,10 @@
           <%= @hypervisor.fqdn %>
         </li>
         <li>
+          <strong>Region:</strong>
+          <%= @hypervisor.region.name %>
+        </li>
+        <li>
           <strong>TLS:</strong>
           <%= @hypervisor.tls %>
         </li>

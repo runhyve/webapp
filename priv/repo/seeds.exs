@@ -99,6 +99,10 @@ Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
   image: "https://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.qcow2"
 })
 
+for region <- ~w(Europe Asia America) do
+  Webapp.Repo.insert!(%Webapp.Regions.Region{name: region})
+end
+
 if File.exists?("priv/repo/seeds.local.exs") do
   Code.require_file("priv/repo/seeds.local.exs")
 end
