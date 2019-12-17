@@ -7,6 +7,10 @@ defmodule WebappWeb.Admin.HypervisorView do
     for type <- hypervisor_types, do: {type.name, type.id}
   end
 
+  def region_select_options(regions) do
+    for region <- regions, do: {region.name, region.id}
+  end
+
   def map_status_to_css(status) do
     case status do
       "unreachable" -> "is-danger"
