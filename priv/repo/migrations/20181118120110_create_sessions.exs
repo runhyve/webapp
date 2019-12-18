@@ -6,7 +6,7 @@ defmodule Webapp.Repo.Migrations.CreateSessions do
       add(:user_id, references(:users, on_delete: :delete_all))
       add(:expires_at, :utc_datetime)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
   end
 end

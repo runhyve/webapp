@@ -14,7 +14,7 @@ defmodule Webapp.Accounts.Member do
     belongs_to(:team, Team)
     field(:role, UserRole, default: "User")
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

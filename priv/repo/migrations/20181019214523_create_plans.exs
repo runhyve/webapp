@@ -8,7 +8,7 @@ defmodule Webapp.Repo.Migrations.CreatePlans do
       add(:ram, :integer, default: 512)
       add(:cpu, :integer, default: 1)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(unique_index(:plans, [:name]))

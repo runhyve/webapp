@@ -23,7 +23,7 @@ defmodule WebappWeb.Admin.MachineController do
     model: Hypervisor,
     id_name: "hypervisor_id",
     only: [:index],
-    preload: [:hypervisor_type, :machines]
+    preload: [:hypervisor_type, machines: Hypervisors.preload_active_machines]
 
   def index(conn, %{"hypervisor_id" => hypervisor_id} = _params) do
     # For action :index plug :load_resource will load all hypervisors

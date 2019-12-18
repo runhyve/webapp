@@ -57,8 +57,6 @@ defmodule WebappWeb.Router do
       resources "/members", MemberController, except: [:index]
     end
 
-    get "/ip_pools/new", IpPoolController, :new
-
     # Machine
     resources "/machines", MachineController, except: [:new, :create]
     get "/machines/:id/console", MachineController, :console
@@ -84,6 +82,7 @@ defmodule WebappWeb.Router do
     resources "/ip_pools", Ip_poolController, except: [:edit, :update, :delete]
     resources "/users", UserController, only: [:index]
     resources "/teams", TeamController, only: [:index]
+    resources "/jobs", JobController, only: [:index]
   end
 
   scope "/" do

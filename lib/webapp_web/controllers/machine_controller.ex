@@ -13,17 +13,12 @@ defmodule WebappWeb.MachineController do
     Distributions,
     Notifications.Notifications
   }
-
-  plug :load_resource,
-    model: Machine,
-    non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks, :distribution, ipv4: [:ip_pool]]
-
-  plug :authorize_resource,
+  
+  plug :load_and_authorize_resource,
     current_user: :current_member,
     model: Machine,
     non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks, :distribution]
+    preload: [:hypervisor, :plan, :networks, :distribution, :job, ipv4: [:ip_pool]]
 
   plug :load_hypervisor when action in [:new, :create]
   plug :load_references when action in [:new, :create, :edit, :update]
@@ -183,7 +178,7 @@ defmodule WebappWeb.MachineController do
     case Machines.delete_machine(machine) do
       {:ok, _machine} ->
         conn
-        |> put_flash(:info, "Machine #{machine.name} has been deleted")
+        |> put_flash(:info, "Machine #{machine.name} has been marked for deletion")
         |> redirect(to: team_path(:machine_path, conn, :index))
 
       {:error, :hypervisor, error, _changes} ->
@@ -261,21 +256,6 @@ defmodule WebappWeb.MachineController do
         conn
         |> put_flash(:error, error)
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
-    end
-  end
-
-  defp load_machine(conn, _) do
-    try do
-      %{"id" => id} = conn.params
-      machine = Machines.get_machine!(id, [:hypervisor, :plan, :networks, :distribution])
-
-      conn
-      |> assign(:machine, machine)
-    rescue
-      _e ->
-        conn
-        |> put_flash(:error, "Machine was not found.")
-        |> redirect(to: team_path(:machine_path, conn, :index))
     end
   end
 

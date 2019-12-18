@@ -18,7 +18,7 @@ defmodule Webapp.Networks.Network do
     has_many(:ip_pools, Ip_pool)
     has_many(:ipv4, through: [:ip_pools, :ipv4])
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

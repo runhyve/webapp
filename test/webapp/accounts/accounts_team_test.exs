@@ -9,7 +9,7 @@ defmodule Webapp.AccountsTeamTest do
 
   @update_team %{name: "some updated name"}
 
-  def team_fixture(attrs \\ %{}) do
+  def team_fixture(_attrs \\ %{}) do
     {:ok, fixtures} =
       Accounts.register_user(%{
         user_email: "fred@example.com",

@@ -6,7 +6,7 @@ defmodule Webapp.Repo.Migrations.CreateTeams do
       add(:name, :string)
       add(:namespace, :string)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(unique_index(:teams, ["lower(name)"], name: :teams_name_index))

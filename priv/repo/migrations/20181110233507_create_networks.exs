@@ -8,7 +8,7 @@ defmodule Webapp.Repo.Migrations.CreateNetworks do
       add(:network, :cidr)
       add(:hypervisor_id, references(:hypervisors, on_delete: :delete_all), null: false)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(index(:networks, [:hypervisor_id]))

@@ -13,7 +13,7 @@ defmodule Webapp.Hypervisors.Hypervisor do
     has_many(:machines, Webapp.Machines.Machine)
     has_many(:networks, Webapp.Networks.Network)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

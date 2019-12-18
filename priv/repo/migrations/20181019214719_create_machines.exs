@@ -13,10 +13,10 @@ defmodule Webapp.Repo.Migrations.CreateMachines do
       add(:failed, :boolean)
       add(:job_id, :integer, null: true)
 
-      add(:created_at, :naive_datetime)
-      add(:failed_at, :naive_datetime)
+      add(:created_at, :utc_datetime)
+      add(:failed_at, :utc_datetime)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(index(:machines, [:hypervisor_id]))
