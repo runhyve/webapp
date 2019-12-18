@@ -20,7 +20,7 @@ defmodule Webapp.Machines do
   }
 
   # Number of seconds after the create action is considered as failed.
-  @create_timeout 300
+  @create_timeout 600
 
   @doc """
   Returns the list of machines.
