@@ -6,7 +6,7 @@ defmodule Webapp.Repo.Migrations.CreateMembers do
       add(:user_id, references(:users, on_delete: :delete_all), null: false)
       add(:team_id, references(:teams, on_delete: :delete_all), null: false)
       add(:role, :user_role)
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(index(:members, [:user_id]))

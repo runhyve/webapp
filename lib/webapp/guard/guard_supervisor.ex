@@ -1,7 +1,11 @@
 defmodule Webapp.GuardSupervisor do
   use Supervisor
 
-  alias Webapp.Guard.{MachineGuard, HypervisorGuard}
+  alias Webapp.Guard.{
+    JobGuard,
+    MachineGuard,
+    HypervisorGuard
+  }
 
   @doc """
   Starts the process supervisor.
@@ -13,8 +17,9 @@ defmodule Webapp.GuardSupervisor do
   @impl true
   def init(_arg) do
     children = [
+      JobGuard,
       MachineGuard,
-      HypervisorGuard
+      HypervisorGuard,
     ]
 
     if Mix.env() != :test do

@@ -3,9 +3,7 @@ defmodule Webapp.Accounts.Team do
   import Ecto.Changeset
 
   alias Webapp.{
-    Accounts.User,
     Accounts.Member,
-    Accounts.Namespace,
     Machines.Machine
   }
 
@@ -16,7 +14,7 @@ defmodule Webapp.Accounts.Team do
     has_many(:users, through: [:members, :user])
     has_many(:machines, Machine, on_delete: :delete_all)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

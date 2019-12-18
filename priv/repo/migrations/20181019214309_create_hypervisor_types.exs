@@ -5,7 +5,7 @@ defmodule Webapp.Repo.Migrations.CreateHypervisorTypes do
     create table(:hypervisor_types) do
       add(:name, :string)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
   end
 end

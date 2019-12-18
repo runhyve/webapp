@@ -9,7 +9,7 @@ defmodule Webapp.Repo.Migrations.CreateIpPools do
       add(:gateway, :inet)
       add(:network_id, references(:networks, on_delete: :delete_all))
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(index(:ip_pools, [:network_id]))

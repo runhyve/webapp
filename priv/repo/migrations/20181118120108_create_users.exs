@@ -18,7 +18,7 @@ defmodule Webapp.Repo.Migrations.CreateUsers do
       add(:invited_at, :utc_datetime)
       add(:role, :user_role)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(unique_index(:users, ["lower(email)"], name: :users_email_index))

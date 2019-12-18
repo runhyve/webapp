@@ -5,7 +5,7 @@ defmodule Webapp.Hypervisors.Type do
   schema "hypervisor_types" do
     field(:name, :string)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

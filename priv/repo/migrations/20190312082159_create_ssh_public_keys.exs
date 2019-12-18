@@ -8,7 +8,7 @@ defmodule Webapp.Repo.Migrations.CreateSshPublicKeys do
       add(:fingerprint, :string)
       add(:user_id, references(:users, on_delete: :nothing))
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(

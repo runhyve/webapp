@@ -6,16 +6,14 @@ defmodule Webapp.Hypervisors do
   import Ecto.Query, warn: false
   alias Webapp.Repo
 
-  alias Ecto.{
-    Multi,
-    Changeset
-  }
+  alias Ecto.Multi
 
   alias Webapp.{
     Hypervisors.Type,
     Hypervisors.Hypervisor,
     Machines.Machine,
-    Networks.Network
+    Networks.Network,
+    Jobs.Job
   }
 
   @doc """
@@ -128,6 +126,11 @@ defmodule Webapp.Hypervisors do
     |> Repo.preload(preloads)
   end
 
+  def preload_active_machines() do
+    from m in Webapp.Machines.Machine,
+         where: is_nil(m.deleted_at)
+  end
+
   @doc """
   Returns the list of hypervisor's networks.
 
@@ -196,8 +199,6 @@ defmodule Webapp.Hypervisors do
   Get cached details about hypervisor's operating system from cache
   """
   def get_hypervisor_os_details(%Hypervisor{} = hypervisor) do
-    module = get_hypervisor_module(hypervisor)
-
     ConCache.get(:rh_cache, "hv_os_data_#{hypervisor.id}")
   end
 
@@ -236,21 +237,22 @@ defmodule Webapp.Hypervisors do
       total_memory_mb = os_details["memory"]["total"]/1024/1024
       booked_memory_mb = Enum.reduce(hypervisor.machines, 0, fn(v, acc) -> v.plan.ram + acc end)
       booked_memory_pct = booked_memory_mb * 100 / total_memory_mb
-      resources = %{
+
+      %{
         :total_memory_mb => total_memory_mb |> Decimal.from_float() |> Decimal.round(2),
         :booked_memory_mb => booked_memory_mb,
         :booked_memory_pct =>  booked_memory_pct  |> Decimal.from_float() |> Decimal.round(2)
       }
     else
-      resources = %{}
+      %{}
     end
   end
 
   @doc """
   Return struct with Hypervisors' storage details
   """
-  def get_hypervisor_storage_details(%Hypervisor{} = hypervisor, os_details) do
-    resources = if Map.has_key?(os_details, "zpools") do
+  def get_hypervisor_storage_details(%Hypervisor{} = _hypervisor, os_details) do
+    if Map.has_key?(os_details, "zpools") do
       %{
         :zpools => os_details["zpools"]
       }
@@ -338,12 +340,26 @@ defmodule Webapp.Hypervisors do
   end
 
   @doc """
-  Returns the module name of hypervisor type for given hypervisor.
+  Returns the module name of hypervisor type for given struct.
   """
-  defp get_hypervisor_module(%Hypervisor{} = hypervisor) do
-    module =
-      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
+  def get_hypervisor_module(%Hypervisor{} = hypervisor) do
+    ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
       |> String.to_atom()
+  end
+
+  def get_hypervisor_module(%Machine{hypervisor: %Hypervisor{} = hypervisor}) do
+    hypervisor = Repo.preload(hypervisor, :hypervisor_type)
+    get_hypervisor_module(hypervisor)
+  end
+
+  def get_hypervisor_module(%Job{hypervisor: %Hypervisor{} = hypervisor}) do
+    hypervisor = Repo.preload(hypervisor, :hypervisor_type)
+    get_hypervisor_module(hypervisor)
+  end
+
+  def get_hypervisor_module(%Network{hypervisor: %Hypervisor{} = hypervisor}) do
+    hypervisor = Repo.preload(hypervisor, :hypervisor_type)
+    get_hypervisor_module(hypervisor)
   end
 
   @doc """

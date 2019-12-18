@@ -9,7 +9,7 @@ defmodule Webapp.Repo.Migrations.CreateHypervisor do
       add(:webhook_endpoint, :string)
       add(:webhook_token, :string)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(index(:hypervisors, [:hypervisor_type_id]))

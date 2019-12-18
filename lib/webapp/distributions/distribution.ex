@@ -10,7 +10,7 @@ defmodule Webapp.Distributions.Distribution do
 
     has_many(:machines, Webapp.Machines.Machine)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

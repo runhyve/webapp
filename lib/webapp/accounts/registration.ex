@@ -8,8 +8,7 @@ defmodule Webapp.Accounts.Registration do
     Accounts.Registration,
     Accounts.User,
     Accounts.Team,
-    Accounts.Member,
-    Types.UserRole
+    Accounts.Member
   }
 
   embedded_schema do
@@ -29,7 +28,7 @@ defmodule Webapp.Accounts.Registration do
     |> validate_required(@required_fields)
   end
 
-  def registration(%{valid?: true} = changeset, attrs) do
+  def registration(%{valid?: true} = _changeset, attrs) do
     Multi.new()
     |> Multi.insert(:user, User.create_changeset(%User{}, extract_attrs("user", attrs)))
     |> Multi.insert(:team, Team.create_changeset(%Team{}, extract_attrs("team", attrs)))
@@ -48,7 +47,7 @@ defmodule Webapp.Accounts.Registration do
   end
 
   def copy_changeset_errors(%Changeset{} = from, %Changeset{} = to, field_prefix) do
-    Enum.reduce(from.errors, to, fn {field, {msg, additional}} = foo, acc ->
+    Enum.reduce(from.errors, to, fn {field, {msg, additional}}, acc ->
       Ecto.Changeset.add_error(acc, String.to_existing_atom("#{field_prefix}_#{field}"), msg,
         additional: additional
       )

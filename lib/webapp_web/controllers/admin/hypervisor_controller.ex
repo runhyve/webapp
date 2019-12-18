@@ -10,7 +10,7 @@ defmodule WebappWeb.Admin.HypervisorController do
   plug :load_and_authorize_resource,
     model: Hypervisor,
     non_id_actions: [:index, :create, :new],
-    preload: [:region, :hypervisor_type, machines: :plan]
+    preload: [:region, :hypervisor_type, machines: {Hypervisors.preload_active_machines, :plan}]
 
   plug :load_hypervisor_types when action in [:new, :create, :edit, :update]
   plug :load_regions when action in [:new, :create, :edit, :update]
