@@ -5,6 +5,7 @@ defmodule WebappWeb.MachineController do
     Machines,
     Machines.Machine,
     Hypervisors,
+    Hypervisors.Hypervisor,
     Networks,
     Plans,
     Accounts,
@@ -25,7 +26,13 @@ defmodule WebappWeb.MachineController do
     non_id_actions: [:index, :create, :new],
     preload: [:hypervisor, :plan, :networks, :distribution]
 
-  plug :load_hypervisor when action in [:new, :create]
+  plug :load_resource,
+       model: Hypervisor,
+       id_name: "hypervisor_id",
+       only: [:new, :create],
+       preload: [:hypervisor_type, machines: [:networks, :hypervisor, :plan, :distribution]],
+       required: true
+
   plug :load_references when action in [:new, :create, :edit, :update]
 
   #  def index(conn, %{"hypervisor_id" => hypervisor_id} = params) do
@@ -264,21 +271,6 @@ defmodule WebappWeb.MachineController do
     end
   end
 
-  defp load_machine(conn, _) do
-    try do
-      %{"id" => id} = conn.params
-      machine = Machines.get_machine!(id, [:hypervisor, :plan, :networks, :distribution])
-
-      conn
-      |> assign(:machine, machine)
-    rescue
-      _e ->
-        conn
-        |> put_flash(:error, "Machine was not found.")
-        |> redirect(to: team_path(:machine_path, conn, :index))
-    end
-  end
-
   defp load_references(conn, _) do
     # The :index, :create and :new are under /hypervisors resource
     # for them, we use load_hypervisor which puts assign with hypervisor.
@@ -294,20 +286,5 @@ defmodule WebappWeb.MachineController do
     |> assign(:plans, Plans.list_plans())
     |> assign(:teams, Accounts.list_teams())
     |> assign(:distributions, Distributions.list_distributions())
-  end
-
-  defp load_hypervisor(conn, _) do
-    try do
-      %{"hypervisor_id" => id} = conn.params
-      hypervisor = Hypervisors.get_hypervisor!(id)
-
-      conn
-      |> assign(:hypervisor, hypervisor)
-    rescue
-      _ ->
-        conn
-        |> put_flash(:error, "Hypervisor was not found.")
-        |> redirect(to: team_path(:page_path, conn, :index))
-    end
   end
 end

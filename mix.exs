@@ -55,7 +55,7 @@ defmodule Webapp.MixProject do
       {:argon2_elixir, "~> 2.0"},
       {:bamboo, "~> 1.1"},
       {:bamboo_smtp, "~> 1.7.0"},
-      {:canary, "~> 1.1.1"},
+      {:canary, git: "https://github.com/runhyve/canary.git"},
       {:plug_cowboy, "~> 2.0"},
       {:plug, "~> 1.7"},
       {:excoveralls, "~> 0.10", only: [:dev, :test]},
