@@ -1,5 +1,5 @@
 defmodule Webapp.TestHelpers do
-  alias Webapp.{Hypervisors, Plans, Machines, Networks, Networks.Network }
+  alias Webapp.{Hypervisors, Plans, Machines, Networks, Networks.Network, Regions}
   alias Webapp.Repo
 
   def fixture_hypervisor(hypervisor) do
@@ -10,6 +10,11 @@ defmodule Webapp.TestHelpers do
   def fixture_hypervisor_type(hypervisor_type) do
     {:ok, hypervisor_type} = Hypervisors.create_type(hypervisor_type)
     hypervisor_type
+  end
+
+  def fixture_region(region) do
+    {:ok, region} = Regions.create_region(region)
+    region
   end
 
   def fixture_plan(plan) do

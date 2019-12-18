@@ -88,6 +88,7 @@
           </p>
           <ul class="menu-list">
             <li><%= link "Plans", to: Routes.admin_plan_path(@conn, :index) %></li>
+            <li><%= link "Regions", to: Routes.admin_region_path(@conn, :index) %></li>
             <li><%= link "Hypervisors", to: Routes.admin_hypervisor_path(@conn, :index) %></li>
             <li><%= link "Machines", to: Routes.admin_machine_path(@conn, :index) %></li>
             <li><%= link "IP Pools", to: Routes.admin_ip_pool_path(@conn, :index) %></li>

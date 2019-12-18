@@ -1,0 +1,6 @@
+<div class="tabs">
+  <ul>
+    <%= active_link(@conn, "General", to: Routes.user_path(@conn, :show, @current_user), active: :exact)  %>
+    <%= active_link(@conn, "SSH keys", to: Routes.ssh_public_key_path(@conn, :index), active: :exact) %>
+  </ul>
+</div>

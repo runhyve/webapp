@@ -25,6 +25,15 @@
     </div>
 
     <div class="field">
+      <%= label f, :region_id, "Region", class: "label" %>
+      <div>Location of the hypervisor</div>
+      <div class="select">
+        <%= select f, :region_id, region_select_options(@regions) %>
+      </div>
+      <%= error_tag f, :region_id %>
+    </div>
+
+    <div class="field">
       <%= checkbox f, :tls, class: "checkbox" %>
       <%= label f, "Enable TLS", class: "checkbox" %>
       <%= error_tag f, :tls %>

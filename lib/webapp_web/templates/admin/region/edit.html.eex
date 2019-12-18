@@ -2,23 +2,25 @@
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
     <li><a>Admin</a></li>
-    <li><%= link "Teams", to: Routes.team_path(@conn, :index) %></li>
-    <li><%= link @team.name, to: Routes.team_path(@conn, :show, @team)  %></li>
+    <li><%= link "Regions", to: Routes.admin_region_path(@conn, :index) %></li>
+    <li><%= link @region.name, to: Routes.admin_region_path(@conn, :show, @region)  %></li>
     <li class="is-active"><a>Edit</a></li>
   </ul>
 </nav>
+
+
+
 <div class="level">
   <div class="level-left">
-    <h1>Edit Team</h1>
-  </div> 
-
+    <h1><%= @region.name %></h1>
+  </div>
   <div class="level-right">
     <span>
       <%= link "Back",
-            to: Routes.team_path(@conn, :index),
+            to: Routes.admin_plan_path(@conn, :index),
             class: "button is-rounded" %>
     </span>
   </div>
 </div>
 
-<%= render "form.html", Map.put(assigns, :action, Routes.team_path(@conn, :update, @team)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.admin_region_path(@conn, :update, @region)) %>

@@ -28,11 +28,13 @@ defmodule WebappWeb.ApiV1.DistributionControllerTest do
 
   def hypervisor_fixture do
     hypervisor_type = fixture_hypervisor_type(%{name: "bhyve"})
+    region = fixture_region(%{name: "test region"})
 
     {:ok, _hypervisor} =
       Hypervisors.create_hypervisor(%{
         name: "authenticated-hypervisor",
         ip_address: "192.168.199.253",
+        region_id: region.id,
         hypervisor_type_id: hypervisor_type.id,
         fqdn: "authenticated-hypervisor",
         webhook_token: @webhook_token

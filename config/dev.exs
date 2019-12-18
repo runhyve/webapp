@@ -73,3 +73,13 @@ config :webapp, Webapp.Repo,
   password: System.get_env("POSTGRES_PASSWORD") || "postgres",
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   pool_size: 10
+
+config :sentry,
+  dsn: System.get_env("SENTRY_DSN") || "https://secret@sentry.io/account_id",
+  environment_name: :dev,
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!,
+  tags: %{
+    env: "dev"
+  },
+  included_environments: [:dev]
