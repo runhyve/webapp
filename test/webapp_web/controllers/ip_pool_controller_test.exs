@@ -23,7 +23,7 @@ defmodule WebappWeb.Ip_poolControllerTest do
   """
 
   @create_attrs %{name: "test_pool", ip_range: "192.168.0.0/28", list: ip_list, gateway: "192.168.0.1", netmask: "255.255.255.240"}
-  @update_attrs %{gateway: 43, netmask: 43}
+  #  @update_attrs %{gateway: 43, netmask: 43}
   @invalid_attrs %{gateway: nil, netmask: nil}
 
   setup do

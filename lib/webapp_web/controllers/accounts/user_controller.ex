@@ -2,10 +2,9 @@ defmodule WebappWeb.UserController do
   use WebappWeb, :controller
 
   alias Phauxth.{Log, Confirm}
-  alias Webapp.{Accounts, Accounts.User, Accounts.Registration, Accounts.SSHPublicKey}
+  alias Webapp.{Accounts, Accounts.User, Accounts.Registration}
   alias WebappWeb.{Auth.Token}
   alias WebappWeb.Emails.UserEmail, as: Email
-  alias Ecto.Changeset
 
   plug :authorize_resource,
     model: User,
@@ -60,7 +59,7 @@ defmodule WebappWeb.UserController do
     end
   end
 
-  def show(%Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
+  def show(%Conn{assigns: %{current_user: user}} = conn, %{"id" => _id}) do
     render(conn, "show.html", user: user)
   end
 
@@ -90,7 +89,7 @@ defmodule WebappWeb.UserController do
     |> redirect(to: Routes.session_path(conn, :new))
   end
 
-  def teams(%Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
+  def teams(%Conn{assigns: %{current_user: _user}} = conn, %{"id" => id}) do
     user = Accounts.get_by(%{"user_id" => id}, [:teams])
 
     conn

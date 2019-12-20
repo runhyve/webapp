@@ -14,10 +14,11 @@ config :webapp, WebappWeb.Endpoint,
   url: [host: System.get_env("WEBAPP_DOMAIN") || "demo.runhyve.app", scheme: "https", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE"),
+  debug_errors: System.get_env("DEBUG") || false,
   server: true
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: System.get_env("WEBAPP_LOGLEVEL") || :info
 
 # ## SSL Support
 #
@@ -86,3 +87,19 @@ config :webapp, Webapp.Mailer,
   password: System.get_env("SMTP_PASSWORD"),
   ssl: true,
   retries: 1
+
+config :webapp, Webapp.Notifications,
+  enabled_modules: [Webapp.Notifications.NotifySlack],
+  slack_webhook_url: System.get_env("SLACK_WEBHOOK_URL"),
+  slack_channel: System.get_env("SLACK_CHANNEL"),
+  slack_username: System.get_env("SLACK_USERNAME")
+
+config :sentry,
+  dsn: System.get_env("SENTRY_DSN"),
+  environment_name: :prod,
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!,
+  tags: %{
+    env: "production"
+  },
+  included_environments: [:prod]

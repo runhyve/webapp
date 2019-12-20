@@ -11,7 +11,7 @@ defmodule Webapp.Plans.Plan do
 
     has_many(:machines, Webapp.Machines.Machine)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

@@ -4,6 +4,7 @@ defmodule Webapp.Machines do
   """
 
   import Ecto.Query, warn: false
+  import Webapp.Hypervisors, only: [get_hypervisor_module: 1]
   alias Webapp.Repo
 
   alias Ecto.{
@@ -12,10 +13,12 @@ defmodule Webapp.Machines do
   }
 
   alias Webapp.{
+    Notifications.Notifications,
     Hypervisors,
     Machines.Machine,
     Networks.Network,
-    Accounts.Team
+    Accounts.Team,
+    Jobs.Job
   }
 
   # Number of seconds after the create action is considered as failed.
@@ -30,9 +33,10 @@ defmodule Webapp.Machines do
       [%Machine{}, ...]
 
   """
-  def list_machines(preloads \\ [:hypervisor, :plan, :distribution]) do
+  def list_machines(preloads \\ [:hypervisor, :plan, :job, :distribution]) do
     Machine
     |> order_by(asc: :name)
+    |> where([m], is_nil(m.deleted_at))
     |> Repo.all()
     |> Repo.preload(preloads)
   end
@@ -50,6 +54,8 @@ defmodule Webapp.Machines do
     team
     |> Ecto.assoc(:machines)
     |> order_by(asc: :name)
+    |> where([m], is_nil(m.deleted_at))
+    |> where([m], m.last_status != "Deleting")
     |> Repo.all()
     |> Repo.preload(preloads)
   end
@@ -102,32 +108,40 @@ defmodule Webapp.Machines do
       |> Machine.create_changeset(attrs)
 
     if changeset.valid? do
-      hypervisor =
+      module =
         Ecto.Changeset.get_change(changeset, :hypervisor_id)
         |> Hypervisors.get_hypervisor!()
-
-      module =
-        ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
-        |> String.to_atom()
+        |> Hypervisors.get_hypervisor_module()
 
       try do
         machine = Changeset.apply_changes(changeset)
 
         Multi.new()
         |> Multi.run(:hypervisor, module, :create_machine, [machine])
-        |> Multi.run(:machine, fn _repo, %{hypervisor: job_id} ->
-          changeset
-          |> Changeset.put_change(:job_id, job_id)
-          |> Repo.insert()
-        end)
+        |> Multi.run(:job, __MODULE__, :multi_create_add_job, [machine])
+        |> Multi.run(:machine, __MODULE__, :multi_create_machine, [changeset])
+        |> Multi.run(:notify, Notifications, :publish, [:info, "Machine #{attrs["name"]} created successfuly"])
         |> Repo.transaction()
       rescue
         UndefinedFunctionError ->
+          Notifications.publish(:critical, "Machine #{attrs["name"]} couldn't be created")
           {:error, :hypervisor_not_found, changeset}
       end
     else
       Repo.insert(changeset)
     end
+  end
+
+  def multi_create_add_job(_repo, %{hypervisor: job_id}, %Machine{} = machine) do
+    %Job{}
+    |> Job.changeset(%{"hypervisor_id" => machine.hypervisor_id, "ts_job_id" => job_id})
+    |> Repo.insert()
+  end
+
+  def multi_create_machine(_repo, %{job: %Job{} = job}, changeset) do
+    changeset
+    |> Changeset.put_change(:job_id, job.id)
+    |> Repo.insert()
   end
 
   @doc """
@@ -143,9 +157,13 @@ defmodule Webapp.Machines do
 
   """
   def update_machine(%Machine{} = machine, attrs) do
-    machine
+    result = machine
     |> Machine.update_changeset(attrs)
     |> Repo.update()
+
+    Notifications.publish(:info, "Machine #{machine.name} updated successfuly")
+
+    result
   end
 
   @doc """
@@ -160,32 +178,58 @@ defmodule Webapp.Machines do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_machine(%Machine{failed: true} = machine) do
+  def delete_machine(%Machine{failed_at: %DateTime{}} = machine) do
     # Try to remove machine on server in silent mode.
     module = get_hypervisor_module(machine)
 
     try do
       apply(module, :delete_machine, [%{machine: machine}])
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        {:error, :hypervisor_not_found}
     end
 
     Multi.new()
-    |> Multi.delete(:machine, machine)
+    |> Multi.update(:machine, Machine.mark_as_deleted_changeset(machine))
+    |> Multi.run(:notify, Notifications, :publish, [:info, "Machine #{machine.name} deleted"])
     |> Repo.transaction()
   end
 
-  def delete_machine(%Machine{created: true} = machine) do
+  def delete_machine(%Machine{created_at: %DateTime{}} = machine) do
     module = get_hypervisor_module(machine)
 
     try do
       Multi.new()
-      |> Multi.delete(:machine, machine)
-      |> Multi.run(:hypervisor, module, :delete_machine, [])
+      |> Multi.run(:hypervisor, module, :delete_machine, [machine])
+      |> Multi.run(:job, __MODULE__, :multi_delete_add_job, [machine])
+      |> Multi.run(:machine, __MODULE__, :multi_delete_machine, [machine])
+      |> Multi.run(:notify, Notifications, :publish, [:info, "Machine #{machine.name} has been marked for deletion"])
       |> Repo.transaction()
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        Notifications.publish(:critical, "Couldn't delete machine #{machine.name}")
+        {:error, :hypervisor_not_found}
     end
+  end
+
+  def multi_delete_add_job(_repo, %{hypervisor: job_id}, %Machine{} = machine) when is_integer(job_id) do
+    %Job{}
+    |> Job.changeset(%{"hypervisor_id" => machine.hypervisor_id, "ts_job_id" => job_id})
+    |> Repo.insert()
+  end
+
+  # Machine does not exists on the hypervisor, there is no task for deletion.
+  def multi_delete_add_job(_repo, %{hypervisor: _job_id}, %Machine{}), do: {:ok, nil}
+
+  # Machine does not exists on the hypervisor, mark as deleted.
+  def multi_delete_machine(_repo, %{job: nil}, %Machine{} = machine) do
+    Machine.mark_as_deleted_changeset(machine)
+    |> Repo.update()
+  end
+
+  def multi_delete_machine(_repo, %{job: %Job{} = job}, %Machine{} = machine) do
+    Machine.update_changeset(machine, %{"last_status" => "Deleting", "job_id" => job.id})
+    |> Repo.update()
   end
 
   @doc """
@@ -193,28 +237,16 @@ defmodule Webapp.Machines do
   """
   def update_machine_status(%Machine{} = machine) do
     module = get_hypervisor_module(machine)
-    changeset = Machine.update_changeset(machine, %{})
 
     try do
       Multi.new()
-      |> Multi.update(:machine, changeset)
-      |> Multi.run(:hypervisor, module, :update_machine_status, [])
+      |> Multi.run(:hypervisor, module, :update_machine_status, [machine])
       |> Multi.run(:status, fn _repo, %{hypervisor: status} ->
-        now =
-          NaiveDateTime.utc_now()
-          |> NaiveDateTime.truncate(:second)
+        changeset = Machine.update_machine_changeset(machine, status)
 
-        changeset =
-          Changeset.put_change(changeset, :last_status, status)
-          |> Changeset.put_change(:created, true)
-          |> Changeset.put_change(:updated_at, now)
-
-        changeset =
-          if Changeset.get_change(changeset, :created, false) do
-            Changeset.put_change(changeset, :created_at, now)
-          else
-            changeset
-          end
+        if Changeset.get_change(changeset, :last_status, false) do
+          Notifications.publish(:info, "Machine #{machine.name} is now in state #{status}")
+        end
 
         Repo.update(changeset)
       end)
@@ -228,62 +260,67 @@ defmodule Webapp.Machines do
   Checks machine status.
   Returns machine struct or error message.
   """
-  def update_status(%Machine{failed: true} = machine), do: {:ok, machine}
+  def update_status(%Machine{failed_at: %DateTime{}} = machine), do: {:ok, machine}
+  def update_status(%Machine{deleted_at: %DateTime{}} = machine), do: {:ok, machine}
 
-  # Machine is already created, simply check and update machine status.
-  def update_status(%Machine{created: true} = machine) do
+  # There is no pending job, simply check machine status on the hypervisor.
+  def update_status(%Machine{job_id: nil} = machine), do: check_machine_status(machine)
+
+  # We need to wait.
+  def update_status(%Machine{job: %Job{last_status: "queued"}} = machine), do: {:ok, machine}
+
+  def update_status(%Machine{job: %Job{last_status: "running", started_at: started_at}} = machine) do
+    if DateTime.diff(DateTime.utc_now(), started_at) >= @create_timeout do
+      mark_as_failed(machine)
+      {:error, "Something went wrong, creating virtual machine took too long."}
+    else
+      {:ok, machine}
+    end
+  end
+
+  def update_status(%Machine{job: %Job{last_status: "blocked"}} = machine) do
+    mark_as_failed(machine)
+    {:error, "Machine was not created successfully"}
+  end
+
+  # The job was completed without errors, now we need to process it.
+  def update_status(%Machine{last_status: "Creating", job: %Job{last_status: "finished", e_level: 0}} = machine) do
+    {:ok, machine} = cleanup_job_id(machine)
     check_machine_status(machine)
   end
 
-  #
-  def update_status(%Machine{failed: false, created: false, inserted_at: inserted_at} = machine) do
-    if NaiveDateTime.diff(NaiveDateTime.utc_now(), inserted_at) >= @create_timeout do
-      mark_as_failed(machine)
-      {:error, "Something went wrong, your machine has been created for too long."}
-    else
-      check_job_status(machine)
-    end
+  def update_status(%Machine{last_status: "Deleting", job: %Job{last_status: "finished", e_level: 0}} = machine) do
+    {:ok, machine} = cleanup_job_id(machine)
+    Machine.mark_as_deleted_changeset(machine)
+    |> Repo.update()
+
+    {:ok, nil}
   end
 
-  @doc """
-  Check machine's job status.
-  Returns machine struct or error message.
-  """
-  defp check_job_status(%Machine{} = machine) do
-    case update_job_status(machine) do
-      # Job is finished, check machine status this will update created flag.
-      {:ok, %{"state" => "finished", "elevel" => 0}} ->
-        check_machine_status(machine)
+  # The job was completed with errors, we need to handle it.
+  def update_status(%Machine{last_status: "Creating", job: %Job{last_status: "finished", e_level: _e_level}} = machine) do
+    mark_as_failed(machine)
+    {:error, "Machine was not created successfully"}
+  end
 
-      {:ok, %{"state" => "finished", "elevel" => _elevel}} ->
-        mark_as_failed(machine)
-        {:error, "Machine was not created successfully"}
-
-      {:ok, %{"state" => "blocked"}} ->
-        mark_as_failed(machine)
-        {:error, "Machine was not created successfully"}
-
-      # Job is queued or still running
-      {:ok, %{"state" => state}} ->
-        {:ok, machine}
-
-      {:error, :hypervisor_not_found} ->
-        {:error, "Unable to check machine status"}
-
-      {:error, error} ->
-        {:error, error}
-    end
+  def update_status(%Machine{last_status: "Deleting", job: %Job{last_status: "finished", e_level: _e_level}} = machine) do
+    mark_as_failed(machine)
+    {:error, "Machine was not deleted successfully"}
   end
 
   defp mark_as_failed(%Machine{} = machine) do
-    now =
-      NaiveDateTime.utc_now()
-      |> NaiveDateTime.truncate(:second)
+    now = DateTime.utc_now()
+          |> DateTime.truncate(:second)
 
     Machine.update_changeset(machine, %{})
     |> Changeset.put_change(:last_status, "Failed")
     |> Changeset.put_change(:failed_at, now)
-    |> Changeset.put_change(:failed, true)
+    |> Repo.update()
+  end
+
+  defp cleanup_job_id(%Machine{} = machine) do
+    Machine.update_changeset(machine, %{})
+    |> Changeset.put_change(:job_id, nil)
     |> Repo.update()
   end
 
@@ -291,22 +328,13 @@ defmodule Webapp.Machines do
   Checks and updates machine status.
   Returns machine struct or error message.
   """
-  defp check_machine_status(%Machine{} = machine) do
+  def check_machine_status(%Machine{} = machine) do
     case update_machine_status(machine) do
       {:ok, %{status: machine}} ->
         {:ok, machine}
 
-      {:error, :hypervisor, error, _} ->
-        cond do
-          machine.created ->
-            {:error, error}
-
-          NaiveDateTime.diff(NaiveDateTime.utc_now(), machine.inserted_at) >= @create_timeout ->
-            {:error, "Something went wrong, your machine has been created for too long."}
-
-          true ->
-            {:ok, machine}
-        end
+      {:error, :hypervisor, _error, _} ->
+        {:ok, machine}
 
       {:error, :hypervisor_not_found} ->
         {:error, :hypervisor_not_found}
@@ -324,22 +352,12 @@ defmodule Webapp.Machines do
       Multi.new()
       |> Multi.update(:machine, changeset)
       |> Multi.run(:hypervisor, module, :add_network_to_machine, [])
+      |> Multi.run(:notify, Notifications, :publish, [:info, "Machine #{machine.name} is now connected to #{network.name}"])
       |> Repo.transaction()
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
-    end
-  end
-
-  @doc """
-  Checks status of job related with given machine.
-  """
-  defp update_job_status(%Machine{} = machine) do
-    module = get_hypervisor_module(machine)
-
-    try do
-      apply(module, :job_status, [machine.hypervisor, machine.job_id])
-    rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        Notifications.publish(:critical, "Couldn't connect machine #{machine.name} to network #{network.namae}")
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -350,9 +368,15 @@ defmodule Webapp.Machines do
     module = get_hypervisor_module(machine)
 
     try do
-      apply(module, :start_machine, [%{machine: machine}])
+      result = apply(module, :start_machine, [%{machine: machine}])
+
+      Notifications.publish(:info, "Machine #{machine.name} is being started")
+
+      result
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        Notifications.publish(:critical, "Machine #{machine.name} couldn't be started")
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -363,9 +387,15 @@ defmodule Webapp.Machines do
     module = get_hypervisor_module(machine)
 
     try do
-      apply(module, :stop_machine, [%{machine: machine}])
+      result = apply(module, :stop_machine, [%{machine: machine}])
+
+      Notifications.publish(:info, "Machine #{machine.name} is being stopped")
+
+      result
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        Notifications.publish(:critical, "Couldn't stop #{machine.name}")
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -376,9 +406,15 @@ defmodule Webapp.Machines do
     module = get_hypervisor_module(machine)
 
     try do
-      apply(module, :poweroff_machine, [%{machine: machine}])
+      result = apply(module, :poweroff_machine, [%{machine: machine}])
+
+      Notifications.publish(:info, "Machine #{machine.name} is being powered off")
+
+      result
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        Notifications.publish(:critical, "Couldn't power off machine #{machine.name}")
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -389,9 +425,15 @@ defmodule Webapp.Machines do
     module = get_hypervisor_module(machine)
 
     try do
-      apply(module, :console_machine, [%{machine: machine}])
+      result = apply(module, :console_machine, [%{machine: machine}])
+
+      Notifications.publish(:info, "Console requested for machine #{machine.name}")
+
+      result
     rescue
-      UndefinedFunctionError -> {:error, :hypervisor_not_found}
+      UndefinedFunctionError ->
+        Notifications.publish(:critical, "Couldn't open open console to machine #{machine.name}")
+        {:error, :hypervisor_not_found}
     end
   end
 
@@ -411,38 +453,34 @@ defmodule Webapp.Machines do
   @doc """
   Returns bool for given machine and operation if it's allowed.
   """
-  def machine_can_do?(%Machine{failed: true} = machine, action), do: false
-  def machine_can_do?(%Machine{created: false} = machine, action), do: false
+  def machine_can_do?(%Machine{failed_at: %DateTime{}} = _machine, :delete), do: true
+
+  def machine_can_do?(%Machine{deleted_at: %DateTime{}} = _machine, _action), do: false
+  def machine_can_do?(%Machine{failed_at: %DateTime{}} = _machine, _action), do: false
 
   # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
-  def machine_can_do?(%Machine{} = machine, action) do
+  def machine_can_do?(%Machine{created_at: %DateTime{}} = machine, action) do
     case action do
       :console ->
         machine.last_status == "Running" || machine.last_status == "Bootloader"
 
       :start ->
         machine.last_status != "Running" && machine.last_status != "Locked" &&
-          machine.last_status != "Bootloader"
+          machine.last_status != "Bootloader" && machine.last_status != "Deleting"
 
       :stop ->
         machine.last_status == "Running" || machine.last_status == "Bootloader"
 
       :poweroff ->
-        machine.last_status != "Stopped" && machine.last_status != "Creating"
+        machine.last_status != "Stopped" && machine.last_status != "Creating" &&
+          machine.last_status != "Deleting"
 
+      :delete ->
+        machine.last_status != "Creating" && machine.last_status != "Deleting"
       _ ->
         false
     end
   end
 
-  @doc """
-  Returns the module name of hypervisor type for given machine.
-  """
-  defp get_hypervisor_module(%Machine{} = machine) do
-    hypervisor = Repo.preload(machine.hypervisor, :hypervisor_type)
-
-    module =
-      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
-      |> String.to_atom()
-  end
+  def machine_can_do?(%Machine{}, _action), do: false
 end

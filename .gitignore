@@ -49,3 +49,4 @@ npm-debug.log
 .vscode
 
 .DS_Store
+*.swp

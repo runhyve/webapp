@@ -10,7 +10,7 @@ defmodule WebappWeb.PageController do
       Webapp.Hypervisors.list_hypervisors()
       send_resp(conn, 200, "OK")
     rescue
-      e -> send_resp(conn, 500, "Internal Server Error")
+      _e -> send_resp(conn, 500, "Internal Server Error")
     end
   end
 end

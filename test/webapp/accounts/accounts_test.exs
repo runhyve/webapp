@@ -21,21 +21,13 @@ defmodule Webapp.AccountsTest do
       team_namespace: "company"
     }
 
-    @user2 %{
-      user_email: "fred2@example.com",
-      user_password: "reallyHard2gue$$",
-      user_name: "fred",
-      team_name: "company2",
-      team_namespace: "company2"
-    }
-
     def user_fixture(user) do
       {:ok, user} = Accounts.register_user(user)
       user
     end
 
     def ssh_public_key_fixture(attrs \\ %{}) do
-      %{team: team, user: user} = user_fixture(@user1)
+      %{team: _team, user: user} = user_fixture(@user1)
 
       {:ok, ssh_public_key} =
         Accounts.create_ssh_public_key(user, Enum.into(attrs, @create_attrs))
@@ -44,7 +36,7 @@ defmodule Webapp.AccountsTest do
     end
 
     test "list_ssh_public_keys/0 returns all ssh_public_keys" do
-      {:ok, ssh_public_key: ssh_public_key, user: user} = ssh_public_key_fixture()
+      {:ok, ssh_public_key: ssh_public_key, user: _user} = ssh_public_key_fixture()
       assert Accounts.list_ssh_public_keys() == [ssh_public_key]
     end
 
@@ -54,12 +46,12 @@ defmodule Webapp.AccountsTest do
     end
 
     test "get_ssh_public_key!/1 returns the ssh_public_key with given id" do
-      {:ok, ssh_public_key: ssh_public_key, user: user} = ssh_public_key_fixture()
+      {:ok, ssh_public_key: ssh_public_key, user: _user} = ssh_public_key_fixture()
       assert Accounts.get_ssh_public_key!(ssh_public_key.id) == ssh_public_key
     end
 
     test "create_ssh_public_key/1 with valid data creates a ssh_public_key" do
-      %{team: team, user: user} = user_fixture(@user1)
+      %{team: _team, user: user} = user_fixture(@user1)
 
       assert {:ok, %SSHPublicKey{} = ssh_public_key} =
                Accounts.create_ssh_public_key(user, @create_attrs)
@@ -71,12 +63,12 @@ defmodule Webapp.AccountsTest do
     end
 
     test "create_ssh_public_key/1 with invalid data returns error changeset" do
-      %{team: team, user: user} = user_fixture(@user1)
+      %{team: _team, user: user} = user_fixture(@user1)
       assert {:error, %Ecto.Changeset{}} = Accounts.create_ssh_public_key(user, @invalid_attrs)
     end
 
     test "delete_ssh_public_key/1 deletes the ssh_public_key" do
-      {:ok, ssh_public_key: ssh_public_key, user: user} = ssh_public_key_fixture()
+      {:ok, ssh_public_key: ssh_public_key, user: _user} = ssh_public_key_fixture()
       assert {:ok, %SSHPublicKey{}} = Accounts.delete_ssh_public_key(ssh_public_key)
       assert_raise Ecto.NoResultsError, fn -> Accounts.get_ssh_public_key!(ssh_public_key.id) end
     end

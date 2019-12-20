@@ -2,11 +2,11 @@ defmodule WebappWeb.HypervisorControllerTest do
   use WebappWeb.ConnCase
 
   import WebappWeb.AuthCase
-  alias Webapp.Hypervisors
 
   @create_attrs %{
     name: "some name",
     hypervisor_type_id: 0,
+    region_id: 0,
     fqdn: "http://127.0.0.1.xip.io:9090",
     tls: true,
     webhook_token: "123qweASD"
@@ -14,9 +14,9 @@ defmodule WebappWeb.HypervisorControllerTest do
   @update_attrs %{
     name: "some updated name",
     fqdn: "http://127.0.0.1:9090",
-    tls: true
+    tls: true,
   }
-  @invalid_attrs %{ip_address: nil, name: nil, hypervisor_type_id: nil, fqdn: nil}
+  @invalid_attrs %{ip_address: nil, name: nil, hypervisor_type_id: nil, fqdn: nil, region_id: nil}
 
   setup do
     conn = build_conn() |> bypass_through(WebappWeb.Router, [:browser]) |> get("/")
@@ -154,12 +154,14 @@ defmodule WebappWeb.HypervisorControllerTest do
   #
 
   defp prepare_struct(struct \\ @create_attrs) do
+    region = fixture_region(%{name: "fake region"})
     hypervisor_type = fixture_hypervisor_type(%{name: "bhyve"})
 
     # Update hypervisor_type id with correct one.
-    hypervisor =
+    _hypervisor =
       struct
       |> Map.put(:hypervisor_type_id, hypervisor_type.id)
+      |> Map.put(:region_id, region.id)
   end
 
   defp create_hypervisor(_) do

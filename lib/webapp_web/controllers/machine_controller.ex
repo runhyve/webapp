@@ -10,19 +10,15 @@ defmodule WebappWeb.MachineController do
     Accounts,
     Accounts.User,
     Accounts.Team,
-    Distributions
+    Distributions,
+    Notifications.Notifications
   }
-
-  plug :load_resource,
-    model: Machine,
-    non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks, :distribution, ipv4: [:ip_pool]]
-
-  plug :authorize_resource,
+  
+  plug :load_and_authorize_resource,
     current_user: :current_member,
     model: Machine,
     non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks, :distribution]
+    preload: [:hypervisor, :plan, :networks, :distribution, :job, ipv4: [:ip_pool]]
 
   plug :load_hypervisor when action in [:new, :create]
   plug :load_references when action in [:new, :create, :edit, :update]
@@ -74,6 +70,8 @@ defmodule WebappWeb.MachineController do
   end
 
   def create(conn, %{"machine" => machine_params}) do
+    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested to create new VM: #{machine_params["name"]}")
+
     case Machines.create_machine(machine_params) do
       {:ok, %{machine: machine}} ->
         conn
@@ -135,7 +133,7 @@ defmodule WebappWeb.MachineController do
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       # Errors from changeset should be displayed!
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(
           :error,
@@ -144,7 +142,7 @@ defmodule WebappWeb.MachineController do
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       # Errors from changeset should be displayed!
-      {:error, :machine, %Ecto.Changeset{} = changeset, _} ->
+      {:error, :machine, %Ecto.Changeset{} = _changeset, _} ->
         conn
         |> put_flash(
           :error,
@@ -165,7 +163,7 @@ defmodule WebappWeb.MachineController do
   end
 
   # Change machine name
-  def update(conn, %{"id" => id, "machine" => %{"name" => name} = machine_params}) do
+  def update(conn, %{"id" => id, "machine" => %{"name" => _name} = _machine_params}) do
     machine = Machines.get_machine!(id, [:networks])
 
     conn
@@ -175,19 +173,20 @@ defmodule WebappWeb.MachineController do
 
   def delete(conn, _params) do
     machine = conn.assigns[:machine]
+    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested removal of VM #{machine.name} (ID: #{machine.id})")
 
     case Machines.delete_machine(machine) do
       {:ok, _machine} ->
         conn
-        |> put_flash(:info, "Machine #{machine.name} has been deleted")
+        |> put_flash(:info, "Machine #{machine.name} has been marked for deletion")
         |> redirect(to: team_path(:machine_path, conn, :index))
 
-      {:error, :hypervisor, error, changes} ->
+      {:error, :hypervisor, error, _changes} ->
         conn
         |> put_flash(:error, error)
         |> redirect(to: team_path(:machine_path, conn, :index))
 
-      {:error, :hypervisor_not_found, %Ecto.Changeset{} = changeset} ->
+      {:error, :hypervisor_not_found, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:error, "Coulnd't delete machine #{machine.name}")
         |> redirect(to: team_path(:machine_path, conn, :index))
@@ -196,6 +195,7 @@ defmodule WebappWeb.MachineController do
 
   def start(conn, _params) do
     machine = conn.assigns[:machine]
+    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested start of VM #{machine.name} (ID: #{machine.id})")
 
     case Machines.start_machine(machine) do
       {:ok, _} ->
@@ -212,6 +212,7 @@ defmodule WebappWeb.MachineController do
 
   def stop(conn, _params) do
     machine = conn.assigns[:machine]
+    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested stop of VM #{machine.name} (ID: #{machine.id})")
 
     case Machines.stop_machine(machine) do
       {:ok, _} ->
@@ -228,6 +229,7 @@ defmodule WebappWeb.MachineController do
 
   def poweroff(conn, _params) do
     machine = conn.assigns[:machine]
+    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested to poweroff VM #{machine.name} (ID: #{machine.id})")
 
     case Machines.poweroff_machine(machine) do
       {:ok, _} ->
@@ -244,6 +246,7 @@ defmodule WebappWeb.MachineController do
 
   def console(conn, _params) do
     machine = conn.assigns[:machine]
+    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested access to serial console of VM #{machine.name} (ID: #{machine.id})")
 
     case Machines.console_machine(machine) do
       {:ok, console} ->
@@ -253,21 +256,6 @@ defmodule WebappWeb.MachineController do
         conn
         |> put_flash(:error, error)
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
-    end
-  end
-
-  defp load_machine(conn, _) do
-    try do
-      %{"id" => id} = conn.params
-      machine = Machines.get_machine!(id, [:hypervisor, :plan, :networks, :distribution])
-
-      conn
-      |> assign(:machine, machine)
-    rescue
-      e ->
-        conn
-        |> put_flash(:error, "Machine was not found.")
-        |> redirect(to: team_path(:machine_path, conn, :index))
     end
   end
 

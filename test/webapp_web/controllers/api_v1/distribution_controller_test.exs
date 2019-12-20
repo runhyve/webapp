@@ -1,4 +1,4 @@
-defmodule WebappWeb.DistributionControllerTest do
+defmodule WebappWeb.ApiV1.DistributionControllerTest do
   use WebappWeb.ConnCase
 
   alias Webapp.Distributions
@@ -17,7 +17,7 @@ defmodule WebappWeb.DistributionControllerTest do
     name: "some updated name",
     version: "some updated version"
   }
-  @invalid_attrs %{image: nil, loader: nil, name: nil, version: nil}
+  #  @invalid_attrs %{image: nil, loader: nil, name: nil, version: nil}
 
   @webhook_token "1234567890"
 
@@ -28,11 +28,13 @@ defmodule WebappWeb.DistributionControllerTest do
 
   def hypervisor_fixture do
     hypervisor_type = fixture_hypervisor_type(%{name: "bhyve"})
+    region = fixture_region(%{name: "test region"})
 
-    {:ok, hypervisor} =
+    {:ok, _hypervisor} =
       Hypervisors.create_hypervisor(%{
         name: "authenticated-hypervisor",
         ip_address: "192.168.199.253",
+        region_id: region.id,
         hypervisor_type_id: hypervisor_type.id,
         fqdn: "authenticated-hypervisor",
         webhook_token: @webhook_token
@@ -83,7 +85,7 @@ defmodule WebappWeb.DistributionControllerTest do
 
     test "renders distribution when data is valid", %{
       conn: conn,
-      distribution: %Distribution{id: id} = distribution
+      distribution: %Distribution{id: _id} = distribution
     } do
       conn =
         put(conn, Routes.distribution_path(conn, :update, distribution),

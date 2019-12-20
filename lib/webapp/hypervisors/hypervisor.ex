@@ -9,21 +9,23 @@ defmodule Webapp.Hypervisors.Hypervisor do
     field(:webhook_token, :string)
 
     belongs_to(:hypervisor_type, Webapp.Hypervisors.Type)
+    belongs_to(:region, Webapp.Regions.Region)
     has_many(:machines, Webapp.Machines.Machine)
     has_many(:networks, Webapp.Networks.Network)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
   def changeset(hypervisor, attrs) do
     hypervisor
-    |> cast(attrs, [:name, :fqdn, :tls, :hypervisor_type_id, :webhook_token])
+    |> cast(attrs, [:name, :fqdn, :tls, :hypervisor_type_id, :webhook_token, :region_id])
     |> validate_required([
       :name,
       :fqdn,
       :tls,
-      :hypervisor_type_id
+      :hypervisor_type_id,
+      :region_id
     ])
     |> update_change(:webhook_token, fn
       nil -> hypervisor.webhook_token
@@ -31,21 +33,24 @@ defmodule Webapp.Hypervisors.Hypervisor do
     end)
     |> cleanup_fqdn()
     |> assoc_constraint(:hypervisor_type)
+    |> assoc_constraint(:region)
     |> unique_constraint(:name)
   end
 
   def create_changeset(hypervisor, attrs) do
     hypervisor
-    |> cast(attrs, [:name, :fqdn, :tls, :hypervisor_type_id, :webhook_token])
+    |> cast(attrs, [:name, :fqdn, :tls, :hypervisor_type_id, :webhook_token, :region_id])
     |> validate_required([
       :name,
       :fqdn,
       :tls,
       :hypervisor_type_id,
+      :region_id,
       :webhook_token
     ])
     |> cleanup_fqdn()
     |> assoc_constraint(:hypervisor_type)
+    |> assoc_constraint(:region)
     |> unique_constraint(:name)
   end
 

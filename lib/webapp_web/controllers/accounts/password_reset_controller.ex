@@ -6,7 +6,7 @@ defmodule WebappWeb.PasswordResetController do
   alias WebappWeb.{Auth.Token}
   alias WebappWeb.Emails.UserEmail, as: Email
 
-  def new(%Plug.Conn{assigns: %{current_user: %User{} = user}} = conn, _params) do
+  def new(%Plug.Conn{assigns: %{current_user: %User{} = _user}} = conn, _params) do
     render(conn, "change.html")
   end
 

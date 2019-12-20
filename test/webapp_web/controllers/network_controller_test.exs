@@ -1,11 +1,11 @@
 defmodule WebappWeb.NetworkControllerTest do
   use WebappWeb.ConnCase
 
-  alias Webapp.Hypervisors
+  #  alias Webapp.Hypervisors
 
   @create_attrs %{name: "some name", network: "some network"}
-  @update_attrs %{name: "some updated name", network: "some updated network"}
-  @invalid_attrs %{name: nil, network: nil}
+  #  @update_attrs %{name: "some updated name", network: "some updated network"}
+  #  @invalid_attrs %{name: nil, network: nil}
 
   def fixture(:network) do
     {:ok, network} = Networks.create_network(@create_attrs)
@@ -82,8 +82,8 @@ defmodule WebappWeb.NetworkControllerTest do
   #    end
   #  end
 
-  defp create_network(_) do
-    network = fixture(:network)
-    {:ok, network: network}
-  end
+  #  defp create_network(_) do
+  #    network = fixture(:network)
+  #    {:ok, network: network}
+  #  end
 end

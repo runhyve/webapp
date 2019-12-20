@@ -31,7 +31,7 @@
       <strong>Distribution:</strong>
       <%= if @machine.distribution do %>
       <%= @machine.distribution.name %> <%= @machine.distribution.version %>
-      <%= end %>
+      <% end %>
     </li>
 
     <li>

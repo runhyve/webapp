@@ -1,11 +1,6 @@
 alias Webapp.{
-  Accounts.User,
   Accounts.Member,
-  Accounts.Team,
-  Plans.Plan,
-  Hypervisors.Hypervisor,
   Hypervioors.Machine,
-  Hypervisors.Network,
   Machines.Machine
 }
 
@@ -14,6 +9,7 @@ defimpl Canada.Can, for: Member do
   def can?(%Member{}, :new, _model), do: true
   def can?(%Member{}, :create, _model), do: true
 
+  def can?(%Member{}, _action, %Machine{deleted_at: %DateTime{}} = _machine), do: false
   def can?(%Member{role: "Administrator"} = member, _action, %Machine{} = machine) do
     machine.team_id == member.team_id
   end
@@ -38,7 +34,7 @@ defimpl Canada.Can, for: Member do
     machine.team_id == member.team_id
   end
 
-  def can?(%Member{} = member, _action, %Machine{} = machine), do: false
+  def can?(%Member{}, _action, %Machine{} = _machine), do: false
 
   def can?(_member, _action, _model), do: false
 end

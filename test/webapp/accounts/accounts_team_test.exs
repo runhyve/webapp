@@ -9,7 +9,7 @@ defmodule Webapp.AccountsTeamTest do
 
   @update_team %{name: "some updated name"}
 
-  def team_fixture(attrs \\ %{}) do
+  def team_fixture(_attrs \\ %{}) do
     {:ok, fixtures} =
       Accounts.register_user(%{
         user_email: "fred@example.com",
@@ -38,7 +38,7 @@ defmodule Webapp.AccountsTeamTest do
   end
 
   test "create_team/1 with valid data creates a team" do
-    %{team: team, user: user} = team_fixture()
+    %{team: _team, user: user} = team_fixture()
 
     team_params = Map.merge(@valid_team, %{members: [%{user_id: user.id, role: "Administrator"}]})
 
@@ -51,13 +51,13 @@ defmodule Webapp.AccountsTeamTest do
   end
 
   test "update_team/2 with valid data updates the team" do
-    %{team: team, user: user} = team_fixture()
+    %{team: team, user: _user} = team_fixture()
     assert {:ok, %Team{} = team} = Accounts.update_team(team, @update_team)
     assert team.name == "some updated name"
   end
 
   test "update_team/2 with invalid data returns error changeset" do
-    %{team: team, user: user} = team_fixture()
+    %{team: team, user: _user} = team_fixture()
     assert {:error, %Ecto.Changeset{}} = Accounts.update_team(team, @invalid_team)
     assert team == Accounts.get_team!(team.id)
   end
@@ -70,7 +70,7 @@ defmodule Webapp.AccountsTeamTest do
   #  end
   #
   test "change_team/1 returns a team changeset" do
-    %{team: team, user: user} = team_fixture()
+    %{team: team, user: _user} = team_fixture()
     assert %Ecto.Changeset{} = Accounts.change_team(team)
   end
 end

@@ -1,7 +1,11 @@
 defmodule Webapp.GuardSupervisor do
   use Supervisor
 
-  alias Webapp.Guard.{MachineGuard, HypervisorGuard}
+  alias Webapp.Guard.{
+    JobGuard,
+    MachineGuard,
+    HypervisorGuard
+  }
 
   @doc """
   Starts the process supervisor.
@@ -13,9 +17,15 @@ defmodule Webapp.GuardSupervisor do
   @impl true
   def init(_arg) do
     children = [
+      JobGuard,
       MachineGuard,
-      HypervisorGuard
+      HypervisorGuard,
     ]
+
+    if Mix.env() != :test do
+      {:ok, _} = Logger.add_backend(Sentry.LoggerBackend)
+      Logger.configure_backend(Sentry.LoggerBackend, include_logger_metadata: true)
+    end
 
     Supervisor.init(children, strategy: :one_for_one)
   end

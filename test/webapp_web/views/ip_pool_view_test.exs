@@ -33,12 +33,14 @@ defmodule WebappWeb.IpPoolViewTest do
 
   test "count_used_ips/1" do
     hypervisor_type = fixture_hypervisor_type(%{name: "bhyve"})
+    region = fixture_region(%{name: "region"})
 
     hypervisor =
       fixture_hypervisor(%{
         name: "test_hypervisor_1",
         ip_address: "192.168.199.254",
         hypervisor_type_id: hypervisor_type.id,
+        region_id: region.id,
         fqdn: "http://192.168.199.254.xip.io",
         webhook_token: "Eus3oghas3loo0nietur1eighao5ciay",
         tls: false,

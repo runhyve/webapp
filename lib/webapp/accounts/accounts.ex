@@ -10,8 +10,8 @@ defmodule Webapp.Accounts do
     Accounts.Registration,
     Accounts.User,
     Accounts.Team,
-    Accounts.Namespace,
     Accounts.SSHPublicKey,
+    Notifications.Notifications,
     Sessions,
     Sessions.Session
   }
@@ -75,25 +75,34 @@ defmodule Webapp.Accounts do
   Creates a user.
   """
   def register_user(attrs) do
-    %Registration{}
+    result = %Registration{}
     |> Registration.changeset(attrs)
     |> Registration.registration(attrs)
     |> Repo.transaction()
+
+    Notifications.publish(:info, "New user #{attrs["user_name"]} registered.")
+
+    result
   end
 
   @doc """
   Updates a user.
   """
   def update_user(%User{} = user, attrs) do
-    user
+    result = user
     |> User.update_changeset(attrs)
     |> Repo.update()
+
+    Notifications.publish(:info, "User #{user.name} updated.")
+
+    result
   end
 
   @doc """
   Deletes a User.
   """
   def delete_user(%User{} = user) do
+    Notifications.publish(:info, "User #{user.name} deleted.")
     Repo.delete(user)
   end
 
@@ -216,9 +225,13 @@ defmodule Webapp.Accounts do
 
   """
   def create_team(attrs \\ %{}) do
-    %Team{}
+    result = %Team{}
     |> Team.add_team_changeset(attrs)
     |> Repo.insert()
+
+    Notifications.publish(:info, "Team #{attrs["name"]} created.")
+
+    result
   end
 
   @doc """
@@ -252,6 +265,7 @@ defmodule Webapp.Accounts do
 
   """
   def delete_team(%Team{} = team) do
+    Notifications.publish(:info, "Team #{team.name} deleted.")
     Repo.delete(team)
   end
 

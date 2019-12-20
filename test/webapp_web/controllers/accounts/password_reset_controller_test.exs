@@ -2,7 +2,7 @@ defmodule WebappWeb.PasswordResetControllerTest do
   use WebappWeb.ConnCase
 
   import WebappWeb.AuthCase
-  import WebappWeb.ViewHelpers, only: [team_path: 3, team_path: 4]
+  import WebappWeb.ViewHelpers, only: [team_path: 3]
 
   @update_attrs %{email: "gladys@example.com", password: "^hEsdg*F899", name: "gladys"}
 

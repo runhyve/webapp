@@ -30,6 +30,10 @@
           <%= @hypervisor.fqdn %>
         </li>
         <li>
+          <strong>Region:</strong>
+          <%= @hypervisor.region.name %>
+        </li>
+        <li>
           <strong>TLS:</strong>
           <%= @hypervisor.tls %>
         </li>
@@ -84,7 +88,7 @@
           <%= @memory_details.booked_memory_mb %> MB
           (<%= @memory_details.booked_memory_pct %>%)
         </li>
-        <%= end %>
+        <% end %>
         <li>
           <strong>Booked storage:</strong>
           <%= Enum.reduce(@hypervisor.machines, 0, fn(v, acc) -> v.plan.storage + acc end) %> GB
@@ -117,7 +121,7 @@
         Pool Free
       </div>
     </div>
-    <%= for {zpool, value} <- @storage_details[:zpools] do %>
+    <%= for {zpool, _value} <- @storage_details[:zpools] do %>
       <div class="columns">
         <div class="column">
           <%= zpool %>

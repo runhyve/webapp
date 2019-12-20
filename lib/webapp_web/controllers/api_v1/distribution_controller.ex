@@ -1,4 +1,4 @@
-defmodule WebappWeb.DistributionController do
+defmodule WebappWeb.ApiV1.DistributionController do
   use WebappWeb, :controller
 
   alias Webapp.Distributions

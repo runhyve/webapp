@@ -7,6 +7,7 @@ defmodule Webapp.Hypervisors.Bhyve do
 
   alias Webapp.{
     Hypervisors,
+    Hypervisors.Hypervisor,
     Machines,
     Machines.Machine,
     Networks.Network,
@@ -19,36 +20,12 @@ defmodule Webapp.Hypervisors.Bhyve do
   @doc """
   Get details about hypervisor's operating system
   """
-  def hypervisor_os_details(hypervisor) do
-    endpoint = Hypervisors.get_hypervisor_url(hypervisor, :webhook) <> "/vm/ohai"
-    token = hypervisor.webhook_token
-
-    try do
-      case webhook_trigger(token, endpoint) do
-        {:ok, message} -> {:ok, message}
-        {:error, error} -> {:error, error}
-      end
-    rescue
-      e -> {:error, e.message}
-    end
-  end
+  def hypervisor_os_details(hypervisor), do: webhook_trigger(hypervisor, "vm/ohai")
 
   @doc """
   Checks hypervisor status.
   """
-  def hypervisor_status(hypervisor) do
-    endpoint = Hypervisors.get_hypervisor_url(hypervisor, :webhook) <> "/vm/health"
-    token = hypervisor.webhook_token
-
-    try do
-      case webhook_trigger(token, endpoint) do
-        {:ok, status} -> {:ok, status}
-        {:error, error} -> {:error, error}
-      end
-    rescue
-      e -> {:error, e.message}
-    end
-  end
+  def hypervisor_status(hypervisor), do: webhook_trigger(hypervisor, "vm/health")
 
   @doc """
   Creates a machine on bhyve hypervisor.
@@ -56,12 +33,11 @@ defmodule Webapp.Hypervisors.Bhyve do
   def create_machine(_repo, _multi_changes, %Machine{} = machine) do
     machine = Repo.preload(machine, [:plan, :hypervisor, :networks, ipv4: [:ip_pool]])
 
-    """
-      Before we can call create_machine webhook we need to
-      make sure there is:
-       - template for selected system and plan
-       - image
-    """
+
+    #  Before we can call create_machine webhook we need to
+    #  make sure there is:
+    #   - template for selected system and plan
+    #   - image
 
     distribution = Distributions.get_distribution!(machine.distribution_id)
 
@@ -96,213 +72,153 @@ defmodule Webapp.Hypervisors.Bhyve do
         payload
       end
 
-    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/create"
-    token = machine.hypervisor.webhook_token
-
-    try do
-      case webhook_trigger(token, endpoint, payload) do
-        {:ok, %{"taskid" => task_id}} -> {:ok, task_id}
-        {:error, error} -> {:error, error}
-      end
-    rescue
-      e -> {:error, e.message}
+    case webhook_trigger(machine.hypervisor, "vm/create", payload) do
+      {:ok, %{"taskid" => task_id}} -> {:ok, task_id}
+      {:error, error} -> {:error, error}
     end
   end
 
   @doc """
   Deletes a machine on bhyve hypervisor.
   """
-  def delete_machine(_repo, %{machine: machine}) do
-    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/destroy"
-    token = machine.hypervisor.webhook_token
+  def delete_machine(_repo, _multi_changes, %Machine{} = machine) do
     payload = %{name: Machines.get_machine_hid(machine)}
 
-    try do
-      case webhook_trigger(token, endpoint, payload) do
-        {:ok, message} ->
-          {:ok, message}
+    case webhook_trigger(machine.hypervisor, "vm/destroy", payload) do
+      {:ok, %{"taskid" => task_id}} -> {:ok, task_id}
 
-        {:error, error} ->
-          if String.match?(error, ~r/Virtual machine (.*) doesn't exist/) do
-            {:ok, error}
-          else
-            {:error, error}
-          end
-      end
-    rescue
-      e -> {:error, e.message}
+      {:error, error} ->
+        if String.match?(error, ~r/Virtual machine (.*) doesn't exist/) do
+          # Machine does not exists on the hypervisor, it's safe to remove it form the database.
+          {:ok, error}
+        else
+          {:error, error}
+        end
     end
   end
 
   @doc """
   Updates a machine status.
   """
-  def update_machine_status(_repo, %{machine: machine}) do
-    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/status"
-    token = machine.hypervisor.webhook_token
+  def update_machine_status(_repo, _multi_changes, %Machine{} = machine) do
     payload = %{name: Machines.get_machine_hid(machine)}
 
-    try do
-      # TODO: Map statuses to unified format.
-      case webhook_trigger(token, endpoint, payload) do
-        {:ok, %{"state" => status}} -> {:ok, status}
-        {:error, error} -> {:error, error}
-      end
-    rescue
-      e -> {:error, e.message}
+    case webhook_trigger(machine.hypervisor, "vm/status", payload) do
+      {:ok, %{"state" => status}} -> {:ok, status}
+      {:error, error} -> {:error, error}
     end
   end
 
   @doc """
   Adds a network to machine.
   """
-  def add_network_to_machine(_repo, %{machine: machine}) do
+  def add_network_to_machine(_repo, %{machine: %Machine{} = machine}) do
     # Since we are adding network to machine, last one is the new one.
     [network] = tl(machine.networks)
-
-    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/add-network"
-    token = machine.hypervisor.webhook_token
     payload = %{machine: Machines.get_machine_hid(machine), network: network.name}
-
-    try do
-      webhook_trigger(token, endpoint, payload)
-    rescue
-      e -> {:error, e.message}
-    end
+    webhook_trigger(machine.hypervisor, "vm/add-network", payload)
   end
 
   @doc """
   Starts a machine.
   """
-  def start_machine(%{machine: machine}) do
-    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/start"
-    token = machine.hypervisor.webhook_token
+  def start_machine(%{machine: %Machine{} = machine}) do
     payload = %{name: Machines.get_machine_hid(machine)}
-
-    try do
-      webhook_trigger(token, endpoint, payload)
-    rescue
-      e -> {:error, e.message}
-    end
+    webhook_trigger(machine.hypervisor, "vm/start", payload)
   end
 
   @doc """
   Stops a machine.
   """
-  def stop_machine(%{machine: machine}) do
-    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/stop"
-    token = machine.hypervisor.webhook_token
+  def stop_machine(%{machine: %Machine{} = machine}) do
     payload = %{name: Machines.get_machine_hid(machine)}
-
-    try do
-      webhook_trigger(token, endpoint, payload)
-    rescue
-      e -> {:error, e.message}
-    end
+    webhook_trigger(machine.hypervisor, "vm/stop", payload)
   end
 
   @doc """
   Performs hard stop of virtual Machine.
   """
-  def poweroff_machine(%{machine: machine}) do
-    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/poweroff"
-    token = machine.hypervisor.webhook_token
+  def poweroff_machine(%{machine: %Machine{}  = machine}) do
     payload = %{name: Machines.get_machine_hid(machine)}
-
-    try do
-      webhook_trigger(token, endpoint, payload)
-    rescue
-      e -> {:error, e.message}
-    end
+    webhook_trigger(machine.hypervisor, "vm/poweroff", payload)
   end
 
   @doc """
   Opens a remote console for machine.
   """
-  def console_machine(%{machine: machine}) do
-    endpoint = Hypervisors.get_hypervisor_url(machine.hypervisor, :webhook) <> "/vm/console"
-    token = machine.hypervisor.webhook_token
+  def console_machine(%{machine:  %Machine{} = machine}) do
     payload = %{name: Machines.get_machine_hid(machine)}
-
-    try do
-      webhook_trigger(token, endpoint, payload)
-    rescue
-      e -> {:error, e.message}
-    end
+    webhook_trigger(machine.hypervisor, "vm/console", payload)
   end
 
   @doc """
   Checks a job status.
   """
-  def job_status(hypervisor, task_id) do
-    endpoint = Hypervisors.get_hypervisor_url(hypervisor, :webhook) <> "/vm/ts-get-task"
-    token = hypervisor.webhook_token
+  def job_status(_repo, _multi_changes, %Hypervisor{} = hypervisor, task_id) do
     payload = %{taskid: task_id}
-
-    try do
-      webhook_trigger(token, endpoint, payload)
-    rescue
-      e -> {:error, e.message}
-    end
+    webhook_trigger(hypervisor, "vm/ts-get-task", payload)
   end
 
   @doc """
   Creates a network.
   """
   def create_network(_repo, _multi_changes, %Network{} = network) do
-    network = Repo.preload(network, [:hypervisor])
-
-    endpoint = Hypervisors.get_hypervisor_url(network.hypervisor, :webhook) <> "/vm/net-create"
-    token = network.hypervisor.webhook_token
-
     payload = %{
       name: network.name,
       cidr: "#{network.network}"
     }
+    webhook_trigger(network.hypervisor, "/vm/net-create", payload)
+  end
+
+  defp webhook_trigger(%Hypervisor{} = hypervisor, endpoint) do
+    endpoint = Hypervisors.get_hypervisor_url(hypervisor, :webhook) <> endpoint
+
+    Logger.debug(["Bhyve webhook GET call: ", endpoint, " without parameters"])
+
+    HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", hypervisor.webhook_token}], follow_redirect: true)
+    |> process_response()
+  end
+
+  defp webhook_trigger(%Hypervisor{} = hypervisor, endpoint, payload) do
+    endpoint = Hypervisors.get_hypervisor_url(hypervisor, :webhook) <> endpoint
 
     try do
-      webhook_trigger(token, endpoint, payload)
+      json = Jason.encode!(payload)
+      Logger.debug(["Bhyve webhook POST call: ", endpoint, " with ", json])
+
+      HTTPoison.post(endpoint, json, @headers ++ [{"X-RUNHYVE-TOKEN", hypervisor.webhook_token}],
+        follow_redirect: true,
+        hackney: [force_redirect: true]
+      )
+      |> process_response()
     rescue
       e -> {:error, e.message}
     end
   end
 
-  defp webhook_trigger(token, endpoint) do
-    Logger.debug(["Bhyve webhook GET call: ", endpoint, " without parameters"])
-
-    case HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", token}], follow_redirect: true) do
-      {:ok, %{body: body, status_code: 200}} ->
-        Logger.debug(["Bhyve webhook response: ", body])
-        webhook_process_response(body)
-
-      {:ok, %{body: body, status_code: _}} ->
-        Logger.debug(["Bhyve webhook response: ", body])
-        webhook_process_response(body)
-
-      {:error, error} ->
-        {:error, "HTTPoison Error: " <> HTTPoison.Error.message(error)}
-    end
+  defp process_response({:ok, %{body: body, status_code: 200}}) do
+    Logger.debug(["Bhyve webhook response: ", body])
+    webhook_process_response(body)
   end
 
-  defp webhook_trigger(token, endpoint, payload) do
-    json = Jason.encode!(payload)
-    Logger.debug(["Bhyve webhook POST call: ", endpoint, " with ", json])
+  defp process_response({:ok, %{body: body, status_code: 404}}) do
+    Logger.debug(["Bhyve webhook response with code 404"])
+    {:error, body}
+  end
 
-    case HTTPoison.post(endpoint, json, @headers ++ [{"X-RUNHYVE-TOKEN", token}],
-           follow_redirect: true,
-           hackney: [force_redirect: true]
-         ) do
-      {:ok, %{body: body, status_code: 200}} ->
-        Logger.debug(["Bhyve webhook response: ", body])
-        webhook_process_response(body)
+  defp process_response({:ok, %{body: body, status_code: 403}}) do
+    Logger.debug(["Bhyve webhook response with code 403"])
+    {:error, body}
+  end
 
-      {:ok, %{body: body, status_code: _}} ->
-        Logger.debug(["Bhyve webhook response: ", body])
-        webhook_process_response(body)
+  defp process_response({:ok, %{body: body, status_code: _}}) do
+    Logger.debug(["Bhyve webhook response: ", body])
+    webhook_process_response(body)
+  end
 
-      {:error, error} ->
-        {:error, "HTTPoison Error: " <> HTTPoison.Error.message(error)}
-    end
+  defp process_response({:error, %HTTPoison.Error{reason: reason}}) do
+    Logger.debug(["HTTPoison Error: ", reason])
+    {:error, reason}
   end
 
   defp webhook_process_response(json) do
@@ -311,7 +227,7 @@ defmodule Webapp.Hypervisors.Bhyve do
       {:ok, %{"status" => "error", "message" => message}} -> {:error, message}
       {:ok, %{"status" => "success"} = response} -> {:ok, response}
       {:ok, _} -> {:error, "Invalid response"}
-      {:error, %Jason.DecodeError{data: error}} -> {:error, error}
+      {:error, %Jason.DecodeError{data: _error}} -> {:error, "Invalid response"}
       {:error, error} -> {:error, error}
     end
   end
