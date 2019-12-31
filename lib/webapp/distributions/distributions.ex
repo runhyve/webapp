@@ -18,7 +18,9 @@ defmodule Webapp.Distributions do
 
   """
   def list_distributions do
-    Repo.all(Distribution)
+    Distribution
+    |> order_by(asc: :name)
+    |> Repo.all()
   end
 
   @doc """
