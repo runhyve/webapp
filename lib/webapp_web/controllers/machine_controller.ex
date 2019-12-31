@@ -273,7 +273,7 @@ defmodule WebappWeb.MachineController do
     |> assign(:networks, Hypervisors.list_hypervisor_networks(hypervisor))
     |> assign(:plans, Plans.list_plans())
     |> assign(:teams, Accounts.list_teams())
-    |> assign(:distributions, Distributions.list_distributions())
+    |> assign(:distributions, Distributions.list_active_distributions())
   end
 
   defp load_hypervisor(conn, _) do

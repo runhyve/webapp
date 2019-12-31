@@ -20,6 +20,14 @@ defmodule Webapp.DistributionsTest do
       image:
         "https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64-uefi1.img"
     }
+    @archive_attrs %{
+      name: "Ubuntu",
+      version: "19.04",
+      loader: "grub",
+      archived_at: DateTime.utc_now() |> DateTime.truncate(:second),
+      image:
+        "https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64-uefi1.img"
+    }
     @invalid_attrs %{name: "FreeBSD", version: "", loader: "", image: ""}
 
     def distribution_fixture(attrs \\ %{}) do
@@ -80,6 +88,15 @@ defmodule Webapp.DistributionsTest do
 
       assert distribution.image ==
                "https://cloud-images.ubuntu.com/releases/bionic/release/ubuntu-18.04-server-cloudimg-amd64-uefi1.img"
+    end
+
+    test "list_active_distributions/0 doesn't list archived distributions" do
+      distribution = distribution_fixture()
+
+      assert {:ok, %Distribution{} = distribution} =
+               Distributions.update_distribution(distribution, @archive_attrs)
+
+      assert Distributions.list_active_distributions() == []
     end
 
     test "update_distribution/2 with invalid data returns error changeset" do
