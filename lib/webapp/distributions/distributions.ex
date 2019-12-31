@@ -24,6 +24,21 @@ defmodule Webapp.Distributions do
   end
 
   @doc """
+  Returns the list of active (not archived) distributions.
+
+  ## Examples
+
+      iex> list_active_distributions()
+      [%Distribution{}, ...]
+
+  """
+  def list_active_distributions do
+    Distribution
+    |> where([d], is_nil(d.archived_at))
+    |> Repo.all
+  end
+
+  @doc """
   Gets a single distribution.
 
   Raises `Ecto.NoResultsError` if the Distribution does not exist.
