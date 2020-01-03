@@ -34,6 +34,7 @@ defmodule Webapp.Distributions do
   """
   def list_active_distributions do
     Distribution
+    |> order_by(asc: :name)
     |> where([d], is_nil(d.archived_at))
     |> Repo.all
   end
