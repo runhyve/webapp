@@ -8,7 +8,7 @@ defmodule Webapp.Repo.Migrations.CreateDistributions do
       add(:image, :string)
       add(:loader, :string)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     alter table(:machines) do

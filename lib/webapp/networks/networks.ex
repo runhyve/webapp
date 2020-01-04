@@ -13,7 +13,6 @@ defmodule Webapp.Networks do
 
   alias Webapp.{
     Hypervisors,
-    Machines.Machine,
     Networks.Network,
     Networks.Ipv4,
     Networks.Ip_pool
@@ -166,17 +165,6 @@ defmodule Webapp.Networks do
   end
 
   @doc """
-  Returns the module name of hypervisor type for given machine.
-  """
-  defp get_hypervisor_module(%Network{} = network) do
-    hypervisor = Repo.preload(network.hypervisor, :hypervisor_type)
-
-    module =
-      ("Elixir.Webapp.Hypervisors." <> String.capitalize(hypervisor.hypervisor_type.name))
-      |> String.to_atom()
-  end
-
-  @doc """
   Returns the list of ip_pools.
 
   ## Examples
@@ -244,7 +232,7 @@ defmodule Webapp.Networks do
   end
 
 
-  def add_ipv4_to_multi(multi, ip_pool, []), do: multi
+  def add_ipv4_to_multi(multi, _ip_pool, []), do: multi
 
   def add_ipv4_to_multi(multi, ip_pool, [ip | ip_list]) do
     # If gateway is in pool, mark it as reserved
@@ -312,12 +300,12 @@ defmodule Webapp.Networks do
     )
   end
 
-  """
+  @doc"""
   Marks the ipv4 as reserved.
   """
   def reserve_ipv4(%Ipv4{} = ipv4), do: change_ipv4_status(ipv4, true)
 
-  """
+  @doc"""
   Removes reservation from the ipv4.
   """
   def release_ipv4(%Ipv4{} = ipv4), do: change_ipv4_status(ipv4, false)

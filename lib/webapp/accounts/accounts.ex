@@ -10,7 +10,6 @@ defmodule Webapp.Accounts do
     Accounts.Registration,
     Accounts.User,
     Accounts.Team,
-    Accounts.Namespace,
     Accounts.SSHPublicKey,
     Notifications.Notifications,
     Sessions,

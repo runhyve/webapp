@@ -3,29 +3,27 @@ defmodule Webapp.Machines.Machine do
   import Ecto.Changeset
 
   alias Webapp.{
-    Hypervisors,
     Hypervisors.Hypervisor,
     Plans.Plan,
     Networks,
     Networks.Ipv4,
     Networks.Network,
     Accounts.Team,
-    Distributions.Distribution
+    Distributions.Distribution,
+    Jobs.Job
   }
 
   # Machine name max length
   # @TODO: Change to UUID once https://github.com/churchers/vm-bhyve/issues/281 will be solved.
-  @machine_maxlen 30
+  @machine_maxlen 32
 
   schema "machines" do
     field(:uuid, Ecto.UUID, autogenerate: true)
     field(:name, :string)
     field(:last_status, :string)
-    field(:created, :boolean, default: false)
-    field(:failed, :boolean, default: false)
-    field(:job_id, :integer)
     field(:ssh_public_key_id, :string, virtual: true)
 
+    belongs_to(:job, Job)
     belongs_to(:hypervisor, Hypervisor)
     belongs_to(:plan, Plan)
     belongs_to(:distribution, Distribution)
@@ -33,9 +31,10 @@ defmodule Webapp.Machines.Machine do
     many_to_many(:networks, Network, join_through: "machines_networks")
     has_many(:ipv4, Ipv4)
 
-    field(:created_at, :naive_datetime)
-    field(:failed_at, :naive_datetime)
-    timestamps()
+    field(:created_at, :utc_datetime, default: nil)
+    field(:failed_at, :utc_datetime, default: nil)
+    field(:deleted_at, :utc_datetime, default: nil)
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
@@ -94,15 +93,44 @@ defmodule Webapp.Machines.Machine do
     |> cast(attrs, [:last_status, :job_id])
   end
 
+  def mark_as_deleted_changeset(machine) do
+    now = DateTime.utc_now()
+          |> DateTime.truncate(:second)
+
+    name_suffix = DateTime.utc_now() |> DateTime.to_unix(:millisecond) |> Integer.to_string()
+
+    machine
+    |> cast(%{}, [])
+    |> put_change(:last_status, "Deleted")
+    |> put_change(:deleted_at, now)
+    |> put_change(:name, "deleted_#{name_suffix}_#{machine.name}")
+  end
+
+  def update_machine_changeset(machine, status) do
+    now = DateTime.utc_now()
+          |> DateTime.truncate(:second)
+
+    changeset = cast(machine, %{last_status: status}, [:last_status])
+
+    changeset =
+      if get_field(changeset, :created_at, nil) == nil do
+        put_change(changeset, :created_at, now)
+      else
+        changeset
+      end
+
+      changeset
+  end
+
   defp validate_name(changeset) do
     team_len =
-      Ecto.Changeset.get_change(changeset, :team_id)
+      get_change(changeset, :team_id)
       |> Integer.to_string()
       |> String.length()
 
     changeset
     # Machine name is prefixed with "TEAMID_"
-    |> validate_length(:name, max: 32 - team_len - 1)
+    |> validate_length(:name, max: @machine_maxlen - team_len - 1)
     |> validate_format(
       :name,
       ~r/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/,

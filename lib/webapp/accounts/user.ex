@@ -4,7 +4,6 @@ defmodule Webapp.Accounts.User do
   alias Webapp.{
     Sessions.Session,
     Accounts.User,
-    Accounts.Team,
     Accounts.Member,
     Accounts.SSHPublicKey,
     Types.UserRole
@@ -24,7 +23,7 @@ defmodule Webapp.Accounts.User do
     has_many(:teams, through: [:memberships, :team])
     has_many(:ssh_public_keys, SSHPublicKey, on_delete: :delete_all)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   def changeset(%User{} = user, attrs) do

@@ -18,7 +18,25 @@ defmodule Webapp.Distributions do
 
   """
   def list_distributions do
-    Repo.all(Distribution)
+    Distribution
+    |> order_by(asc: :name)
+    |> Repo.all()
+  end
+
+  @doc """
+  Returns the list of active (not archived) distributions.
+
+  ## Examples
+
+      iex> list_active_distributions()
+      [%Distribution{}, ...]
+
+  """
+  def list_active_distributions do
+    Distribution
+    |> order_by(asc: :name)
+    |> where([d], is_nil(d.archived_at))
+    |> Repo.all
   end
 
   @doc """

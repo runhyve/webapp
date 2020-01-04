@@ -18,7 +18,7 @@ defmodule WebappWeb.Admin.MachineController do
     model: Hypervisor,
     id_name: "hypervisor_id",
     only: [:index],
-    preload: [:hypervisor_type, machines: [:networks, :hypervisor, :plan, :distribution]],
+    preload: [:hypervisor_type, machines: Hypervisors.preload_active_machines],
     required: true
 
   def index(conn, %{"hypervisor_id" => hypervisor_id} = _params) do

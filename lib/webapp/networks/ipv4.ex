@@ -16,7 +16,7 @@ defmodule Webapp.Networks.Ipv4 do
     belongs_to(:ip_pool, Ip_pool)
     belongs_to(:machine, Machine)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

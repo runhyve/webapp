@@ -63,14 +63,6 @@ Webapp.Repo.insert!(%Webapp.Plans.Plan{
 
 Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
   name: "Ubuntu",
-  version: "16.04",
-  loader: "grub",
-  image:
-    "https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64-uefi1.img"
-})
-
-Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
-  name: "Ubuntu",
   version: "18.04",
   loader: "grub",
   image: "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img"
@@ -78,10 +70,10 @@ Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
 
 Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
   name: "FreeBSD",
-  version: "12.0",
+  version: "12.1",
   loader: "bhyveload",
   image:
-    "http://ftp.icm.edu.pl/pub/FreeBSD/releases/VM-IMAGES/12.0-RELEASE/amd64/Latest/FreeBSD-12.0-RELEASE-amd64.raw.xz"
+    "http://ftp.icm.edu.pl/pub/FreeBSD/releases/VM-IMAGES/12.1-RELEASE/amd64/Latest/FreeBSD-12.1-RELEASE-amd64.raw.xz"
 })
 
 Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
@@ -89,7 +81,7 @@ Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
   version: "29",
   loader: "grub-fedora",
   image:
-    "https://download.fedoraproject.org/pub/fedora/linux/releases/29/Cloud/x86_64/images/Fedora-Cloud-Base-29-1.2.x86_64.raw.xz"
+    "https://download.fedoraproject.org/pub/fedora/linux/releases/31/Cloud/x86_64/images/Fedora-Cloud-Base-31-1.9.x86_64.qcow2"
 })
 
 Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
@@ -97,6 +89,13 @@ Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
   version: "9",
   loader: "grub",
   image: "https://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.qcow2"
+})
+
+Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
+  name: "Debian",
+  version: "10",
+  loader: "grub",
+  image: "https://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2"
 })
 
 for region <- ~w(Europe Asia America) do

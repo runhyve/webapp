@@ -2,9 +2,9 @@
 
 @import "variables";
 @import "~bulma/bulma";
-@import "~bulma-extensions/bulma-divider/dist/css/bulma-divider.sass";
-@import "~bulma-extensions/bulma-switch/dist/css/bulma-switch.sass";
-@import "~bulma-extensions/bulma-tooltip/dist/css/bulma-tooltip.sass";
+@import "~bulma-switch";
+@import "~bulma-divider";
+@import "~bulma-tooltip";
 
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
 @import "~@fortawesome/fontawesome-free/scss/brands";

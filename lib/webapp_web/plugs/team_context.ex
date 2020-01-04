@@ -2,9 +2,7 @@ defmodule WebappWeb.TeamContext do
   import Plug.Conn
   import Phoenix.Controller
 
-  alias WebappWeb.Router.Helpers, as: Routes
   alias Webapp.{Accounts, Accounts.Team, Accounts.User}
-  alias Plug.Conn
 
   def init(opts), do: opts
 
