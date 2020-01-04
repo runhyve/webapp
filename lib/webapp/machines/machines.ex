@@ -183,7 +183,7 @@ defmodule Webapp.Machines do
     module = get_hypervisor_module(machine)
 
     try do
-      apply(module, :delete_machine, [%{machine: machine}])
+      apply(module, :delete_machine, [machine])
     rescue
       UndefinedFunctionError ->
         {:error, :hypervisor_not_found}

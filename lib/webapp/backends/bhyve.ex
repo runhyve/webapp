@@ -81,6 +81,8 @@ defmodule Webapp.Hypervisors.Bhyve do
   @doc """
   Deletes a machine on bhyve hypervisor.
   """
+  def delete_machine(%Machine{} = machine), do: delete_machine(nil, nil, machine)
+
   def delete_machine(_repo, _multi_changes, %Machine{} = machine) do
     payload = %{name: Machines.get_machine_hid(machine)}
 
