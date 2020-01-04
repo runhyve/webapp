@@ -22,7 +22,7 @@
   <ul>
     <%= active_link(@conn, "Dashboard", to: Routes.admin_hypervisor_path(@conn, :show, @hypervisor), active: :exact)  %>
     <%= active_link(@conn, "Networks", to: Routes.admin_hypervisor_network_path(@conn, :index, @hypervisor), active: :exact)  %>
-    <%= active_link(@conn, "Machines", to: Routes.admin_hypervisor_machine_path(@conn, :index, @hypervisor), active: :exact)  %>
+    <%= active_link(@conn, "Machines", to: Routes.admin_hypervisor_path(@conn, :index_machines, @hypervisor), active: :exact)  %>
 
     <li><a class="is-disabled">Images</a></li>
     <li><a class="is-disabled">Console</a></li>
