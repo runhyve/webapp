@@ -5,6 +5,7 @@ defmodule WebappWeb.MachineController do
     Machines,
     Machines.Machine,
     Hypervisors,
+    Hypervisors.Hypervisor,
     Networks,
     Plans,
     Accounts,
@@ -20,7 +21,13 @@ defmodule WebappWeb.MachineController do
     non_id_actions: [:index, :create, :new],
     preload: [:hypervisor, :plan, :networks, :distribution, :job, ipv4: [:ip_pool]]
 
-  plug :load_hypervisor when action in [:new, :create]
+  plug :load_resource,
+       model: Hypervisor,
+       id_name: "hypervisor_id",
+       only: [:new, :create],
+       preload: [:hypervisor_type, machines: [:networks, :hypervisor, :plan, :distribution]],
+       required: true
+
   plug :load_references when action in [:new, :create, :edit, :update]
 
   #  def index(conn, %{"hypervisor_id" => hypervisor_id} = params) do
@@ -274,20 +281,5 @@ defmodule WebappWeb.MachineController do
     |> assign(:plans, Plans.list_plans())
     |> assign(:teams, Accounts.list_teams())
     |> assign(:distributions, Distributions.list_active_distributions())
-  end
-
-  defp load_hypervisor(conn, _) do
-    try do
-      %{"hypervisor_id" => id} = conn.params
-      hypervisor = Hypervisors.get_hypervisor!(id)
-
-      conn
-      |> assign(:hypervisor, hypervisor)
-    rescue
-      _ ->
-        conn
-        |> put_flash(:error, "Hypervisor was not found.")
-        |> redirect(to: team_path(:page_path, conn, :index))
-    end
   end
 end
