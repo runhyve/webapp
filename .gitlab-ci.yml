@@ -48,24 +48,6 @@ build_docker_image:
   - docker build -t $IMAGE_TAG --build-arg $SECRET_KEY_BASE -f Dockerfile.prod .
   - docker push $IMAGE_TAG
 
-deploy_demo:
-  stage: deploy
-  image: ubuntu:18.04
-  only:
-    - master
-
-  variables:
-    GIGALIXIR_APP_NAME: "welltodo-normal-hen"
-
-  environment:
-    name: demo
-    url: https://demo.runhyve.app
-  
-  script:
-    - apt-get update && apt-get install -y git
-    - git remote add gigalixir https://$GIGALIXIR_EMAIL:$GIGALIXIR_API_KEY@git.gigalixir.com/$GIGALIXIR_APP_NAME.git || true
-    - git push -f gigalixir HEAD:refs/heads/master
-
 deploy-production:
   image: ubuntu:18.04
   stage: deploy
