@@ -8,6 +8,7 @@ defmodule WebappWeb.MachineController do
     Hypervisors.Hypervisor,
     Networks,
     Plans,
+    Regions,
     Accounts,
     Accounts.User,
     Accounts.Team,
@@ -19,56 +20,28 @@ defmodule WebappWeb.MachineController do
     current_user: :current_member,
     model: Machine,
     non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks, :distribution, :job, ipv4: [:ip_pool]]
+    preload: [:plan, :networks, :distribution, :job, ipv4: [:ip_pool], hypervisor: :region]
 
   plug :load_resource,
        model: Hypervisor,
        id_name: "hypervisor_id",
        only: [:new, :create],
-       preload: [:hypervisor_type, machines: [:networks, :hypervisor, :plan, :distribution]],
+       preload: [:hypervisor_type, machines: [:networks, :plan, :distribution]],
        required: true
 
   plug :load_references when action in [:new, :create, :edit, :update]
 
-  #  def index(conn, %{"hypervisor_id" => hypervisor_id} = params) do
-  #    conn = load_hypervisor(conn, params)
-  #    hypervisor = conn.assigns[:hypervisor]
-  #    machines = Hypervisors.list_hypervisor_machines(hypervisor, [:hypervisor, :plan, :networks])
-  #
-  #    # @TODO: Refactor this
-  #    status =
-  #      case Hypervisors.update_hypervisor_status(hypervisor) do
-  #        {:ok, status} -> status
-  #        {:error, _} -> "unreachable"
-  #      end
-  #
-  #    conn =
-  #      if status == "unreachable" do
-  #        put_flash(conn, :error, "Failed to fetch hypervisor status")
-  #      else
-  #        conn
-  #      end
-  #
-  #    render(conn, "index.html", machines: machines, hypervisor: hypervisor, status: status)
-  #  end
-
-  def admin_index(%Conn{assigns: %{current_user: %User{role: "Administrator"}}} = conn, _params) do
-    machines = Machines.list_team_machines([:hypervisor, :plan, :networks, :distribution])
+  def index(%Conn{assigns: %{current_team: %Team{} = team}} = conn, _params) do
+    machines = Machines.list_team_machines(team, [:plan, :networks, :distribution, hypervisor: :region])
     hypervisors = Hypervisors.list_hypervisors()
+    regions = Regions.list_usable_regions()
 
-    render(conn, "admin/index.html",
+    render(conn, "index.html",
       machines: machines,
       hypervisor: false,
-      hypervisors: hypervisors
+      hypervisors: hypervisors,
+      regions: regions
     )
-  end
-
-  # My machines
-  def index(%Conn{assigns: %{current_team: %Team{} = team}} = conn, _params) do
-    machines = Machines.list_team_machines(team, [:hypervisor, :plan, :networks, :distribution])
-    hypervisors = Hypervisors.list_hypervisors()
-
-    render(conn, "index.html", machines: machines, hypervisor: false, hypervisors: hypervisors)
   end
 
   def new(conn, _params) do

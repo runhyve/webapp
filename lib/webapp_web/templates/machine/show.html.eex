@@ -36,7 +36,7 @@
 
     <li>
       <strong>Region:</strong>
-      <%= @machine.hypervisor.name %>
+      <%= @machine.hypervisor.region.name %>
     </li>
 
     <li>
