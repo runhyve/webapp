@@ -32,7 +32,7 @@ defmodule WebappWeb.Admin.RegionController do
   end
 
   def show(conn, %{"id" => id}) do
-    region = Regions.get_region!(id)
+    region = Regions.get_region!(id, [:hypervisors])
     render(conn, "show.html", region: region)
   end
 
@@ -57,11 +57,20 @@ defmodule WebappWeb.Admin.RegionController do
   end
 
   def delete(conn, %{"id" => id}) do
-    region = Regions.get_region!(id)
-    {:ok, _region} = Regions.delete_region(region)
+    region = Regions.get_region!(id, [:hypervisors])
 
-    conn
-    |> put_flash(:info, "Region deleted successfully.")
-    |> redirect(to: Routes.admin_region_path(conn, :index))
+    IO.inspect region
+    case Enum.count(region.hypervisors) do
+      0 ->
+        {:ok, _region} = Regions.delete_region(region)
+
+        conn
+        |> put_flash(:info, "Region deleted successfully.")
+        |> redirect(to: Routes.admin_region_path(conn, :index))
+      _ ->
+        conn
+        |> put_flash(:error, "Can't remove this region because it has assigned hypervisors")
+        |> redirect(to: Routes.admin_region_path(conn, :show, region))
+    end
   end
 end

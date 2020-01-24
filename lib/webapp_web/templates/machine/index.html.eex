@@ -56,7 +56,7 @@
           </span>
         <% end %>
       </td>
-      <td data-header="Region"><%= machine.hypervisor.name %></td>
+      <td data-header="Region"><%= machine.hypervisor.region.name %></td>
       <td data-header="Plan"><%= machine.plan.name %></td>
       <td data-header="Cost">$<%= machine.plan.price %>/mo</td>
       <td>

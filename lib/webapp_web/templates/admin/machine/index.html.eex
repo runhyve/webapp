@@ -30,7 +30,7 @@
       <th>Name</th>
       <th></th>
       <th>Distribution</th>
-      <th>Region</th>
+      <th>Hypervisor</th>
       <th>Plan</th>
       <th>Networks</th>
     </tr>
@@ -55,7 +55,7 @@
           </span>
         <% end %>
       </td>
-      <td data-header="Region"><%= link machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, machine.hypervisor) %></td>
+      <td data-header="Hypervisor"><%= link machine.hypervisor.name, to: Routes.admin_hypervisor_path(@conn, :show, machine.hypervisor) %></td>
       <td data-header="Plan"><%= link machine.plan.name, to: Routes.admin_plan_path(@conn, :show, machine.plan) %></td>
 
       <td data-header="Networks"><ul>

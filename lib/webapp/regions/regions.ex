@@ -6,7 +6,10 @@ defmodule Webapp.Regions do
   import Ecto.Query, warn: false
   alias Webapp.Repo
 
-  alias Webapp.Regions.Region
+  alias Webapp.{
+    Regions.Region,
+    Hypervisors.Hypervisor
+  }
 
   @doc """
   Returns the list of regions.
@@ -19,6 +22,39 @@ defmodule Webapp.Regions do
   """
   def list_regions do
     Repo.all(Region)
+  end
+
+  @doc """
+  Returns the list of regions with at least one hypervisor.
+
+  ## Examples
+
+      iex> list_usable_regions()
+      [%Region{}, ...]
+
+  """
+  def list_usable_regions do
+    query = from(r in Region, [
+      join: h in Hypervisor, on: r.id == h.region_id,
+      group_by: r.id
+    ])
+    Repo.all(query)
+  end
+
+  @doc """
+  Returns the list hypervisors associated with region.
+
+  ## Examples
+
+      iex> list_region_hypervisors()
+      [%Hypervisor{}, ...]
+
+  """
+  def list_region_hypervisors(region, preloads \\ []) do
+    region
+    |> Ecto.assoc(:hypervisors)
+    |> Repo.all()
+    |> Repo.preload(preloads)
   end
 
   @doc """
@@ -35,7 +71,10 @@ defmodule Webapp.Regions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_region!(id), do: Repo.get!(Region, id)
+  def get_region!(id, preloads \\ []) do
+     Repo.get!(Region, id)
+     |> Repo.preload(preloads)
+  end
 
   @doc """
   Creates a region.

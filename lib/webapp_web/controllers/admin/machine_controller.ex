@@ -5,7 +5,8 @@ defmodule WebappWeb.Admin.MachineController do
     Machines,
     Machines.Machine,
     Hypervisors,
-    Hypervisors.Hypervisor
+    Hypervisors.Hypervisor,
+    Regions
   }
 
   plug :load_resource,
@@ -15,7 +16,8 @@ defmodule WebappWeb.Admin.MachineController do
     preload: [:hypervisor_type, machines: Hypervisors.preload_active_machines]
 
   def index(conn, _params) do
-    machines = Machines.list_machines([:hypervisor, :plan, :networks, :distribution])
-    render(conn, "index.html", machines: machines, hypervisor: nil)
+    machines = Machines.list_machines([:plan, :networks, :distribution, hypervisor: :region])
+    regions = Regions.list_usable_regions()
+    render(conn, "index.html", machines: machines, hypervisor: nil, regions: regions)
   end
 end

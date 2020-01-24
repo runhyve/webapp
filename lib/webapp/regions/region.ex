@@ -2,8 +2,11 @@ defmodule Webapp.Regions.Region do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Webapp.Hypervisors.Hypervisor
+
   schema "regions" do
     field :name, :string
+    has_many(:hypervisors, Hypervisor)
 
     timestamps()
   end

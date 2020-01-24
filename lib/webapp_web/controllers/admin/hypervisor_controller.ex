@@ -45,6 +45,7 @@ defmodule WebappWeb.Admin.HypervisorController do
     render(conn, WebappWeb.Admin.MachineView, "index.html",
       machines: hypervisor.machines,
       hypervisor: hypervisor,
+      region: hypervisor.region,
       hypervisors: nil,
       status: status
     )
