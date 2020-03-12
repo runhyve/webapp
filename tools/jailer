@@ -1,0 +1,24 @@
+#!/bin/sh
+set -e
+
+run() {
+  if [ -f "/zroot/iocage/images/$1.zip" ]; then
+    iocage import $1
+    iocage rename $1 $2
+    iocage start $2
+  else
+    echo "No such image"
+  fi
+}
+images() {
+  ls -l /zroot/iocage/images/*.zip
+}
+
+build() {
+  . tools/lib/jailfile.sh
+  . Jailfile
+}
+
+command=$1
+shift
+"$command" "${@}"

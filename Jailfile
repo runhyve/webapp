@@ -1,8 +1,10 @@
-FROM 12.0-RELEASE
+FROM 12.1-RELEASE
 RUN "pkg bootstrap -y && pkg install -y elixir node10 npm-node10 python"
 RUN "pw user add webapp -m"
 WORKDIR /usr/home/webapp/
 ADD . /usr/home/webapp/
+RUN chown -R webapp:webapp .
+USER webapp
 RUN mix local.hex --force
 RUN mix local.rebar --force
 RUN mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
