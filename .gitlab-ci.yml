@@ -53,7 +53,7 @@ build_jail_image:
   tags:
   - freebsd
   script:
-  - ./build_iocage.sh
+  - sudo ./build_iocage.sh
   - ./tools/jailer images
 
 deploy_demo:
