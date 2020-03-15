@@ -7,7 +7,6 @@ RUN chown -R webapp:webapp .
 USER webapp
 RUN mix local.hex --force
 RUN mix local.rebar --force
-RUN mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
 RUN mix deps.get
 WORKDIR /usr/home/webapp/assets
 RUN "npm install && npm rebuild node-sass && npm run deploy"
