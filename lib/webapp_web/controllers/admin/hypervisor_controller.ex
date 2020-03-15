@@ -9,8 +9,8 @@ defmodule WebappWeb.Admin.HypervisorController do
 
   plug :load_and_authorize_resource,
     model: Hypervisor,
-    non_id_actions: [:index, :create, :new],
-    preload: [:region, :hypervisor_type, machines: {Hypervisors.preload_active_machines, :plan}]
+    non_id_actions: [:index, :create, :new, :index_machines],
+    preload: [:region, :hypervisor_type, machines: {Hypervisors.preload_active_machines, [:plan, :distribution, :hypervisor, :networks]}]
 
   plug :load_hypervisor_types when action in [:new, :create, :edit, :update]
   plug :load_regions when action in [:new, :create, :edit, :update]
@@ -24,6 +24,31 @@ defmodule WebappWeb.Admin.HypervisorController do
     hypervisor = conn.assigns[:hypervisor]
     networks = Hypervisors.list_hypervisor_networks(hypervisor)
     render(conn, "networks.html", networks: networks, hypervisor: hypervisor)
+  end
+
+  def index_machines(conn, _params) do
+    hypervisor = conn.assigns[:hypervisor]
+
+    status =
+      case Hypervisors.update_hypervisor_status(hypervisor) do
+        {:ok, status} -> status
+        {:error, _} -> "unreachable"
+      end
+
+    conn =
+      if status == "unreachable" do
+        put_flash(conn, :error, "Hypervisor #{hypervisor.name} unreachable.")
+      else
+        conn
+      end
+
+    render(conn, WebappWeb.Admin.MachineView, "index.html",
+      machines: hypervisor.machines,
+      hypervisor: hypervisor,
+      region: hypervisor.region,
+      hypervisors: nil,
+      status: status
+    )
   end
 
   def new(conn, _params) do

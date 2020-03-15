@@ -7,7 +7,7 @@ defmodule WebappWeb.ApiV1.DistributionController do
   action_fallback WebappWeb.FallbackController
 
   def index(conn, _params) do
-    distributions = Distributions.list_distributions()
+    distributions = Distributions.list_active_distributions()
     render(conn, "index.json", distributions: distributions)
   end
 

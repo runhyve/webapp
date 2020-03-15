@@ -72,8 +72,8 @@ defmodule WebappWeb.Router do
 
     resources "/hypervisors", HypervisorController do
       resources "/networks", NetworkController, only: [:new, :create, :index]
-      resources "/machines", MachineController, only: [:new, :create, :index]
     end
+    get "/hypervisors/:id/machines", HypervisorController, :index_machines
 
     resources "/regions", RegionController
     resources "/machines", MachineController, only: [:index]

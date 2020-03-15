@@ -3,17 +3,23 @@ defmodule WebappWeb.Admin.NetworkController do
 
   alias Webapp.{
     Hypervisors,
+    Hypervisors.Hypervisor,
     Networks,
     Networks.Network
   }
 
-  plug :load_hypervisor when action in [:index, :create, :new]
-  plug :load_network when action not in [:index, :create, :new]
-
   plug :load_and_authorize_resource,
     model: Network,
     non_id_actions: [:index, :create, :new],
-    preload: []
+    preload: [:hypervisor]
+
+  plug :load_resource,
+     model: Hypervisor,
+     id_name: "hypervisor_id",
+     only: [:index, :create, :new],
+     preload: [:hypervisor_type],
+     required: true
+
 
   def index(conn, _params) do
     hypervisor = conn.assigns[:hypervisor]
@@ -115,35 +121,5 @@ defmodule WebappWeb.Admin.NetworkController do
     conn
     |> put_flash(:info, "Network deleted successfully.")
     |> redirect(to: Routes.admin_hypervisor_network_path(conn, :index, hypervisor))
-  end
-
-  defp load_network(conn, _) do
-    try do
-      %{"id" => id} = conn.params
-      network = Networks.get_network!(id)
-
-      conn
-      |> assign(:network, network)
-    rescue
-      _ ->
-        conn
-        |> put_flash(:error, "Network was not found.")
-        |> redirect(to: Routes.admin_hypervisor_path(conn, :index))
-    end
-  end
-
-  def load_hypervisor(conn, _) do
-    try do
-      %{"hypervisor_id" => id} = conn.params
-      hypervisor = Hypervisors.get_hypervisor!(id)
-
-      conn
-      |> assign(:hypervisor, hypervisor)
-    rescue
-      _ ->
-        conn
-        |> put_flash(:error, "Hypervisor was not found.")
-        |> redirect(to: Routes.admin_hypervisor_path(conn, :index))
-    end
   end
 end

@@ -5,19 +5,9 @@ defmodule WebappWeb.Admin.MachineController do
     Machines,
     Machines.Machine,
     Hypervisors,
-    Hypervisors.Hypervisor
+    Hypervisors.Hypervisor,
+    Regions
   }
-
-  plug :authorize_resource,
-    model: Machine,
-    non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks, :distribution]
-
-  plug :load_resource,
-    model: Machine,
-    non_id_actions: [:index, :create, :new],
-    preload: [:hypervisor, :plan, :networks, :distribution],
-    except: [:index]
 
   plug :load_resource,
     model: Hypervisor,
@@ -25,37 +15,9 @@ defmodule WebappWeb.Admin.MachineController do
     only: [:index],
     preload: [:hypervisor_type, machines: Hypervisors.preload_active_machines]
 
-  def index(conn, %{"hypervisor_id" => hypervisor_id} = _params) do
-    # For action :index plug :load_resource will load all hypervisors
-    hypervisors = conn.assigns[:hypervisors]
-    hypervisor = Enum.find(hypervisors, fn hv -> hv.id == String.to_integer(hypervisor_id) end)
-
-    status =
-      case Hypervisors.update_hypervisor_status(hypervisor) do
-        {:ok, status} -> status
-        {:error, _} -> "unreachable"
-      end
-
-    conn =
-      if status == "unreachable" do
-        put_flash(conn, :error, "Hypervisor #{hypervisor.name} unreachable.")
-      else
-        conn
-      end
-
-    machines =
-      hypervisor.machines
-      |> Webapp.Repo.preload([:networks, :hypervisor, :plan, :distribution])
-
-    render(conn, "index.html",
-      machines: machines,
-      hypervisor: hypervisor,
-      status: status
-    )
-  end
-
   def index(conn, _params) do
-    machines = Machines.list_machines([:hypervisor, :plan, :networks, :distribution])
-    render(conn, "index.html", machines: machines, hypervisor: nil)
+    machines = Machines.list_machines([:plan, :networks, :distribution, hypervisor: :region])
+    regions = Regions.list_usable_regions()
+    render(conn, "index.html", machines: machines, hypervisor: nil, regions: regions)
   end
 end

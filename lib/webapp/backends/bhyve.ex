@@ -81,6 +81,8 @@ defmodule Webapp.Hypervisors.Bhyve do
   @doc """
   Deletes a machine on bhyve hypervisor.
   """
+  def delete_machine(%Machine{} = machine), do: delete_machine(nil, nil, machine)
+
   def delete_machine(_repo, _multi_changes, %Machine{} = machine) do
     payload = %{name: Machines.get_machine_hid(machine)}
 
@@ -173,7 +175,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   defp webhook_trigger(%Hypervisor{} = hypervisor, endpoint) do
     endpoint = Hypervisors.get_hypervisor_url(hypervisor, :webhook) <> endpoint
 
-    Logger.debug(["Bhyve webhook GET call: ", endpoint, " without parameters"])
+    Logger.debug(["Bhyve webhook GET call: #{inspect(endpoint)} without parameters"])
 
     HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", hypervisor.webhook_token}], follow_redirect: true)
     |> process_response()
@@ -184,7 +186,7 @@ defmodule Webapp.Hypervisors.Bhyve do
 
     try do
       json = Jason.encode!(payload)
-      Logger.debug(["Bhyve webhook POST call: ", endpoint, " with ", json])
+      Logger.debug(["Bhyve webhook POST call: #{inspect(endpoint)} with #{inspect(json)}"])
 
       HTTPoison.post(endpoint, json, @headers ++ [{"X-RUNHYVE-TOKEN", hypervisor.webhook_token}],
         follow_redirect: true,
@@ -197,7 +199,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   end
 
   defp process_response({:ok, %{body: body, status_code: 200}}) do
-    Logger.debug(["Bhyve webhook response: ", body])
+    Logger.debug(["Bhyve webhook response: #{inspect(body)}"])
     webhook_process_response(body)
   end
 
@@ -212,12 +214,12 @@ defmodule Webapp.Hypervisors.Bhyve do
   end
 
   defp process_response({:ok, %{body: body, status_code: _}}) do
-    Logger.debug(["Bhyve webhook response: ", body])
+    Logger.debug(["Bhyve webhook response #{inspect(body)}"])
     webhook_process_response(body)
   end
 
   defp process_response({:error, %HTTPoison.Error{reason: reason}}) do
-    Logger.debug(["HTTPoison Error: ", reason])
+    Logger.debug(["HTTPoison Error: #{inspect(reason)}"])
     {:error, reason}
   end
 
