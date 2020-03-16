@@ -1,6 +1,13 @@
+set -x
+
 release=""
 entrypoint=""
-_tmp_jail="jailer-build.$$"
+if [ ! -z $JAILER_TAG ]; then
+  _tmp_jail="$JAILER_TAG"
+else
+  _tmp_jail="jailer-build.$$"
+fi
+
 _jid=""
 _mountpoint=""
 workdir="/"
@@ -62,9 +69,18 @@ ADD() {
   cp -rf "$1" "${_mountpoint}/$2"
 }
 
+STOP() {
+  echo "STOP"
+  iocage stop "${_tmp_jail}"
+}
+
+EXPORT() {
+  STOP
+  iocate export "${_tmp_jail}"
+}
+
 _CLEANUP() {
-  echo "[*] Removing temporary jail (${_tmp_jail})"
   iocage stop "${_tmp_jail}" ||
-  iocage export "${_tmp_jail}"
+  echo "[*] Removing temporary jail (${_tmp_jail})"
   iocage destroy -f "${_tmp_jail}"
 }

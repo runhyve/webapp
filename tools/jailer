@@ -1,8 +1,10 @@
 #!/bin/sh
-set -e
+set -ex
+
+images_dir="$(zfs get -H -o value mountpoint $(iocage get -p))/iocage/images)"
 
 run() {
-  if [ -f "/zroot/iocage/images/$1.zip" ]; then
+  if [ -f "$images_dir/$1.zip" ]; then
     iocage import $1
     iocage rename $1 $2
     iocage start $2
@@ -11,7 +13,7 @@ run() {
   fi
 }
 images() {
-  ls -l /zroot/iocage/images/*.zip
+  ls -l $images_dir/*.zip
 }
 
 build() {

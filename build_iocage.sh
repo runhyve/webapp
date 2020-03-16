@@ -6,4 +6,5 @@ if [ $(id -u) -ne 0 ]; then
   exit 2
 fi
 
+export JAILER_TAG=webapp
 ./tools/jailer build .
