@@ -1,6 +1,8 @@
 release=""
 entrypoint=""
 _tmp_jail="jailer-build.$$"
+_jid=""
+_mountpoint=""
 workdir="/"
 user="root"
 
@@ -21,6 +23,14 @@ RUN() {
   iocage exec -U ${user} "${_tmp_jail}" "cd ${workdir} && $*"
 }
 
+_GET_JID() {
+  iocage get jid "${_tmp_jail}"
+}
+
+_GET_MOUNTPOINT() {
+  jls -j ${_jid} -n path | cut -f 2 -d=
+}
+
 _INIT() {
   random=$(jot -r 1 65500)
   # this should be configurable
@@ -30,6 +40,8 @@ _INIT() {
   iocage create -n "${_tmp_jail}" -r "${release}"
   iocage set ip4_addr="lo0|${ip}" "${_tmp_jail}"
   iocage start "${_tmp_jail}"
+  _jid=$(_GET_JID)
+  _mountpoint="$(_GET_MOUNTPOINT)"
 }
 
 USER() {
@@ -47,7 +59,7 @@ ADD() {
   _src="$1"
   _dst="$2"
   # Get jail path from iocage
-  cp -rf "$1" "/zroot/iocage/jails/${_tmp_jail}/root/$2"
+  cp -rf "$1" "${_mountpoint}/$2"
 }
 
 _CLEANUP() {
