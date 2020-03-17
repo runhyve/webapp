@@ -76,11 +76,11 @@ STOP() {
 
 EXPORT() {
   STOP
-  iocate export "${_tmp_jail}"
+  iocage export "${_tmp_jail}"
 }
 
 _CLEANUP() {
-  iocage stop "${_tmp_jail}" ||
+  iocage stop "${_tmp_jail}" || echo "Jail ${_tmp_jail} is stopped"
   echo "[*] Removing temporary jail (${_tmp_jail})"
   iocage destroy -f "${_tmp_jail}"
 }
