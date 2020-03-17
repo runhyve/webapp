@@ -1,7 +1,7 @@
 #!/bin/sh
 set -ex
 
-images_dir="$(zfs get -H -o value mountpoint $(iocage get -p))/iocage/images)"
+images_dir="$(zfs get -H -o value mountpoint $(iocage get -p))/iocage/images"
 
 run() {
   if [ -f "$images_dir/$1.zip" ]; then
