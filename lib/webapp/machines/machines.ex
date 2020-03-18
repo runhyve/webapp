@@ -465,7 +465,7 @@ defmodule Webapp.Machines do
         machine.last_status == "Running" || machine.last_status == "Bootloader"
 
       :start ->
-        machine.last_status != "Running" && machine.last_status != "Locked" &&
+        machine.last_status != "Running" &&
           machine.last_status != "Bootloader" && machine.last_status != "Deleting"
 
       :stop ->
