@@ -74,6 +74,10 @@ config :webapp, Webapp.Repo,
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   pool_size: 10
 
+config :webapp, Webapp.Chargebee,
+  apikey: "test_n1DFxmpIE0wOllOZIxAcu155sjNAj5LPV",
+  endpoint: "https://serveraptor-test.chargebee.com/api/v2/"
+
 config :sentry,
   dsn: System.get_env("SENTRY_DSN") || "https://secret@sentry.io/account_id",
   environment_name: :dev,

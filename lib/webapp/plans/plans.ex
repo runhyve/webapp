@@ -6,7 +6,6 @@ defmodule Webapp.Plans do
   alias Webapp.Repo
 
   alias Webapp.Plans.Plan
-  alias Webapp.Chargebee.Plans
 
   @doc """
   Returns the list of plans.
