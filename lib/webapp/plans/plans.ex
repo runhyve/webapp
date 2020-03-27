@@ -2,11 +2,11 @@ defmodule Webapp.Plans do
   @moduledoc """
   The Plans context.
   """
-
   import Ecto.Query, warn: false
   alias Webapp.Repo
 
   alias Webapp.Plans.Plan
+  alias Webapp.Chargebee.Plans
 
   @doc """
   Returns the list of plans.

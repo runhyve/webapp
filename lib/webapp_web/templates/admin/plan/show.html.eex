@@ -31,7 +31,7 @@
     
     <li>
       <strong>Price:</strong>
-      $<%= @plan.price %>
+      <%= @plan.price %> <%= @plan.currency_code %> / <%= @plan.period_unit %>
     </li>
 
     <li>

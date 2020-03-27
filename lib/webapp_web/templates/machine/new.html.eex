@@ -80,7 +80,7 @@
 
                 <span>
                   <strong>Price:</strong>
-                  $<%= plan.price %> / mo
+                  <%= plan.price %> <%= plan.currency_code %> / <%= plan.period_unit %>
                 </span>
               </span>
             </label>

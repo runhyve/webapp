@@ -23,6 +23,23 @@
       <%= error_tag f, :price %>
     </div>
 
+    <div class="field">
+      <%= label f, :currency_code, class: "label" %>
+      <div>Currency Code</div>
+      <div class="control">
+        <%= text_input f, :currency_code, class: "input", default: "USD" %>
+      </div>
+      <%= error_tag f, :currency_code %>
+    </div>
+
+    <div class="field">
+      <%= label f, :period_unit, class: "label" %>
+      <div>Currency Code</div>
+      <div class="select">
+        <%= select f, :period_unit, period_unit_select_options(), prompt: "Period unit" %>
+      </div
+      <%= error_tag f, :period_unit %>
+    </div>
 
     <div class="field">
       <%= label f, :storage, class: "label" %>

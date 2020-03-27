@@ -1,3 +1,5 @@
+<script src="https://js.chargebee.com/v2/chargebee.js"></script>
+
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
     <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
@@ -13,6 +15,7 @@
   <div class="level-right">
     <span><%= link "Change password", to: Routes.password_reset_path(@conn, :new), class: "button is-rounded is-info" %></span>
     <span><%= link "Edit", to: Routes.user_path(@conn, :edit, @user), class: "button is-rounded is-info"%></span>
+    <a href="javascript:void(0)" class="btn btn-success btn-lg" data-cb-type="checkout" data-cb-plan-id="comics-box" >subscribe</a>
   </div>
 </div>
 <div class="box">
@@ -23,3 +26,52 @@
     </li>
   </ul>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var cbInstance = Chargebee.getInstance();
+
+      // To add addons
+      // Get the element with the corresponding plan and addons
+      var planElement = document.querySelector("[data-cb-plan-id='comics-box']");
+      var product = cbInstance.getProduct(planElement);
+      product.addons.push({id: "extra-comic-book", quantity: 2});
+
+      // to add coupon
+      product.addCoupon("cbdemo_earlybird");
+
+      // adding subscription custom fields
+      product.data["cf_sub_test"] = "subscription custom field";
+
+      // To add coupons and customer related information with custom fields
+      var cart = cbInstance.getCart();
+      // Date should be in YYYY-MM-DD
+      cart.setCustomer({email: "vivek@chargebee.com", cf_test: "customer custom field", cf_date: "1991-09-16"});
+
+      cbInstance.setCheckoutCallbacks(function(cart) {
+        // You can get the plan name for which the checkout happened like below
+        var product = cart.products[0];
+        console.log(product.planId);
+        console.log(product.addons);
+        return {
+            loaded: function() {
+                console.log("checkout opened");
+            },
+            close: function() {
+                console.log("checkout closed");
+            },
+            success: function(hostedPageId) {
+              console.log(hostedPageId);
+              // Hosted page id will be unique token for the checkout that happened
+              // You can pass this hosted page id to your backend 
+              // and then call our retrieve hosted page api to get subscription details
+              // https://apidocs.chargebee.com/docs/api/hosted_pages#retrieve_a_hosted_page
+            },
+            step: function(value) {
+                // value -> which step in checkout
+                console.log(value);
+            }
+        }
+      });
+    });
+</script>
