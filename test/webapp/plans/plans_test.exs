@@ -6,9 +6,9 @@ defmodule Webapp.PlansTest do
   describe "plans" do
     alias Webapp.Plans.Plan
 
-    @valid_attrs %{cpu: 42, name: "some name", ram: 42, storage: 42, price: 10}
-    @update_attrs %{cpu: 43, name: "some updated name", ram: 43, storage: 43, price: 20}
-    @invalid_attrs %{cpu: nil, name: nil, ram: nil, storage: nil, price: nil}
+    @valid_attrs %{cpu: 42, name: "some name", ram: 42, storage: 42, price: 10, currency_code: "USD", period_unit: "month"}
+    @update_attrs %{cpu: 43, name: "some updated name", ram: 43, storage: 43, price: 20, currency_code: "USD", period_unit: "month"}
+    @invalid_attrs %{cpu: nil, name: nil, ram: nil, storage: nil, price: nil, currency_code: nil}
 
     def plan_fixture(attrs \\ %{}) do
       {:ok, plan} =
