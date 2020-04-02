@@ -400,6 +400,25 @@ defmodule Webapp.Machines do
   end
 
   @doc """
+  Performs restart of virtual machine.
+  """
+  def restart_machine(%Machine{} = machine) do
+    module = get_hypervisor_module(machine)
+
+    try do
+      result = apply(module, :restart_machine, [%{machine: machine}])
+
+      Notifications.publish(:info, "Machine #{machine.name} is being restarted")
+
+      result
+    rescue
+      UndefinedFunctionError ->
+        Notifications.publish(:critical, "Couldn't restart machine #{machine.name}")
+        {:error, :hypervisor_not_found}
+    end
+  end
+
+  @doc """
   Performs hard stop of virtual machine.
   """
   def poweroff_machine(%Machine{} = machine) do
@@ -469,6 +488,9 @@ defmodule Webapp.Machines do
           machine.last_status != "Bootloader" && machine.last_status != "Deleting"
 
       :stop ->
+        machine.last_status == "Running" || machine.last_status == "Bootloader"
+
+      :restart ->
         machine.last_status == "Running" || machine.last_status == "Bootloader"
 
       :poweroff ->

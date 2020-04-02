@@ -45,8 +45,7 @@ export function update_status(payload, context) {
   context.querySelectorAll('span.status').forEach((item) => {
     if (item.classList.contains('status-icon')) {
       item.childNodes.item(0).className = payload.icon
-    }
-    else {
+    } else {
       item.textContent = payload.status
     }
 
@@ -64,12 +63,11 @@ export function update_status(payload, context) {
 export function update_actions(actions, context) {
   for (var action in actions) {
     if (actions.hasOwnProperty(action)) {
-      context.querySelectorAll("a.action-" + action).forEach((item) => {
+      context.querySelectorAll(".action-" + action).forEach((item) => {
         if (actions[action] === true) {
-          item.parentElement.classList.remove('is-hidden')
-        }
-        else {
-          item.parentElement.classList.add('is-hidden')
+          item.classList.remove('is-hidden')
+        } else {
+          item.classList.add('is-hidden')
         }
       })
     }

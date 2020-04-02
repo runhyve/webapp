@@ -35,7 +35,7 @@
   </thead>
   <tbody>
     <%= for machine <- @machines do %>
-    <tr id="machine-<%= machine.id %>">
+    <tr data-machine-id="<%= machine.id %>">
       <td data-header="Name"><%= link machine.name, to: team_path(:machine_path, @conn, :show, machine) %></td>
       <td data-header="Status">
         <div class="tags has-addons">
@@ -60,20 +60,37 @@
       <td data-header="Plan"><%= machine.plan.name %></td>
       <td data-header="Cost">$<%= machine.plan.price %>/mo</td>
       <td>
-        <%= if machine_can_do?(machine, :console) do %>
-        <%= link to: team_path(:machine_path, @conn, :console, machine), class: "button is-rounded is-small is-black" do %>
-        <span class="icon"><i class="fas fa-terminal"></i></span>
+        <%= link(
+          to: team_path(:machine_path, @conn, :console, machine),
+          class: "button is-rounded is-small is-black #{action_css_class(machine, :console)}"
+        ) do %>
+          <span class="icon"><i class="fas fa-terminal"></i></span>
         <% end %>
+
+        <%= link(
+          to: team_path(:machine_path, @conn, :start, machine),
+          method: :post,
+          class: "button is-rounded is-small is-success #{action_css_class(machine, :start)}"
+        ) do %>
+          <span class="icon"><i class="fas fa-lg fa-play-circle"></i></span>
         <% end %>
-        <%= if machine_can_do?(machine, :start) do %>
-        <%= link to: team_path(:machine_path, @conn, :start, machine), class: "button is-rounded is-small is-success", method: :post, class: "has-text-success" do %>
-        <span class="icon"><i class="fas fa-lg fa-play-circle"></i></span>
+
+        <%= link(
+          to: team_path(:machine_path, @conn, :restart, machine),
+          method: :post,
+          data: [confirm: "Do you really want to restart the #{machine.name} machine?"],
+          class: "button is-rounded is-small is-info #{action_css_class(machine, :restart)}"
+        ) do %>
+          <span class="icon"><i class="fas fa-lg fa-sync"></i></span>
         <% end %>
-        <% end %>
-        <%= if machine_can_do?(machine, :stop) do %>
-        <%= link to: team_path(:machine_path, @conn, :stop, machine), class: "button is-rounded is-small is-danger", method: :post, data: [confirm: "Are you sure?"], class: "has-text-danger" do %>
-        <span class="icon"><i class="fas fa-lg fa-stop-circle"></i></span>
-        <% end %>
+
+        <%= link(
+          to: team_path(:machine_path, @conn, :stop, machine),
+          method: :post,
+          data: [confirm: "Do you really want to stop the #{machine.name} machine?"],
+          class: "button is-rounded is-small is-danger #{action_css_class(machine, :stop)}"
+        ) do %>
+          <span class="icon"><i class="fas fa-lg fa-stop-circle"></i></span>
         <% end %>
       </td>
     </tr>
