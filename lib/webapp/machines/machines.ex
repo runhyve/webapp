@@ -15,6 +15,7 @@ defmodule Webapp.Machines do
   alias Webapp.{
     Notifications.Notifications,
     Hypervisors,
+    Networks,
     Machines.Machine,
     Networks.Network,
     Accounts.Team,
@@ -191,6 +192,7 @@ defmodule Webapp.Machines do
 
     Multi.new()
     |> Multi.update(:machine, Machine.mark_as_deleted_changeset(machine))
+    |> Multi.run(:release_ipv4, Networks, :release_machine, [])
     |> Multi.run(:notify, Notifications, :publish, [:info, "Machine #{machine.name} deleted"])
     |> Repo.transaction()
   end
@@ -223,8 +225,15 @@ defmodule Webapp.Machines do
 
   # Machine does not exists on the hypervisor, mark as deleted.
   def multi_delete_machine(_repo, %{job: nil}, %Machine{} = machine) do
-    Machine.mark_as_deleted_changeset(machine)
-    |> Repo.update()
+    update = Machine.mark_as_deleted_changeset(machine)
+
+    case Repo.update(update) do
+      {:ok, %Machine{} = machine} ->
+        Networks.release_machine(machine)
+        {:ok, machine}
+
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   def multi_delete_machine(_repo, %{job: %Job{} = job}, %Machine{} = machine) do
@@ -291,10 +300,15 @@ defmodule Webapp.Machines do
 
   def update_status(%Machine{last_status: "Deleting", job: %Job{last_status: "finished", e_level: 0}} = machine) do
     {:ok, machine} = cleanup_job_id(machine)
-    Machine.mark_as_deleted_changeset(machine)
-    |> Repo.update()
+    update = Machine.mark_as_deleted_changeset(machine)
 
-    {:ok, nil}
+    case Repo.update(update) do
+      {:ok, %Machine{} = machine} ->
+        Networks.release_machine(machine)
+        {:ok, machine}
+
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   # The job was completed with errors, we need to handle it.
