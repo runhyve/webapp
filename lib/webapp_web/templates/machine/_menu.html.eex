@@ -42,9 +42,7 @@
 <div class="tabs">
   <ul>
     <%= active_link(@conn, "Dashboard", to: team_path(:machine_path, @conn, :show, @machine), active: :exact)  %>
-    <%= if machine_can_do?(@machine, :console) do %>
-    <%= active_link(@conn, "Console", to: team_path(:machine_path, @conn, :console, @machine), active: :exact)  %>
-    <% end %>
+    <%= active_link(@conn, "Console", to: team_path(:machine_path, @conn, :console, @machine), active: :exact, class: action_css_class(@machine, :console))  %>
     <%= active_link(@conn, "Settings", to: team_path(:machine_path, @conn, :edit, @machine), active: :exact)  %>
   </ul>
 </div>
