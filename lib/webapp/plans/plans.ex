@@ -49,6 +49,10 @@ defmodule Webapp.Plans do
 
   """
   def create_plan(attrs \\ %{}) do
+    if Webapp.Chargebee.Plan.cb_active? do
+      Webapp.Chargebee.Plan.cb_add_plan(attrs) 
+    end
+
     %Plan{}
     |> Plan.changeset(attrs)
     |> Repo.insert()

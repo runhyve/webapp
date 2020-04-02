@@ -5,6 +5,10 @@ defmodule Webapp.Chargebee.Plan do
     Chargebee.Request
   }
 
+  def cb_active?() do
+    Application.get_env(:webapp, Webapp.Chargebee)[:enable]
+  end
+
   def cb_list_plans() do
     {:ok, %{"list" => plans}} = Request.get("plans")
     Enum.map(plans, fn %{"plan" => plan} -> plan end)

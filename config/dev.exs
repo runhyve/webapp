@@ -75,6 +75,7 @@ config :webapp, Webapp.Repo,
   pool_size: 10
 
 config :webapp, Webapp.Chargebee,
+  enable: true,
   apikey: "test_n1DFxmpIE0wOllOZIxAcu155sjNAj5LPV",
   endpoint: "https://serveraptor-test.chargebee.com/api/v2/"
 

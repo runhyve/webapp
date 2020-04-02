@@ -22,7 +22,6 @@ defmodule WebappWeb.Admin.PlanController do
   def create(conn, %{"plan" => plan_params}) do
     case Plans.create_plan(plan_params) do
       {:ok, plan} ->
-        Webapp.Chargebee.Plan.cb_add_plan(plan_params)
         conn
         |> put_flash(:info, "Plan #{plan.name} saved.")
         |> redirect(to: Routes.admin_plan_path(conn, :show, plan))
