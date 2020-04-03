@@ -7,6 +7,15 @@
     <% end %>
 
     <div class="field">
+      <%= label f, :region_id, "Region", class: "label" %>
+      <div>Location of the hypervisor</div>
+      <div class="select">
+        <%= select f, :region_id, region_select_options(@regions) %>
+      </div>
+      <%= error_tag f, :region_id %>
+    </div>
+
+    <div class="field">
       <%= label f, :name, class: "label" %>
       <div>Descriptive name for your hypervisor.</div>
       <div class="control">
@@ -25,26 +34,18 @@
     </div>
 
     <div class="field">
-      <%= label f, :region_id, "Region", class: "label" %>
-      <div>Location of the hypervisor</div>
-      <div class="select">
-        <%= select f, :region_id, region_select_options(@regions) %>
-      </div>
-      <%= error_tag f, :region_id %>
-    </div>
-
-    <div class="field">
-      <%= checkbox f, :tls, class: "checkbox" %>
-      <%= label f, "Enable TLS", class: "checkbox" %>
+      <%= label f, :tls, class: "checkbox" do %>
+        <%= checkbox f, :tls, class: "checkbox" %> Enable TLS
+      <% end %>
       <%= error_tag f, :tls %>
     </div>
 
     <div class="field">
       <%= label f, :webhook_token, class: "label" %>
-      <div>This token is generated during hypervisor setup. You can get it from <b><i>/usr/local/etc/nginx/.runhyvetoken</i></b> on hypervisor.</div>
       <div class="control">
         <%= password_input f, :webhook_token, class: "input" %>
       </div>
+      <div class="help">This token is generated during hypervisor setup. You can get it from <b><i>/usr/local/etc/nginx/.runhyvetoken</i></b> on hypervisor.</div>
       <%= error_tag f, :webhook_token %>
     </div>
 
@@ -54,6 +55,14 @@
         <%= select f, :hypervisor_type_id, hypervisor_types_select_options(@hypervisor_types) %>
       </div>
       <%= error_tag f, :hypervisor_type_id %>
+    </div>
+
+    <div class="field">
+      <%= label f, :is_inactive, class: "checkbox" do %>
+        <%= checkbox f, :is_inactive, class: "checkbox" %> Inactive
+      <% end %>
+      <%= error_tag f, :is_inactive %>
+      <p class="help">The inactive hypervisor will be skipped when adding a new machine in selected region.</p>
     </div>
 
     <div class="field">

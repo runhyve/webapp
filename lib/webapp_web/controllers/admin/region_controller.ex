@@ -59,7 +59,6 @@ defmodule WebappWeb.Admin.RegionController do
   def delete(conn, %{"id" => id}) do
     region = Regions.get_region!(id, [:hypervisors])
 
-    IO.inspect region
     case Enum.count(region.hypervisors) do
       0 ->
         {:ok, _region} = Regions.delete_region(region)
