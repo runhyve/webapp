@@ -7,6 +7,7 @@ defmodule Webapp.Hypervisors.Hypervisor do
     field(:fqdn, :string)
     field(:tls, :boolean, default: true)
     field(:webhook_token, :string)
+    field(:is_inactive, :boolean, default: false)
 
     belongs_to(:hypervisor_type, Webapp.Hypervisors.Type)
     belongs_to(:region, Webapp.Regions.Region)
@@ -19,13 +20,14 @@ defmodule Webapp.Hypervisors.Hypervisor do
   @doc false
   def changeset(hypervisor, attrs) do
     hypervisor
-    |> cast(attrs, [:name, :fqdn, :tls, :hypervisor_type_id, :webhook_token, :region_id])
+    |> cast(attrs, [:name, :fqdn, :tls, :hypervisor_type_id, :webhook_token, :region_id, :is_inactive])
     |> validate_required([
       :name,
       :fqdn,
       :tls,
       :hypervisor_type_id,
-      :region_id
+      :region_id,
+      :is_inactive
     ])
     |> update_change(:webhook_token, fn
       nil -> hypervisor.webhook_token
@@ -39,14 +41,15 @@ defmodule Webapp.Hypervisors.Hypervisor do
 
   def create_changeset(hypervisor, attrs) do
     hypervisor
-    |> cast(attrs, [:name, :fqdn, :tls, :hypervisor_type_id, :webhook_token, :region_id])
+    |> cast(attrs, [:name, :fqdn, :tls, :hypervisor_type_id, :webhook_token, :region_id, :is_inactive])
     |> validate_required([
       :name,
       :fqdn,
       :tls,
       :hypervisor_type_id,
       :region_id,
-      :webhook_token
+      :webhook_token,
+      :is_inactive
     ])
     |> cleanup_fqdn()
     |> assoc_constraint(:hypervisor_type)
