@@ -143,6 +143,14 @@ defmodule Webapp.Hypervisors.Bhyve do
   end
 
   @doc """
+  Performs restart of virtual Machine.
+  """
+  def restart_machine(%{machine: %Machine{}  = machine}) do
+    payload = %{name: Machines.get_machine_hid(machine)}
+    webhook_trigger(machine.hypervisor, "vm/restart", payload)
+  end
+
+  @doc """
   Performs hard stop of virtual Machine.
   """
   def poweroff_machine(%{machine: %Machine{}  = machine}) do
