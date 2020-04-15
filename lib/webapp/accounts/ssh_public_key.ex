@@ -19,9 +19,9 @@ defmodule Webapp.Accounts.SSHPublicKey do
     |> cast(attrs, [:title, :ssh_public_key, :fingerprint, :user_id])
     |> validate_required([:title, :ssh_public_key])
     |> assoc_constraint(:user)
-    |> validate_length(:ssh_public_key, min: 300, max: 1000)
+    |> validate_length(:ssh_public_key, min: 80, max: 1000)
     |> validate_length(:title, min: 3, max: 128)
-    |> validate_format(:ssh_public_key, ~r/ssh-rsa AAAA[0-9A-Za-z+\/]+[=]{0,3} ([^@]+@[^@]+)/,
+    |> validate_format(:ssh_public_key, ~r/(ssh-rsa|ssh-ed25519) AAAA[0-9A-Za-z+\/]+[=]{0,3} ([^@]+@[^@]+)/,
       message: "SSH public key is not valid"
     )
     |> add_fingerprint

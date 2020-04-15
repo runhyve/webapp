@@ -84,6 +84,7 @@ defmodule WebappWeb.MachineChannel do
     %{
       start: Machines.machine_can_do?(machine, :start),
       stop: Machines.machine_can_do?(machine, :stop),
+      restart: Machines.machine_can_do?(machine, :restart),
       console: Machines.machine_can_do?(machine, :console),
       poweroff: Machines.machine_can_do?(machine, :poweroff)
     }

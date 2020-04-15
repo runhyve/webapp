@@ -1,4 +1,4 @@
-<div class="level">
+<div class="level" data-machine-id="<%= @machine.id %>">
   <div class="level-left">
      <div class="level-item">
        <h1><%= @machine.name %></h1>
@@ -13,28 +13,34 @@
   </div>
 
   <div class="level-right">
-    <%= if machine_can_do?(@machine, :start) do %>
-      <div class="level-item">
-    <% else %>
-      <div class="level-item is-hidden">
-    <% end %>
-      <%= link "Start", to: team_path(:machine_path, @conn, :start, @machine), method: :post, class: "button is-rounded action-start" %>
+    <div class="level-item <%= action_css_class(@machine, :start) %>">
+      <%= link "Start",
+        to: team_path(:machine_path, @conn, :start, @machine),
+        method: :post,
+        class: "button is-rounded is-success" %>
     </div>
 
-    <%= if machine_can_do?(@machine, :stop) do %>
-      <div class="level-item">
-    <% else %>
-      <div class="level-item is-hidden">
-    <% end %>
-      <%= link "Stop", to: team_path(:machine_path, @conn, :stop, @machine), method: :post, data: [confirm: "Are you sure?"], class: "button is-rounded is-danger action-stop" %>
+    <div class="level-item <%= action_css_class(@machine, :restart) %>">
+       <%= link "Restart",
+         to: team_path(:machine_path, @conn, :restart, @machine),
+         method: :post,
+         data: [confirm: "Do you really want to restart the #{@machine.name} machine?"],
+         class: "button is-rounded is-info" %>
     </div>
 
-    <%= if machine_can_do?(@machine, :poweroff) do %>
-      <div class="level-item">
-    <% else %>
-      <div class="level-item is-hidden">
-    <% end %>
-     <%= link "Poweroff", to: team_path(:machine_path, @conn, :poweroff, @machine), method: :post, data: [confirm: "Are you sure?"], class: "button is-rounded is-dark action-poweroff"%>
+    <div class="level-item <%= action_css_class(@machine, :stop) %>">
+      <%= link "Stop",
+         to: team_path(:machine_path, @conn, :stop, @machine),
+         method: :post, data: [confirm: "Do you really want to restart the #{@machine.name} machine?"],
+         class: "button is-rounded is-danger" %>
+    </div>
+
+    <div class="level-item <%= action_css_class(@machine, :poweroff) %>">
+       <%= link "Poweroff",
+        to: team_path(:machine_path, @conn, :poweroff, @machine),
+        method: :post,
+        data: [confirm: "Do you really want to poweroff the #{@machine.name} machine?"],
+        class: "button is-rounded is-dark" %>
     </div>
   </div>
 </div>
@@ -42,9 +48,7 @@
 <div class="tabs">
   <ul>
     <%= active_link(@conn, "Dashboard", to: team_path(:machine_path, @conn, :show, @machine), active: :exact)  %>
-    <%= if machine_can_do?(@machine, :console) do %>
-    <%= active_link(@conn, "Console", to: team_path(:machine_path, @conn, :console, @machine), active: :exact)  %>
-    <% end %>
+    <%= active_link(@conn, "Console", to: team_path(:machine_path, @conn, :console, @machine), active: :exact, class: action_css_class(@machine, :console))  %>
     <%= active_link(@conn, "Settings", to: team_path(:machine_path, @conn, :edit, @machine), active: :exact)  %>
   </ul>
 </div>

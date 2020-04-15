@@ -78,12 +78,19 @@ Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
 
 Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
   name: "Fedora",
-  version: "29",
-  loader: "grub-fedora",
+  version: "31",
+  loader: "uefi-csm",
   image:
     "https://download.fedoraproject.org/pub/fedora/linux/releases/31/Cloud/x86_64/images/Fedora-Cloud-Base-31-1.9.x86_64.qcow2"
 })
 
+Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
+  name: "CentOS",
+  version: "8",
+  loader: "uefi-csm",
+  image:
+    "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2"
+})
 Webapp.Repo.insert!(%Webapp.Distributions.Distribution{
   name: "Debian",
   version: "9",

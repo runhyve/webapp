@@ -36,7 +36,8 @@ defmodule Webapp.Regions do
   def list_usable_regions do
     query = from(r in Region, [
       join: h in Hypervisor, on: r.id == h.region_id,
-      group_by: r.id
+      group_by: r.id,
+      where: h.is_inactive == false
     ])
     Repo.all(query)
   end
@@ -51,8 +52,8 @@ defmodule Webapp.Regions do
 
   """
   def list_region_hypervisors(region, preloads \\ []) do
-    region
-    |> Ecto.assoc(:hypervisors)
+    from(h in Hypervisor,
+      [where: h.is_inactive == false and h.region_id == ^region.id])
     |> Repo.all()
     |> Repo.preload(preloads)
   end

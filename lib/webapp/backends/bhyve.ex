@@ -56,10 +56,15 @@ defmodule Webapp.Hypervisors.Bhyve do
       "memory" => "#{machine.plan.ram}M",
       "disk" => "#{machine.plan.storage}G",
       "ipv4" => Enum.map(machine.ipv4, fn ip ->
+        ip_address = to_string(ip.ip)
+        netmask = to_string(ip.ip_pool.netmask)
+        netmaskprefix = netmask |> Iptools.subnet_bit_count()
+        gateway = to_string(ip.ip_pool.gateway)
+
         %{
-          ip: to_string(ip.ip),
-          netmask: to_string(ip.ip_pool.netmask),
-          gateway: to_string(ip.ip_pool.gateway)
+          ip: "#{ip_address}/#{netmaskprefix}",
+          netmask: netmask,
+          gateway: gateway
         } |> Jason.encode!()
       end)
     }
@@ -135,6 +140,14 @@ defmodule Webapp.Hypervisors.Bhyve do
   def stop_machine(%{machine: %Machine{} = machine}) do
     payload = %{name: Machines.get_machine_hid(machine)}
     webhook_trigger(machine.hypervisor, "vm/stop", payload)
+  end
+
+  @doc """
+  Performs restart of virtual Machine.
+  """
+  def restart_machine(%{machine: %Machine{}  = machine}) do
+    payload = %{name: Machines.get_machine_hid(machine)}
+    webhook_trigger(machine.hypervisor, "vm/restart", payload)
   end
 
   @doc """

@@ -15,7 +15,8 @@ defmodule Webapp.Networks do
     Hypervisors,
     Networks.Network,
     Networks.Ipv4,
-    Networks.Ip_pool
+    Networks.Ip_pool,
+    Machines.Machine
   }
 
   @doc """
@@ -309,6 +310,24 @@ defmodule Webapp.Networks do
   Removes reservation from the ipv4.
   """
   def release_ipv4(%Ipv4{} = ipv4), do: change_ipv4_status(ipv4, false)
+
+
+  @doc """
+  Removes all assigned ipv4 form machine
+  """
+  def release_machine(%Machine{deleted_at: %DateTime{}} = machine) do
+    from(ipv4 in Ipv4, where: ipv4.machine_id == ^machine.id)
+    |> Repo.update_all(set: [
+      machine_id: nil
+    ])
+  end
+
+  def release_machine(_machine), do: {:error, "Cannot remove assigned IPs from active machine"}
+
+  def release_machine(_repo, %{machine: %Machine{} = machine}) do
+    release_machine(machine)
+    {:ok, nil}
+  end
 
   defp change_ipv4_status(%Ipv4{} = ipv4, status) do
     ipv4

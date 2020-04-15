@@ -62,6 +62,7 @@ defmodule WebappWeb.Router do
     get "/machines/:id/console", MachineController, :console
     post "/machines/:id/start", MachineController, :start
     post "/machines/:id/stop", MachineController, :stop
+    post "/machines/:id/restart", MachineController, :restart
     post "/machines/:id/poweroff", MachineController, :poweroff
     get "/hypervisors/:hypervisor_id/machines/new", MachineController, :new
     post "/hypervisors/:hypervisor_id/machines/create", MachineController, :create

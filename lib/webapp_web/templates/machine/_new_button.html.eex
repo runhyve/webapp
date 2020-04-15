@@ -1,5 +1,5 @@
 <%= if @hypervisor do %>
-<span><%= link "New Machine", to: team_path(:machine_path, @conn, :new, @region), class: "button is-rounded is-primary" %></span>
+  <span><%= link "New Machine", to: team_path(:machine_path, @conn, :new, @region), class: "button is-rounded is-primary" %></span>
 <% else %>
   <%= if not Enum.empty?(@regions) do %>
   <div class="dropdown is-hoverable is-right">
@@ -14,7 +14,7 @@
     <div class="dropdown-menu" id="dropdown-menu" role="menu">
       <div class="dropdown-content">
         <%= for region <- @regions do %>
-          <% hypervisor = region |> Webapp.Regions.list_region_hypervisors |> Enum.random %>
+          <% hypervisor = Webapp.Regions.list_region_hypervisors(region) |> Enum.random %>
           <%= link "#{region.name}", to: team_path(:machine_path, @conn, :new, hypervisor), class: "dropdown-item" %>
         <% end %>
       </div>

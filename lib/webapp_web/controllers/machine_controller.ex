@@ -15,7 +15,7 @@ defmodule WebappWeb.MachineController do
     Distributions,
     Notifications.Notifications
   }
-  
+
   plug :load_and_authorize_resource,
     current_user: :current_member,
     model: Machine,
@@ -198,6 +198,23 @@ defmodule WebappWeb.MachineController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Machine #{machine.name} is being stopped")
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
+
+      {:error, error} ->
+        conn
+        |> put_flash(:error, error)
+        |> redirect(to: team_path(:machine_path, conn, :show, machine))
+    end
+  end
+
+  def restart(conn, _params) do
+    machine = conn.assigns[:machine]
+    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested to restart VM #{machine.name} (ID: #{machine.id})")
+
+    case Machines.restart_machine(machine) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Machine #{machine.name} is being restarted")
         |> redirect(to: team_path(:machine_path, conn, :show, machine))
 
       {:error, error} ->
