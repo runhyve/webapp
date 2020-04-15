@@ -1,5 +1,5 @@
 %{
-  "argon2_elixir": {:hex, :argon2_elixir, "2.3.0", "e251bdafd69308e8c1263e111600e6d68bd44f23d2cccbe43fcb1a417a76bc8e", [:make, :mix], [{:comeonin, "~> 5.3", [hex: :comeonin, repo: "hexpm", optional: false]}, {:elixir_make, "~> 0.6", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
+  "argon2_elixir": {:hex, :argon2_elixir, "2.1.2", "c276b960f0b550a7613a9bebf8e14645ca5eb71a34a1bf0f896fe3511966b051", [:make, :mix], [{:comeonin, "~> 5.1", [hex: :comeonin, repo: "hexpm", optional: false]}, {:elixir_make, "~> 0.5", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
   "bamboo": {:hex, :bamboo, "1.4.0", "7b9201c49a843e4802061cf45692405b2c00efcf1cebf8b7b64f015ead072392", [:mix], [{:hackney, ">= 1.13.0", [hex: :hackney, repo: "hexpm", optional: false]}, {:jason, "~> 1.1.0", [hex: :jason, repo: "hexpm", optional: true]}, {:plug, "~> 1.0", [hex: :plug, repo: "hexpm", optional: false]}], "hexpm"},
   "bamboo_smtp": {:hex, :bamboo_smtp, "2.1.0", "4be58f3c51d9f7875dc169ae58a1d2f08e5b718bf3895f70d130548c0598f422", [:mix], [{:bamboo, "~> 1.2", [hex: :bamboo, repo: "hexpm", optional: false]}, {:gen_smtp, "~> 0.15.0", [hex: :gen_smtp, repo: "hexpm", optional: false]}], "hexpm"},
   "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], [], "hexpm"},
