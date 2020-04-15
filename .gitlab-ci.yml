@@ -2,6 +2,7 @@ stages:
   - test
   - build
   - deploy
+  - cleanup
 
 test:
   stage: test
@@ -55,6 +56,17 @@ build_jail_image:
   script:
   - sudo ./build_iocage.sh
   - ./tools/jailer images
+  artifacts:
+    paths:
+    - /zpool/iocage/images/*.zip
+
+cleanup_jail_images:
+  stage: cleanup
+  tags:
+  - freebsd
+  script:
+  - find /zpool/iocage/images -type f -delete -name '*.zip'
+
 
 deploy_demo:
   stage: deploy
