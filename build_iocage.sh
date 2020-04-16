@@ -6,5 +6,5 @@ if [ $(id -u) -ne 0 ]; then
   exit 2
 fi
 
-export JAILER_TAG=webapp
+export JAILER_TAG="webapp-${CI_COMMIT_REF_NAME}"
 ./tools/jailer build .
