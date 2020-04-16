@@ -57,7 +57,7 @@ build_jail_image:
   - env
   - sudo -E ./build_iocage.sh
   - ./tools/jailer images | grep "webapp-${CI_COMMIT_REF_SLUG}"
-  - sudo aws s3 s3://runhyve/jailer/
+  - sudo aws s3 mb s3://runhyve/jailer/
   - sudo aws s3 cp /zpool/iocage/images/webapp-${CI_COMMIT_REF_SLUG}*.zip s3://runhyve/jailer/
 
 cleanup_jail_images:
