@@ -56,9 +56,9 @@ build_jail_image:
   script:
   - env
   - sudo -E ./build_iocage.sh
-  - ./tools/jailer images | grep "webapp-${CI_COMMIT_REF_NAME}"
-  - sudo -E mv /zpool/iocage/images/webapp-${CI_COMMIT_REF_NAME}*.zip .
-  - sudo -E mv /zpool/iocage/images/webapp-${CI_COMMIT_REF_NAME}*.sha256 .
+  - ./tools/jailer images | grep "webapp-${CI_COMMIT_REF_SLUG}"
+  - sudo -E mv /zpool/iocage/images/webapp-${CI_COMMIT_REF_SLUG}*.zip .
+  - sudo -E mv /zpool/iocage/images/webapp-${CI_COMMIT_REF_SLUG}*.sha256 .
   artifacts:
     paths:
     - ./*.zip
@@ -69,7 +69,7 @@ cleanup_jail_images:
   tags:
   - freebsd
   script:
-  - sudo -E find . -type f -delete -name "webapp-${CI_COMMIT_REF_NAME}*"
+  - sudo -E find . -type f -delete -name "webapp-${CI_COMMIT_REF_SLUG}*"
 
 
 deploy_demo:
