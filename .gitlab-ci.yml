@@ -57,19 +57,15 @@ build_jail_image:
   - env
   - sudo -E ./build_iocage.sh
   - ./tools/jailer images | grep "webapp-${CI_COMMIT_REF_SLUG}"
-  - sudo -E mv /zpool/iocage/images/webapp-${CI_COMMIT_REF_SLUG}*.zip .
-  - sudo -E mv /zpool/iocage/images/webapp-${CI_COMMIT_REF_SLUG}*.sha256 .
-  artifacts:
-    paths:
-    - ./*.zip
-    - ./*.sha256
+  - sudo aws s3 s3://runhyve/jailer/
+  - sudo aws s3 cp /zpool/iocage/images/webapp-${CI_COMMIT_REF_SLUG}*.zip s3://runhyve/jailer/
 
 cleanup_jail_images:
   stage: cleanup
   tags:
   - freebsd
   script:
-  - sudo -E find . -type f -delete -name "webapp-${CI_COMMIT_REF_SLUG}*"
+  - sudo -E find /zpool/iocage/images/ -type f -delete -name "webapp-${CI_COMMIT_REF_SLUG}*"
 
 
 deploy_demo:
