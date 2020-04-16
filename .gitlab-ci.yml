@@ -54,6 +54,7 @@ build_jail_image:
   tags:
   - freebsd
   script:
+  - env
   - sudo ./build_iocage.sh
   - ./tools/jailer images | grep "webapp-${CI_COMMIT_REF_NAME}"
   - sudo mv /zpool/iocage/images/webapp-${CI_COMMIT_REF_NAME}*.zip .
