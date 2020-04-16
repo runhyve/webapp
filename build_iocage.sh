@@ -1,6 +1,9 @@
 #!/bin/sh
 set -ex
 
+pwd
+env
+
 if [ $(id -u) -ne 0 ]; then
   echo "This script requires root permission because creates iocage jail to build Runhyve webapp."
   exit 2
