@@ -25,7 +25,7 @@ defmodule WebappWeb.UserController do
         Email.confirm_request(user.email, key)
 
         conn
-        |> put_flash(:info, "User created successfully.")
+        |> put_flash(:info, "Your account has been created. We have just sent you an e-mail with activation link.")
         |> redirect(to: Routes.session_path(conn, :new))
 
       {:error, :registration, multi_changeset, _changes} ->
@@ -49,7 +49,7 @@ defmodule WebappWeb.UserController do
         Email.confirm_success(user.email)
 
         conn
-        |> put_flash(:info, "Your account has been confirmed")
+        |> put_flash(:info, "Your account has been confirmed. You can now log in.")
         |> redirect(to: Routes.session_path(conn, :new))
 
       {:error, message} ->
