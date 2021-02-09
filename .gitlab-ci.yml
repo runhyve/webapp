@@ -43,8 +43,10 @@ build_docker_image:
     entrypoint: ["env", "-u", "DOCKER_HOST"]
     command: ["dockerd-entrypoint.sh"]
   before_script:
+  - apk add --no-cache git
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY_PATH
   script:
+  - git rev-parse --short HEAD > .vcs_version
   - docker build -t $IMAGE_TAG --build-arg $SECRET_KEY_BASE -f Dockerfile.prod .
   - docker push $IMAGE_TAG
 
