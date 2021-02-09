@@ -46,3 +46,5 @@ npm-debug.log
 .idea/
 .elixir_ls
 .vscode
+.git
+.DS_Store
