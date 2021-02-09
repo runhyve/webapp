@@ -77,7 +77,7 @@ config :webapp, Webapp.Repo,
   ssl: true,
   url: System.get_env("DATABASE_URL"),
   # Free tier db only allows 4 connections. Rolling deploys need pool_size*(n+1) connections.
-  pool_size: 2
+  pool_size: 10
 
 config :webapp, Webapp.Mailer,
   adapter: Bamboo.SMTPAdapter,
