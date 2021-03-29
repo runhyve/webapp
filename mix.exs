@@ -59,7 +59,7 @@ defmodule Webapp.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:plug, "~> 1.7"},
       {:excoveralls, "~> 0.10", only: [:dev, :test]},
-      {:httpoison, "~> 1.0"},
+      {:httpoison, "~> 1.8"},
       {:phoenix_active_link, "~> 0.3.0"},
       {:table_rex, "~> 2.0.0"},
       {:ecto_network, "~> 1.2.0"},
