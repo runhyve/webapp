@@ -1,4 +1,4 @@
-FROM elixir:latest
+FROM elixir:1.9
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN mix local.hex --force
