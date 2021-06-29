@@ -57,7 +57,7 @@
             <%= @os_details["cpu"]["model_name"] %>
           </li>
           <li>
-            <strong>CPU Cores:</strong>
+            <strong>CPU Threads:</strong>
             <%= @os_details["cpu"]["total"] %>
           </li>
           <li>

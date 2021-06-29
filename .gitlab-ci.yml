@@ -5,7 +5,7 @@ stages:
 
 test:
   stage: test
-  image: elixir:latest
+  image: elixir:1.11
 
   services:
     - postgres:latest
@@ -53,7 +53,7 @@ build_docker_image:
 deploy-production:
   image: ubuntu:18.04
   stage: deploy
-  environment: 
+  environment:
     name: production
     url: https://panel.vps.serveraptor.com
   only:
