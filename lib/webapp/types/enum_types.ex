@@ -7,7 +7,7 @@ defmodule Webapp.Types.EnumTypes do
 
   defmacro __using__(_) do
     quote do
-      @behaviour Ecto.Type
+      use Ecto.Type
       @behaviour Webapp.Types.EnumTypes
 
       def cast(value) do

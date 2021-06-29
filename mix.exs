@@ -42,8 +42,8 @@ defmodule Webapp.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.0"},
-      {:phoenix_pubsub, "~> 1.1"},
+      {:phoenix, "~> 1.5.0"},
+      {:phoenix_pubsub, "~> 2.0"},
       {:ecto_sql, "~> 3.0"},
       {:phoenix_ecto, "~> 4.0"},
       {:postgrex, ">= 0.0.0"},
@@ -51,10 +51,11 @@ defmodule Webapp.MixProject do
       {:phoenix_live_reload, "~> 1.3", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:phauxth, "~> 2.3.0"},
+      {:phauxth, "~> 2.5.0"},
       {:argon2_elixir, "~> 2.1"},
-      {:bamboo, "~> 1.1"},
-      {:bamboo_smtp, "~> 2.1.0"},
+      {:bamboo, "~> 2.0"},
+      {:bamboo_phoenix, "~> 1.0"},
+      {:bamboo_smtp, "~> 4.0.1"},
       {:canary, git: "https://github.com/runhyve/canary.git"},
       {:plug_cowboy, "~> 2.0"},
       {:plug, "~> 1.7"},
@@ -62,12 +63,12 @@ defmodule Webapp.MixProject do
       {:httpoison, "~> 1.8"},
       {:phoenix_active_link, "~> 0.3.0"},
       {:table_rex, "~> 2.0.0"},
-      {:ecto_network, "~> 1.2.0"},
+      {:ecto_network, "~> 1.3.0"},
       {:credo, "~> 1.5.0", only: [:dev, :test], runtime: false},
       {:inet_cidr, "~> 1.0.0"},
       {:iptools, "~> 0.0.2"},
-      {:con_cache, "~> 0.13"},
-      {:bypass, "~> 1.0", only: :test},
+      {:con_cache, "~> 1.0"},
+      {:bypass, "~> 2.0", only: :test},
       {:sentry, "~> 7.0"}
     ]
   end

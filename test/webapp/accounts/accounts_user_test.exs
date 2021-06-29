@@ -22,6 +22,19 @@ defmodule Webapp.AccountsUserTest do
   @update_attrs %{email: "frederick@example.com", name: "frederick"}
   @invalid_update_attrs %{email: "frederick#example.com", name: "frederick"}
 
+  @user_attrs [
+    :email,
+    :password_digest,
+    :username,
+    :confirmed_at,
+    :reset_sent_at,
+    :role,
+    :sessions,
+    :memberships,
+    :teams,
+    :ssh_public_keys
+  ]
+
   def fixture(:user, attrs \\ @valid_user) do
     {:ok, %{user: user}} = Accounts.register_user(attrs)
     user
@@ -30,12 +43,15 @@ defmodule Webapp.AccountsUserTest do
   describe "read user data" do
     test "list_users/1 returns all users" do
       user = fixture(:user)
-      assert Accounts.list_users() == [user]
+      assert Accounts.list_users() != []
+      [current_user] = Accounts.list_users()
+
+      assert assert Map.take(user, @user_attrs) == Map.take(current_user, @user_attrs)
     end
 
     test "get returns the user with given id" do
       user = fixture(:user)
-      assert Accounts.get_user(user.id) == user
+      assert Map.take(user, @user_attrs) == Map.take(Accounts.get_user(user.id), @user_attrs)
     end
 
     test "change_user/1 returns a user changeset" do
@@ -108,7 +124,7 @@ defmodule Webapp.AccountsUserTest do
     test "update_user/2 with invalid data returns error changeset" do
       user = fixture(:user)
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_update_attrs)
-      assert user == Accounts.get_user(user.id)
+      assert Map.take(user, @user_attrs) == Map.take(Accounts.get_user(user.id), @user_attrs)
     end
 
     test "update password changes the stored hash" do
