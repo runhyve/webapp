@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" class="has-navbar-fixed-top">
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Runhyve.app - Virtual Machines Manager</title>
-  <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>" />
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Runhyve.app - Virtual Machines Manager</title>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>" />
+  </head>
 
-<body class="<%= if @current_user, do: "logged-in"  %>">
+  <body class="<%= if @current_user, do: "logged-in"  %>">
   <div class="navbar  is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="/">
         <img src="<%= Routes.static_path(@conn, "/images/runhyve-logo.svg") %>" class="is-large" alt="Runhyve" />
+</a>
+</div>
+
+<div class="navbar-end">
+  <div class="navbar-item">
+    <div class="buttons">
+      <a class="navbar-burger sidebar-toggle" role="button" data-target="sidebar" aria-label="menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
       </a>
-    </div>
 
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="buttons">
-          <a class="navbar-burger sidebar-toggle" role="button" data-target="sidebar" aria-label="menu" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-          </a>
-
-          <%= if @current_user do %>
-          <%= if @current_team do %>
+      <%= if @current_user do %>
+        <%= if @current_team do %>
           <div class="dropdown is-right">
             <div class="dropdown-trigger">
               <button class="button is-rounded is-info" aria-haspopup="true" aria-controls="dropdown-menu">
@@ -40,7 +40,7 @@
             <div class="dropdown-menu" id="dropdown-menu" role="menu">
               <div class="dropdown-content">
                 <%= for team <- @current_user.teams do %>
-                <%= link "#{team.name}", to: switch_team_path(@conn, team), class: "dropdown-item" %>
+                  <%= link "#{team.name}", to: switch_team_path(@conn, team), class: "dropdown-item" %>
                 <% end %>
                 <hr class="dropdown-divider">
                 <%= link "My Teams", to: Routes.user_path(@conn, :teams, @current_user), class: "dropdown-item" %>
@@ -50,9 +50,9 @@
               </div>
             </div>
           </div>
-          <% end %>
-          <% else %>
-          <a href="<%= Routes.user_path(@conn, :new) %>" class="button is-rounded is-primary">
+        <% end %>
+      <% else %>
+        <a href="<%= Routes.user_path(@conn, :new) %>" class="button is-rounded is-primary">
             <strong>Sign up</strong>
           </a>
           <a href="<%= Routes.session_path(@conn, :new) %>" class="button is-rounded is-light">
@@ -110,7 +110,7 @@
           <% end %>
         </div>
 
-        <%= render @view_module, @view_template, assigns %>
+        <%= @inner_content %>
       </section>
     </div>
   </section>

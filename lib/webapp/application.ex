@@ -12,14 +12,17 @@ defmodule Webapp.Application do
       Webapp.Repo,
       # Start the endpoint when the application starts
       WebappWeb.Endpoint,
+      {Phoenix.PubSub, [name: Webapp.PubSub, adapter: Phoenix.PubSub.PG2]},
       # Starts a worker by calling: Webapp.Worker.start_link(arg)
       # {Webapp.Worker, arg},
       Webapp.GuardSupervisor,
       Webapp.NotificationsSupervisor,
-      {ConCache, [
-        name: :rh_cache,
-        ttl_check_interval: :timer.seconds(300),
-        global_ttl: :timer.seconds(300)]}
+      {ConCache,
+       [
+         name: :rh_cache,
+         ttl_check_interval: :timer.seconds(300),
+         global_ttl: :timer.seconds(300)
+       ]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

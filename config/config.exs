@@ -15,7 +15,7 @@ config :webapp, WebappWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "doiKkY1e11RF0fwHberwtJCjErEC24XipePbdyne5HYn5mBvGf+cEQ+ou+CkEpBy",
   render_errors: [view: WebappWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Webapp.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub_server: Webapp.PubSub
 
 # Phauxth authentication configuration
 config :phauxth,
@@ -44,7 +44,6 @@ config :phoenix_active_link, :defaults,
   wrap_tag: :li,
   class_active: "is-active",
   class_inactive: ""
-
 
 config :webapp, Webapp.Notifications,
   enabled_modules: [Webapp.Notifications.NotifyConsole],
