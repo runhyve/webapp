@@ -370,7 +370,7 @@ defmodule Webapp.Machines do
       |> Repo.transaction()
     rescue
       UndefinedFunctionError ->
-        Notifications.publish(:critical, "Couldn't connect machine #{machine.name} to network #{network.namae}")
+        Notifications.publish(:critical, "Couldn't connect machine #{machine.name} to network #{network.name}")
         {:error, :hypervisor_not_found}
     end
   end
