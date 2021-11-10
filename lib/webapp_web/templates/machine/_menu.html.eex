@@ -58,5 +58,5 @@ var machine = {
   id: <%= @machine.id %>,
 }
 </script>
-<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/machine.js") %>"></script>
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/assets/machine.js") %>"></script>
 

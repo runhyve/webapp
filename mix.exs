@@ -42,13 +42,14 @@ defmodule Webapp.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.5.0"},
+      {:phoenix, "~> 1.6.0"},
       {:phoenix_pubsub, "~> 2.0"},
       {:ecto_sql, "~> 3.0"},
       {:phoenix_ecto, "~> 4.0"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.11"},
+      {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.3", only: :dev},
+      {:phoenix_live_view, "~> 0.16.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:phauxth, "~> 2.5.0"},
@@ -61,7 +62,7 @@ defmodule Webapp.MixProject do
       {:plug, "~> 1.7"},
       {:excoveralls, "~> 0.10", only: [:dev, :test]},
       {:httpoison, "~> 1.8"},
-      {:phoenix_active_link, "~> 0.3.0"},
+      {:phoenix_active_link, github: "danhper/phoenix-active-link"},
       {:table_rex, "~> 2.0.0"},
       {:ecto_network, "~> 1.3.0"},
       {:credo, "~> 1.5.0", only: [:dev, :test], runtime: false},
@@ -69,7 +70,9 @@ defmodule Webapp.MixProject do
       {:iptools, "~> 0.0.2"},
       {:con_cache, "~> 1.0"},
       {:bypass, "~> 2.0", only: :test},
-      {:sentry, "~> 7.0"}
+      {:sentry, "~> 7.0"},
+      {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
+      {:dart_sass, "~> 0.3", runtime: Mix.env() == :dev}
     ]
   end
 
@@ -81,6 +84,11 @@ defmodule Webapp.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
+      "assets.deploy": [
+        "esbuild default --minify",
+        "sass default --no-source-map --style=compressed",
+        "phx.digest"
+      ],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]

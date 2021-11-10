@@ -84,4 +84,4 @@
   <% end %>
 </div>
 
-<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/ip_pool.js") %>"></script>
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/assets/ip_pool.js") %>"></script>

@@ -1,5 +1,5 @@
 // Font Awesome
-$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+$fa-font-path: "/fonts";
 
 $purple: #8A4D76;
 $pink: #FA7C91;
@@ -8,7 +8,8 @@ $beige-light: #D0D1CD;
 $beige-lighter: #EFF0EB;
 
 // Update Bulma's global variables
-$family-sans-serif: "Nunito", sans-serif;
+$family-sans-serif: "Nunito",
+sans-serif;
 $grey-dark: $brown;
 $grey-light: $beige-light;
 $primary: $purple;

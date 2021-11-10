@@ -127,4 +127,4 @@
     id: <%= @current_team.id %>
   }
 </script>
-<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/team.js") %>"></script>
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/assets/team.js") %>"></script>
