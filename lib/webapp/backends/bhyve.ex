@@ -33,7 +33,6 @@ defmodule Webapp.Hypervisors.Bhyve do
   def create_machine(_repo, _multi_changes, %Machine{} = machine) do
     machine = Repo.preload(machine, [:plan, :hypervisor, :networks, ipv4: [:ip_pool]])
 
-
     #  Before we can call create_machine webhook we need to
     #  make sure there is:
     #   - template for selected system and plan
@@ -55,18 +54,21 @@ defmodule Webapp.Hypervisors.Bhyve do
       "cpu" => machine.plan.cpu,
       "memory" => "#{machine.plan.ram}M",
       "disk" => "#{machine.plan.storage}G",
-      "ipv4" => Enum.map(machine.ipv4, fn ip ->
-        ip_address = to_string(ip.ip)
-        netmask = to_string(ip.ip_pool.netmask)
-        netmaskprefix = netmask |> Iptools.subnet_bit_count()
-        gateway = to_string(ip.ip_pool.gateway)
+      "ipv4" =>
+        Enum.map(machine.ipv4, fn ip ->
+          ip_address = to_string(ip.ip)
+          netmask = to_string(ip.ip_pool.netmask)
+          netmaskprefix = netmask |> Iptools.subnet_bit_count()
+          gateway = to_string(ip.ip_pool.gateway)
 
-        %{
-          ip: "#{ip_address}/#{netmaskprefix}",
-          netmask: netmask,
-          gateway: gateway
-        } |> Jason.encode!()
-      end)
+          %{
+            ip: "#{ip_address}/#{netmaskprefix}",
+            netmask: netmask,
+            gateway: gateway,
+            hostname: machine.name
+          }
+          |> Jason.encode!()
+        end)
     }
 
     payload =
@@ -92,7 +94,8 @@ defmodule Webapp.Hypervisors.Bhyve do
     payload = %{name: Machines.get_machine_hid(machine)}
 
     case webhook_trigger(machine.hypervisor, "vm/destroy", payload) do
-      {:ok, %{"taskid" => task_id}} -> {:ok, task_id}
+      {:ok, %{"taskid" => task_id}} ->
+        {:ok, task_id}
 
       {:error, error} ->
         if String.match?(error, ~r/Virtual machine (.*) doesn't exist/) do
@@ -145,7 +148,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   @doc """
   Performs restart of virtual Machine.
   """
-  def restart_machine(%{machine: %Machine{}  = machine}) do
+  def restart_machine(%{machine: %Machine{} = machine}) do
     payload = %{name: Machines.get_machine_hid(machine)}
     webhook_trigger(machine.hypervisor, "vm/restart", payload)
   end
@@ -153,7 +156,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   @doc """
   Performs hard stop of virtual Machine.
   """
-  def poweroff_machine(%{machine: %Machine{}  = machine}) do
+  def poweroff_machine(%{machine: %Machine{} = machine}) do
     payload = %{name: Machines.get_machine_hid(machine)}
     webhook_trigger(machine.hypervisor, "vm/poweroff", payload)
   end
@@ -161,7 +164,7 @@ defmodule Webapp.Hypervisors.Bhyve do
   @doc """
   Opens a remote console for machine.
   """
-  def console_machine(%{machine:  %Machine{} = machine}) do
+  def console_machine(%{machine: %Machine{} = machine}) do
     payload = %{name: Machines.get_machine_hid(machine)}
     webhook_trigger(machine.hypervisor, "vm/console", payload)
   end
@@ -182,6 +185,7 @@ defmodule Webapp.Hypervisors.Bhyve do
       name: network.name,
       cidr: "#{network.network}"
     }
+
     webhook_trigger(network.hypervisor, "/vm/net-create", payload)
   end
 
@@ -190,7 +194,9 @@ defmodule Webapp.Hypervisors.Bhyve do
 
     Logger.debug(["Bhyve webhook GET call: #{inspect(endpoint)} without parameters"])
 
-    HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", hypervisor.webhook_token}], follow_redirect: true)
+    HTTPoison.get(endpoint, @headers ++ [{"X-RUNHYVE-TOKEN", hypervisor.webhook_token}],
+      follow_redirect: true
+    )
     |> process_response()
   end
 
