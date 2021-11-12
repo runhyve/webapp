@@ -15,7 +15,7 @@ defmodule Webapp.Machines.Machine do
 
   # Machine name max length
   # @TODO: Change to UUID once https://github.com/churchers/vm-bhyve/issues/281 will be solved.
-  @machine_maxlen 32
+  @machine_maxlen 255
 
   schema "machines" do
     field(:uuid, Ecto.UUID, autogenerate: true)
