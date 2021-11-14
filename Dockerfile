@@ -11,6 +11,6 @@ ADD . /usr/local/runhyve/webapp
 WORKDIR /usr/local/runhyve/webapp
 RUN mix deps.get
 WORKDIR /usr/local/runhyve/webapp/assets
-RUN npm install && npm rebuild node-sass && npm run deploy
+RUN npm install
 WORKDIR /usr/local/runhyve/webapp
 RUN mix compile && mix phx.digest
