@@ -3,7 +3,7 @@ version: '2'
 services:
   postgres:
     container_name: postgres
-    image: 'postgres:9.5'
+    image: 'postgres:14.1'
     environment:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
@@ -13,13 +13,16 @@ services:
     depends_on:
     - 'postgres'
     build: .
+    image: registry.gitlab.com/runhyve/webapp:update
     ports:
     - 4000:4000
     volumes:
     - '.:/usr/local/runhyve/webapp'
-    command: bash -c "mix phx.server"
+    command: bash -c "mix ecto.migrate && mix phx.server"
     environment:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
       POSTGRES_HOST: 'postgres'
+      POSTGRES_DB: 'postgres'
       POSTGRES_PORT: 5432
+      MIX_ENV: 'dev'
