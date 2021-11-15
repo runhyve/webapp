@@ -17,4 +17,4 @@ RUN mix deps.get --only-prod
 WORKDIR /usr/local/runhyve/webapp/assets
 RUN npm install
 WORKDIR /usr/local/runhyve/webapp
-RUN mix compile && mix assets.deploy
+RUN mix compile && mix assets.deploy && phx.digest

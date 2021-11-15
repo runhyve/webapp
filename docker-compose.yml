@@ -17,7 +17,15 @@ services:
     - 4000:4000
     volumes:
     - '.:/usr/local/runhyve/webapp'
-    command: bash -c "npm install --prefix assets/ && mix deps.get && mix ecto.migrate && mix assets.deploy  && mix phx.server"
+    command:
+      - /bin/bash
+      - -c
+      - |
+       npm install --prefix /usr/local/runhyve/webapp/assets/ 
+       mix deps.get 
+       mix ecto.migrate 
+       mix assets.deploy
+       mix phx.server
     environment:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'

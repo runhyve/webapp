@@ -86,8 +86,7 @@ defmodule Webapp.MixProject do
     [
       "assets.deploy": [
         "esbuild default --minify",
-        "sass default --no-source-map --style=compressed",
-        "phx.digest"
+        "sass default --no-source-map --style=compressed"
       ],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
