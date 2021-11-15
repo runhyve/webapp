@@ -7,10 +7,5 @@ RUN mix local.rebar --force
 RUN apt-get update && apt-get install -y -q inotify-tools curl software-properties-common && curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt install -y nodejs && node -v && npm -v
 
 RUN mkdir -p /usr/local/runhyve/webapp
-ADD . /usr/local/runhyve/webapp
-WORKDIR /usr/local/runhyve/webapp
-RUN mix deps.get
 WORKDIR /usr/local/runhyve/webapp/assets
 RUN npm install
-WORKDIR /usr/local/runhyve/webapp
-RUN mix compile && mix phx.digest
