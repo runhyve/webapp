@@ -14,8 +14,7 @@ defmodule Webapp.Machines.Machine do
   }
 
   # Machine name max length
-  # @TODO: Change to UUID once https://github.com/churchers/vm-bhyve/issues/281 will be solved.
-  @machine_maxlen 32
+  @machine_maxlen 255
 
   schema "machines" do
     field(:uuid, Ecto.UUID, autogenerate: true)
@@ -66,7 +65,14 @@ defmodule Webapp.Machines.Machine do
       |> Enum.filter(fn ip -> ip end)
 
     machine
-    |> cast(attrs, [:name, :distribution_id, :hypervisor_id, :plan_id, :team_id, :ssh_public_key_id])
+    |> cast(attrs, [
+      :name,
+      :distribution_id,
+      :hypervisor_id,
+      :plan_id,
+      :team_id,
+      :ssh_public_key_id
+    ])
     |> validate_required([:name, :distribution_id, :hypervisor_id, :plan_id, :team_id])
     |> unique_constraint(:name, name: :machines_name_team_id_index)
     |> validate_name()
@@ -94,8 +100,9 @@ defmodule Webapp.Machines.Machine do
   end
 
   def mark_as_deleted_changeset(machine) do
-    now = DateTime.utc_now()
-          |> DateTime.truncate(:second)
+    now =
+      DateTime.utc_now()
+      |> DateTime.truncate(:second)
 
     name_suffix = DateTime.utc_now() |> DateTime.to_unix(:millisecond) |> Integer.to_string()
 
@@ -107,8 +114,9 @@ defmodule Webapp.Machines.Machine do
   end
 
   def update_machine_changeset(machine, status) do
-    now = DateTime.utc_now()
-          |> DateTime.truncate(:second)
+    now =
+      DateTime.utc_now()
+      |> DateTime.truncate(:second)
 
     changeset = cast(machine, %{last_status: status}, [:last_status])
 
@@ -119,18 +127,12 @@ defmodule Webapp.Machines.Machine do
         changeset
       end
 
-      changeset
+    changeset
   end
 
   defp validate_name(changeset) do
-    team_len =
-      get_change(changeset, :team_id)
-      |> Integer.to_string()
-      |> String.length()
-
     changeset
-    # Machine name is prefixed with "TEAMID_"
-    |> validate_length(:name, max: @machine_maxlen - team_len - 1)
+    |> validate_length(:name, max: @machine_maxlen)
     |> validate_format(
       :name,
       ~r/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/,

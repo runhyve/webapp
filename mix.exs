@@ -69,7 +69,9 @@ defmodule Webapp.MixProject do
       {:iptools, "~> 0.0.2"},
       {:con_cache, "~> 1.0"},
       {:bypass, "~> 2.0", only: :test},
-      {:sentry, "~> 7.0"}
+      {:sentry, "~> 7.0"},
+      {:ex_machina, "~> 2.7", only: :test},
+      {:faker, "~> 0.16", only: :test}
     ]
   end
 

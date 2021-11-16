@@ -83,10 +83,8 @@ defmodule Webapp.Machines do
   @doc """
   Returns unique id for hypervisor.
   """
-  def get_machine_hid(%Machine{} = machine) do
-    # TODO: replace to machine.uuid once bhyve will support more than 31 characters.
-    "#{machine.team_id}_#{machine.name}"
-  end
+  def get_machine_hid(%Machine{uuid: nil} = machine), do: "#{machine.team_id}_#{machine.name}"
+  def get_machine_hid(%Machine{uuid: uuid}), do: uuid
 
   @doc """
   Creates a machine.
@@ -121,7 +119,10 @@ defmodule Webapp.Machines do
         |> Multi.run(:hypervisor, module, :create_machine, [machine])
         |> Multi.run(:job, __MODULE__, :multi_create_add_job, [machine])
         |> Multi.run(:machine, __MODULE__, :multi_create_machine, [changeset])
-        |> Multi.run(:notify, Notifications, :publish, [:info, "Machine #{attrs["name"]} created successfuly"])
+        |> Multi.run(:notify, Notifications, :publish, [
+          :info,
+          "Machine #{attrs["name"]} created successfuly"
+        ])
         |> Repo.transaction()
       rescue
         UndefinedFunctionError ->
@@ -158,9 +159,10 @@ defmodule Webapp.Machines do
 
   """
   def update_machine(%Machine{} = machine, attrs) do
-    result = machine
-    |> Machine.update_changeset(attrs)
-    |> Repo.update()
+    result =
+      machine
+      |> Machine.update_changeset(attrs)
+      |> Repo.update()
 
     Notifications.publish(:info, "Machine #{machine.name} updated successfuly")
 
@@ -205,7 +207,10 @@ defmodule Webapp.Machines do
       |> Multi.run(:hypervisor, module, :delete_machine, [machine])
       |> Multi.run(:job, __MODULE__, :multi_delete_add_job, [machine])
       |> Multi.run(:machine, __MODULE__, :multi_delete_machine, [machine])
-      |> Multi.run(:notify, Notifications, :publish, [:info, "Machine #{machine.name} has been marked for deletion"])
+      |> Multi.run(:notify, Notifications, :publish, [
+        :info,
+        "Machine #{machine.name} has been marked for deletion"
+      ])
       |> Repo.transaction()
     rescue
       UndefinedFunctionError ->
@@ -214,7 +219,8 @@ defmodule Webapp.Machines do
     end
   end
 
-  def multi_delete_add_job(_repo, %{hypervisor: job_id}, %Machine{} = machine) when is_integer(job_id) do
+  def multi_delete_add_job(_repo, %{hypervisor: job_id}, %Machine{} = machine)
+      when is_integer(job_id) do
     %Job{}
     |> Job.changeset(%{"hypervisor_id" => machine.hypervisor_id, "ts_job_id" => job_id})
     |> Repo.insert()
@@ -232,7 +238,8 @@ defmodule Webapp.Machines do
         Networks.release_machine(machine)
         {:ok, machine}
 
-      {:error, changeset} -> {:error, changeset}
+      {:error, changeset} ->
+        {:error, changeset}
     end
   end
 
@@ -293,12 +300,18 @@ defmodule Webapp.Machines do
   end
 
   # The job was completed without errors, now we need to process it.
-  def update_status(%Machine{last_status: "Creating", job: %Job{last_status: "finished", e_level: 0}} = machine) do
+  def update_status(
+        %Machine{last_status: "Creating", job: %Job{last_status: "finished", e_level: 0}} =
+          machine
+      ) do
     {:ok, machine} = cleanup_job_id(machine)
     check_machine_status(machine)
   end
 
-  def update_status(%Machine{last_status: "Deleting", job: %Job{last_status: "finished", e_level: 0}} = machine) do
+  def update_status(
+        %Machine{last_status: "Deleting", job: %Job{last_status: "finished", e_level: 0}} =
+          machine
+      ) do
     {:ok, machine} = cleanup_job_id(machine)
     update = Machine.mark_as_deleted_changeset(machine)
 
@@ -307,24 +320,32 @@ defmodule Webapp.Machines do
         Networks.release_machine(machine)
         {:ok, machine}
 
-      {:error, changeset} -> {:error, changeset}
+      {:error, changeset} ->
+        {:error, changeset}
     end
   end
 
   # The job was completed with errors, we need to handle it.
-  def update_status(%Machine{last_status: "Creating", job: %Job{last_status: "finished", e_level: _e_level}} = machine) do
+  def update_status(
+        %Machine{last_status: "Creating", job: %Job{last_status: "finished", e_level: _e_level}} =
+          machine
+      ) do
     mark_as_failed(machine)
     {:error, "Machine was not created successfully"}
   end
 
-  def update_status(%Machine{last_status: "Deleting", job: %Job{last_status: "finished", e_level: _e_level}} = machine) do
+  def update_status(
+        %Machine{last_status: "Deleting", job: %Job{last_status: "finished", e_level: _e_level}} =
+          machine
+      ) do
     mark_as_failed(machine)
     {:error, "Machine was not deleted successfully"}
   end
 
   defp mark_as_failed(%Machine{} = machine) do
-    now = DateTime.utc_now()
-          |> DateTime.truncate(:second)
+    now =
+      DateTime.utc_now()
+      |> DateTime.truncate(:second)
 
     Machine.update_changeset(machine, %{})
     |> Changeset.put_change(:last_status, "Failed")
@@ -366,11 +387,18 @@ defmodule Webapp.Machines do
       Multi.new()
       |> Multi.update(:machine, changeset)
       |> Multi.run(:hypervisor, module, :add_network_to_machine, [])
-      |> Multi.run(:notify, Notifications, :publish, [:info, "Machine #{machine.name} is now connected to #{network.name}"])
+      |> Multi.run(:notify, Notifications, :publish, [
+        :info,
+        "Machine #{machine.name} is now connected to #{network.name}"
+      ])
       |> Repo.transaction()
     rescue
       UndefinedFunctionError ->
-        Notifications.publish(:critical, "Couldn't connect machine #{machine.name} to network #{network.name}")
+        Notifications.publish(
+          :critical,
+          "Couldn't connect machine #{machine.name} to network #{network.name}"
+        )
+
         {:error, :hypervisor_not_found}
     end
   end
@@ -513,6 +541,7 @@ defmodule Webapp.Machines do
 
       :delete ->
         machine.last_status != "Creating" && machine.last_status != "Deleting"
+
       _ ->
         false
     end

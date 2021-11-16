@@ -23,6 +23,7 @@ defmodule Webapp.DataCase do
       import Ecto.Query
       import Webapp.DataCase
       import Webapp.TestHelpers
+      import Webapp.Factory
     end
   end
 

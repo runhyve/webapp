@@ -47,6 +47,7 @@ defmodule Webapp.Hypervisors.Bhyve do
 
     payload = %{
       "name" => Machines.get_machine_hid(machine),
+      "hostname" => machine.name,
       "template" => template,
       "image" => image,
       # TODO: replace to network.uuid

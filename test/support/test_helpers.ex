@@ -1,5 +1,9 @@
 defmodule Webapp.TestHelpers do
-  alias Webapp.{Hypervisors, Plans, Machines, Networks, Networks.Network, Regions}
+  alias Webapp.Hypervisors
+  alias Webapp.Plans
+  alias Webapp.Machines.Machine
+  alias Webapp.Networks.Network
+  alias Webapp.Regions
   alias Webapp.Repo
 
   def fixture_hypervisor(hypervisor) do
@@ -22,15 +26,17 @@ defmodule Webapp.TestHelpers do
     plan
   end
 
-  def fixture_machine(machine) do
-    {:ok, %{machine: machine}} = Machines.create_machine(machine)
-    machine
+  def fixture_machine(attrs) do
+    Machine.create_changeset(%Machine{}, attrs)
+    |> Repo.insert()
   end
 
   def fixture_network(network) do
-    {:ok, network} = %Network{}
-                                 |> Network.changeset(network)
-                                 |> Repo.insert()
+    {:ok, network} =
+      %Network{}
+      |> Network.changeset(network)
+      |> Repo.insert()
+
     network
   end
 end

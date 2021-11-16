@@ -1,9 +1,26 @@
 defmodule Webapp.MachinesTest do
   use Webapp.DataCase
 
-  # alias Webapp.Machines
+  alias Webapp.Machines
 
-  describe "machines" do
+  describe "machines api" do
+    test "get_machine_hid/1 returns name for given machine when uuid is not available" do
+      machine =
+        insert(:machine)
+        |> Webapp.Machines.Machine.update_changeset(%{})
+        |> Ecto.Changeset.put_change(:uuid, nil)
+        |> Repo.update!()
+
+      assert machine.uuid == nil
+      assert "#{machine.team_id}_#{machine.name}" == Machines.get_machine_hid(machine)
+    end
+
+    test "get_machine_hid/1 returns uuid when is available" do
+      machine = insert(:machine)
+
+      assert machine.uuid == Machines.get_machine_hid(machine)
+    end
+
     #    alias Webapp.Machines.Machine
     #
     #    @valid_attrs %{name: "some name", template: "some template"}
