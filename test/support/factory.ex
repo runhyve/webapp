@@ -1,20 +1,10 @@
 defmodule Webapp.Factory do
   use ExMachina.Ecto, repo: Webapp.Repo
 
-  alias Webapp.Accounts.User
-  alias Webapp.Accounts.Team
-  alias Webapp.Accounts.Member
-  alias Webapp.Hypervisors.Type, as: HypervisorType
-  alias Webapp.Regions.Region
-  alias Webapp.Hypervisors.Hypervisor
-  alias Webapp.Distributions.Distribution
-  alias Webapp.Plans.Plan
-  alias Webapp.Machines.Machine
-
   @password Argon2.hash_pwd_salt("password")
 
   def user_factory() do
-    %User{
+    %Webapp.Accounts.User{
       email: Faker.Internet.email(),
       name: Faker.Internet.user_name(),
       password_hash: @password,
@@ -26,14 +16,14 @@ defmodule Webapp.Factory do
   def team_factory() do
     name = Faker.Team.name()
 
-    %Team{
+    %Webapp.Accounts.Team{
       name: name,
       namespace: Faker.Internet.slug([name])
     }
   end
 
   def team_member_factory(user, team, role \\ "User") do
-    %Member{
+    %Webapp.Accounts.Member{
       role: role,
       team: team,
       user: user
@@ -41,13 +31,13 @@ defmodule Webapp.Factory do
   end
 
   def region_factory do
-    %Region{
+    %Webapp.Regions.Region{
       name: Faker.Address.country()
     }
   end
 
   def hypervisor_factory do
-    %Hypervisor{
+    %Webapp.Hypervisors.Hypervisor{
       name: Faker.Internet.domain_word(),
       fqdn: Faker.Internet.domain_name(),
       region: build(:region),
@@ -56,7 +46,7 @@ defmodule Webapp.Factory do
   end
 
   def plan_factory do
-    %Plan{
+    %Webapp.Plans.Plan{
       cpu: :rand.uniform(64),
       name: Faker.Superhero.name(),
       ram: (1024 * :math.pow(2, :rand.uniform(16))) |> round(),
@@ -66,7 +56,7 @@ defmodule Webapp.Factory do
   end
 
   def distribution_factory do
-    %Distribution{
+    %Webapp.Distributions.Distribution{
       image: Faker.Internet.url(),
       loader: Enum.random(["grub", "bhyveload", "uefi-csm"]),
       name: Faker.App.name(),
@@ -75,7 +65,7 @@ defmodule Webapp.Factory do
   end
 
   def machine_factory() do
-    %Machine{
+    %Webapp.Machines.Machine{
       name: Faker.App.name(),
       distribution: build(:distribution),
       hypervisor: build(:hypervisor),
@@ -85,8 +75,8 @@ defmodule Webapp.Factory do
   end
 
   defp get_hypervisor_type(:bhyve) do
-    case Webapp.Repo.get_by(HypervisorType, name: "bhyve") do
-      %HypervisorType{} = hypervisor_type -> hypervisor_type
+    case Webapp.Repo.get_by(Webapp.Hypervisors.Type, name: "bhyve") do
+      %Webapp.Hypervisors.Type{} = hypervisor_type -> hypervisor_type
       nil -> Webapp.Repo.insert!(%Webapp.Hypervisors.Type{name: "bhyve"})
     end
   end
