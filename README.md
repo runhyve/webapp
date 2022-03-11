@@ -8,8 +8,8 @@ Virtual machines view
 
 ### Community & contact
 
-IRC: #runhyve @ libera.chat
-E-mail: contact (AT) runhyve.app
+ * IRC: #runhyve @ libera.chat
+ * E-mail: contact (AT) runhyve.app
 
 ### Development
 
