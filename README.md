@@ -6,9 +6,10 @@ HTTP API is used to communicate with hypervisors.
 ![Machines Screenshot](https://gitlab.com/runhyve/webapp/raw/master/assets/static/images/screenshot-machines.png)
 Virtual machines view
 
-### Community
+### Community & contact
 
-Meet us on #runhyve @ freenode.
+ * IRC: #runhyve @ libera.chat
+ * E-mail: contact (AT) runhyve.app
 
 ### Development
 
