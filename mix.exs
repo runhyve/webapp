@@ -6,7 +6,7 @@ defmodule Webapp.MixProject do
       app: :webapp,
       version: "0.1.0",
       vcs_version: vcs_version(),
-      elixir: "~> 1.5",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       # TODO: Uncomment on real :prod!
@@ -49,7 +49,7 @@ defmodule Webapp.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.3", only: :dev},
-      {:phoenix_live_view, "~> 0.16.4"},
+      {:phoenix_live_view, "~> 0.17.0"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:phauxth, "~> 2.5.0"},
