@@ -12,13 +12,7 @@ config :webapp, WebappWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
-    ]
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
   ]
 
 # ## SSL Support
@@ -58,9 +52,10 @@ config :webapp, WebappWeb.Endpoint,
 
 # Do not include metadata nor timestamps in development logs
 config :logger,
-  :console, format: "[$level] $message\n", 
-  level: System.get_env("WEBAPP_LOGLEVEL") || :debug
-  
+       :console,
+       format: "[$level] $message\n",
+       level: System.get_env("WEBAPP_LOGLEVEL") || :debug
+
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
@@ -80,7 +75,7 @@ config :sentry,
   dsn: System.get_env("SENTRY_DSN") || "https://secret@sentry.io/account_id",
   environment_name: :dev,
   enable_source_code_context: true,
-  root_source_code_path: File.cwd!,
+  root_source_code_path: File.cwd!(),
   tags: %{
     env: "dev"
   },

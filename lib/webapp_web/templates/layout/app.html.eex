@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Runhyve.app - Virtual Machines Manager</title>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>" />
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/assets/app.css") %>" />
   </head>
 
   <body class="<%= if @current_user, do: "logged-in"  %>">
@@ -123,6 +123,6 @@
       </p>
     </div>
   </footer>
-  <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+  <script type="text/javascript" src="<%= Routes.static_path(@conn, "/assets/app.js") %>"></script>
 </body>
 </html>
