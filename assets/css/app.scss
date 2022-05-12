@@ -1,15 +1,15 @@
 @charset "utf-8";
 
 @import "variables";
-@import "~bulma/bulma";
-@import "~bulma-switch";
-@import "~bulma-divider";
-@import "~bulma-tooltip";
+@import "../node_modules/bulma/bulma.sass";
+@import "../node_modules/bulma-switch/src/sass/index.sass";
+@import "../node_modules/bulma-divider/src/sass/index.sass";
+@import "../node_modules/bulma-tooltip/src/sass/index.sass";
 
-@import "~@fortawesome/fontawesome-free/scss/fontawesome";
-@import "~@fortawesome/fontawesome-free/scss/brands";
-@import "~@fortawesome/fontawesome-free/scss/solid";
-@import "~@fortawesome/fontawesome-free/scss/regular";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/brands";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/solid";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/regular";
 
 @import "layout";
 @import "webapp";

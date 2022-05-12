@@ -157,4 +157,4 @@ var hypervisor = {
 }
 
 </script>
-<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/hypervisor.js") %>"></script>
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/assets/hypervisor.js") %>"></script>
