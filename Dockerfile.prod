@@ -1,4 +1,4 @@
-FROM elixir:1.11
+FROM elixir:1.12
 ARG SECRET_KEY_BASE
 
 ENV DEBIAN_FRONTEND=noninteractive
