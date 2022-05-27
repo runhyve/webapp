@@ -57,7 +57,6 @@ defmodule WebappWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
-      use Plug.ErrorHandler
     end
   end
 
