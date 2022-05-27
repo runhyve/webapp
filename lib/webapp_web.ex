@@ -58,9 +58,6 @@ defmodule WebappWeb do
       import Plug.Conn
       import Phoenix.Controller
       use Plug.ErrorHandler
-      if Mix.env() != :test do
-        use Sentry.Plug
-      end
     end
   end
 

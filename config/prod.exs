@@ -18,7 +18,9 @@ config :webapp, WebappWeb.Endpoint,
   server: true
 
 # Do not print debug messages in production
-config :logger, level: System.get_env("WEBAPP_LOGLEVEL") || :info
+config :logger,
+  level: System.get_env("WEBAPP_LOGLEVEL") || :info,
+  backends: [:console, Sentry.LoggerBackend]
 
 # ## SSL Support
 #
