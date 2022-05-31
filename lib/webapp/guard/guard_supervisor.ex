@@ -22,11 +22,6 @@ defmodule Webapp.GuardSupervisor do
       HypervisorGuard,
     ]
 
-    if Mix.env() != :test do
-      {:ok, _} = Logger.add_backend(Sentry.LoggerBackend)
-      Logger.configure_backend(Sentry.LoggerBackend, include_logger_metadata: true)
-    end
-
     Supervisor.init(children, strategy: :one_for_one)
   end
 end
