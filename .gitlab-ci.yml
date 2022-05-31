@@ -7,6 +7,9 @@ test:
   stage: test
   image: elixir:1.12
 
+  except:
+    - master
+
   services:
     - postgres:latest
 
