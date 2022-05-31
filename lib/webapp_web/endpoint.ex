@@ -1,10 +1,6 @@
 defmodule WebappWeb.Endpoint do
+  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :webapp
-
-  # We don't want Sentry to try report erorrs from :test environment
-  if Mix.env() != :test do
-    use Sentry.Phoenix.Endpoint
-  end
 
   socket "/socket", WebappWeb.UserSocket,
     websocket: true,
@@ -35,6 +31,8 @@ defmodule WebappWeb.Endpoint do
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
+
+  plug Sentry.PlugContext
 
   plug Plug.MethodOverride
   plug Plug.Head
