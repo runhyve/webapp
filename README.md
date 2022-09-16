@@ -3,7 +3,7 @@
 This repository contains web application to manage Runhyve hypervisors. It's written in Elixir with Phoenix and uses PosgreSQL to keep the state.
 HTTP API is used to communicate with hypervisors. 
 
-![Machines Screenshot](https://gitlab.com/runhyve/webapp/raw/master/assets/static/images/screenshot-machines.png)
+![Machines Screenshot](https://gitlab.com/runhyve/webapp/raw/master/priv/static/images/screenshot-machines.png)
 Virtual machines view
 
 ### Community & contact
@@ -76,7 +76,7 @@ c81f578d-c558-4623-a2d4-10ada9dcb431
 ```
 After succesfuly connecting to hypervisor you should be able to see its details:
 
-![Hypervisor Screenshot](https://gitlab.com/runhyve/webapp/raw/master/assets/static/images/screenshot-hypervisor.png)
+![Hypervisor Screenshot](https://gitlab.com/runhyve/webapp/raw/master/priv/static/images/screenshot-hypervisor.png)
 Hypervisor view
 
 ##### Downloading images to hypervisors
