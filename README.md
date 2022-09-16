@@ -105,7 +105,7 @@ By default Webapp has configured a network named `public`. It's a bridged networ
 It's not being created on the hyperisor by default. To setup it please run:
 
 ```
-vm switch add public
+vm switch create public
 vm switch add public igb0
 ``` 
 Where igb0 is name of the main interface.
