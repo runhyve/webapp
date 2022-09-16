@@ -23,16 +23,18 @@ defmodule WebappWeb.MachineController do
     preload: [:plan, :networks, :distribution, :job, ipv4: [:ip_pool], hypervisor: :region]
 
   plug :load_resource,
-       model: Hypervisor,
-       id_name: "hypervisor_id",
-       only: [:new, :create],
-       preload: [:hypervisor_type, machines: [:networks, :plan, :distribution]],
-       required: true
+    model: Hypervisor,
+    id_name: "hypervisor_id",
+    only: [:new, :create],
+    preload: [:region, :hypervisor_type, machines: [:networks, :plan, :distribution]],
+    required: true
 
   plug :load_references when action in [:new, :create, :edit, :update]
 
   def index(%Conn{assigns: %{current_team: %Team{} = team}} = conn, _params) do
-    machines = Machines.list_team_machines(team, [:plan, :networks, :distribution, hypervisor: :region])
+    machines =
+      Machines.list_team_machines(team, [:plan, :networks, :distribution, hypervisor: :region])
+
     hypervisors = Hypervisors.list_hypervisors()
     regions = Regions.list_usable_regions()
 
@@ -50,7 +52,10 @@ defmodule WebappWeb.MachineController do
   end
 
   def create(conn, %{"machine" => machine_params}) do
-    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested to create new VM: #{machine_params["name"]}")
+    Notifications.publish(
+      :info,
+      "#{conn.assigns.current_user.email} requested to create new VM: #{machine_params["name"]}"
+    )
 
     case Machines.create_machine(machine_params) do
       {:ok, %{machine: machine}} ->
@@ -153,7 +158,11 @@ defmodule WebappWeb.MachineController do
 
   def delete(conn, _params) do
     machine = conn.assigns[:machine]
-    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested removal of VM #{machine.name} (ID: #{machine.id})")
+
+    Notifications.publish(
+      :info,
+      "#{conn.assigns.current_user.email} requested removal of VM #{machine.name} (ID: #{machine.id})"
+    )
 
     case Machines.delete_machine(machine) do
       {:ok, _machine} ->
@@ -175,7 +184,11 @@ defmodule WebappWeb.MachineController do
 
   def start(conn, _params) do
     machine = conn.assigns[:machine]
-    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested start of VM #{machine.name} (ID: #{machine.id})")
+
+    Notifications.publish(
+      :info,
+      "#{conn.assigns.current_user.email} requested start of VM #{machine.name} (ID: #{machine.id})"
+    )
 
     case Machines.start_machine(machine) do
       {:ok, _} ->
@@ -192,7 +205,11 @@ defmodule WebappWeb.MachineController do
 
   def stop(conn, _params) do
     machine = conn.assigns[:machine]
-    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested stop of VM #{machine.name} (ID: #{machine.id})")
+
+    Notifications.publish(
+      :info,
+      "#{conn.assigns.current_user.email} requested stop of VM #{machine.name} (ID: #{machine.id})"
+    )
 
     case Machines.stop_machine(machine) do
       {:ok, _} ->
@@ -209,7 +226,11 @@ defmodule WebappWeb.MachineController do
 
   def restart(conn, _params) do
     machine = conn.assigns[:machine]
-    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested to restart VM #{machine.name} (ID: #{machine.id})")
+
+    Notifications.publish(
+      :info,
+      "#{conn.assigns.current_user.email} requested to restart VM #{machine.name} (ID: #{machine.id})"
+    )
 
     case Machines.restart_machine(machine) do
       {:ok, _} ->
@@ -226,7 +247,11 @@ defmodule WebappWeb.MachineController do
 
   def poweroff(conn, _params) do
     machine = conn.assigns[:machine]
-    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested to poweroff VM #{machine.name} (ID: #{machine.id})")
+
+    Notifications.publish(
+      :info,
+      "#{conn.assigns.current_user.email} requested to poweroff VM #{machine.name} (ID: #{machine.id})"
+    )
 
     case Machines.poweroff_machine(machine) do
       {:ok, _} ->
@@ -243,12 +268,17 @@ defmodule WebappWeb.MachineController do
 
   def console(conn, _params) do
     machine = conn.assigns[:machine]
-    Notifications.publish(:info, "#{conn.assigns.current_user.email} requested access to serial console of VM #{machine.name} (ID: #{machine.id})")
+
+    Notifications.publish(
+      :info,
+      "#{conn.assigns.current_user.email} requested access to serial console of VM #{machine.name} (ID: #{machine.id})"
+    )
 
     case Machines.console_machine(machine) do
       {:ok, console} ->
         token = Base.encode64(console["user"] <> ":" <> console["password"])
         render(conn, "console.html", machine: machine, console: console, token: token)
+
       {:error, error} ->
         conn
         |> put_flash(:error, error)
