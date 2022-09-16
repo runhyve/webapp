@@ -46,7 +46,7 @@ body {
 
 .plans {
   display: block;
-  background: url(../static/images/plans.png) 0 0 no-repeat;
+  background: url(../images/plans.png) 0 0 no-repeat;
   width: 100px;
   height: 100px;
   margin: 10px auto;
@@ -96,7 +96,7 @@ body {
   width: 100px;
   height: 100px;
   margin: 10px auto;
-  background: url(../static/images/plans.png) no-repeat -400px -400px;
+  background: url(../images/plans.png) no-repeat -400px -400px;
 
   &[class*="netbsd"] {
     width: 100px;

@@ -32,7 +32,8 @@
       <%= label f, "Region", class: "label" %>
       <%= hidden_input f, :hypervisor_id, value: @hypervisor.id %>
       <div class="item">
-        <%= @hypervisor.name %>
+        <%= @hypervisor.region.name %>
+        <!-- <%= @hypervisor.name  %> -->
       </div>
       <%= error_tag f, :hypervisor_id %>
     </div>
@@ -50,7 +51,7 @@
       <div class="columns is-multiline is-centered is-stretched radio-boxes">
 
         <%= for plan <- @plans do %>
-          
+
           <div class="column">
             <%= radio_button(f, :plan_id, plan.id, id: "plan-#{plan.id}", class: "is-hidden") %>
 
@@ -135,7 +136,7 @@
       </div>
       <%= error_tag f, :networks %>
     </div>
-  
+
 
 
     <%= if @current_user.role == "Administrator" do %>
